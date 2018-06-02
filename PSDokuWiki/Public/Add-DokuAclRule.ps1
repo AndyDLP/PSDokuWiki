@@ -10,27 +10,39 @@
 		The DokuSession in which to make the ACL changes
 	
 	.PARAMETER FullName
-		The full name of the scope to apply to ACL to
+		The full name of the scope to apply to ACL to, can be one or more namespaces or a pages.
 	
 	.PARAMETER Principal
-		The username or groupname to add to the ACL
+		The username or @groupname to add to the ACL
 	
 	.PARAMETER Acl
-		The permission level to apply to the user.
-		0 = None, 1 = Read, 2 = Edit, 4 = Create, 8 = Upload, 16 = Delete
+		The permission level to apply to the user or @group
+		Pages / Namespaces: 0 = None, 1 = Read, 2 = Edit
+		Namespaces only:    4 = Create, 8 = Upload, 16 = Delete
 	
 	.EXAMPLE
-		PS C:\> Add-DokuAclRule -DokuSession $DokuSession -FullName 'study:home' -Principal 'testuser' -Acl 255
+		PS C:\> Add-DokuAclRule -DokuSession $DokuSession -FullName 'study:home' -Principal 'testuser' -Acl 2
+		Add the Edit permission to testuser to the page home in the namespace study
+	
+	.EXAMPLE
+		PS C:\> "User1","User2","@group1" | Add-DokuAclRule -DokuSession $DokuSession -FullName "namespace:page1","namespace:page2","namespace2:page1" -Acl 2
+		Add edit permissions for User1, User2 & group1 to the three pages; namespace:page1, namespace:page2 & namespace2:page1
+	
+	.EXAMPLE
+		PS C:\> Add-DokuAclRule -DokuSession $dokuSesson -FullName "namespace:page1","namespace:page2","namespace2:page1" -Acl 8 -Debug -Principal "User1","User2","@group1"
+		Same as above, but with an array of usernames (strings) for the parameter 'Principal'
 	
 	.OUTPUTS
-		System.Boolean
+		None
 	
 	.NOTES
 		AndyDLP - 2018-05-26
+	
+	.LINK
+		https://github.com/AndyDLP/PSDokuWiki
 #>
 	
 	[CmdletBinding(PositionalBinding = $true)]
-	[OutputType([boolean])]
 	param
 	(
 		[Parameter(Mandatory = $true,
@@ -42,12 +54,13 @@
 				   Position = 2,
 				   HelpMessage = 'The full name of the scope to apply to ACL to')]
 		[ValidateNotNullOrEmpty()]
-		[string]$FullName,
+		[string[]]$FullName,
 		[Parameter(Mandatory = $true,
+				   ValueFromPipeline = $true,
 				   Position = 3,
 				   HelpMessage = 'The username or @groupname to add to the ACL')]
 		[ValidateNotNullOrEmpty()]
-		[string]$Principal,
+		[string[]]$Principal,
 		[Parameter(Mandatory = $true,
 				   Position = 4,
 				   HelpMessage = 'The permission level to apply to the ACL as an integer')]
@@ -55,20 +68,34 @@
 		[int]$Acl
 	)
 	
-	$payload = (ConvertTo-XmlRpcMethodCall -Name "plugin.acl.addAcl" -Params $FullName, $Principal, $Acl) -replace "String", "string"
-	$payload = $payload -replace "Int32", "i4"
-	if ($DokuSession.SessionMethod -eq "HttpBasic") {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-	} else {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-	}
+	begin {
+		
+	} # begin
 	
-	$ReturnValue = ([xml]$httpResponse.Content | Select-Xml -XPath "//value/boolean").Node.InnerText
-	if ($ReturnValue -eq 0) {
-		# error code generated = Fail
-		Write-Error "Error: $ReturnValue - $($httpResponse.content)"
-		return $false
-	} else {
-		return $true
-	}
+	process {
+		foreach ($page in $FullName) {
+			Write-Debug "Page name: $page"
+			foreach ($Name in $Principal) {
+				Write-Debug "Principal name: $Name"
+				$payload = (ConvertTo-XmlRpcMethodCall -Name "plugin.acl.addAcl" -Params $page, $Name, $Acl) -replace "String", "string"
+				$payload = $payload -replace "Int32", "i4"
+				Write-Debug "XMLRPC payload: $payload"
+				if ($DokuSession.SessionMethod -eq "HttpBasic") {
+					$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
+				} else {
+					$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
+				}
+				
+				$ReturnValue = ([xml]$httpResponse.Content | Select-Xml -XPath "//value/boolean").Node.InnerText
+				if ($ReturnValue -eq 0) {
+					# error code generated = Fail
+					Write-Error "Error: $ReturnValue - $($httpResponse.content)"
+				}
+			} # foreach principal
+		} # foreach page
+	} # process
+	
+	end {
+		
+	} # end
 }
