@@ -13,5 +13,5 @@ foreach ( $folder in @( 'private', 'public', 'classes' ) )
         # dot source each file
         $files | where-Object { $_.name -NotLike '*.Tests.ps1' } |
             ForEach-Object { Write-Verbose $_.name; . $_.FullName }
-    }
-}
+    } # 
+} # 
