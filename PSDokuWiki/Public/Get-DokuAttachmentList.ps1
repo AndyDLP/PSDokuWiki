@@ -33,33 +33,47 @@
 		[psobject]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
+				   ValueFromPipeline = $true,
+				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The namespace to search for attachments')]
 		[ValidateNotNullOrEmpty()]
-		[string]$Namespace
+		[string[]]$Namespace
 	)
 
-	$payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getAttachments" -Params $FullName) -replace "String", "string"
-	if ($DokuSession.SessionMethod -eq "HttpBasic") {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-	} else {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-	}
+	begin {
 
-	$MemberNodes = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node
-	foreach ($node in $MemberNodes) {
-		$ChangeObject = New-Object PSObject -Property @{
-			FullName = ((($node.member)[0]).value.innertext)
-			Name = (($node.member)[1]).value.innertext
-			Size = [int](($node.member)[2]).value.innertext
-			VersionTimestamp = [int](($node.member)[3]).value.innertext
-			IsWritable = [boolean](($node.member)[4]).value.innertext
-			IsImage = [boolean](($node.member)[5]).value.innertext
-			Acl = [int](($node.member)[6]).value.innertext
-			LastModified = [datetime](($node.member)[7]).value.innertext
-			ParentNamespace = (((($node.member)[0]).value.innertext) -split ":")[-2]
-			RootNamespace = (((($node.member)[0]).value.innertext) -split ":")[0]
+	} # begin
+
+	process {
+		foreach ($curr in $Namespace) {
+			$payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getAttachments" -Params $curr) -replace "String", "string"
+			if ($DokuSession.SessionMethod -eq "HttpBasic") {
+				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
+			} else {
+				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
+			}
+
+			$MemberNodes = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node
+			foreach ($node in $MemberNodes) {
+				$ChangeObject = New-Object PSObject -Property @{
+					FullName = ((($node.member)[0]).value.innertext)
+					Name = (($node.member)[1]).value.innertext
+					Size = [int](($node.member)[2]).value.innertext
+					VersionTimestamp = [int](($node.member)[3]).value.innertext
+					IsWritable = [boolean](($node.member)[4]).value.innertext
+					IsImage = [boolean](($node.member)[5]).value.innertext
+					Acl = [int](($node.member)[6]).value.innertext
+					LastModified = [datetime](($node.member)[7]).value.innertext
+					ParentNamespace = (((($node.member)[0]).value.innertext) -split ":")[-2]
+					RootNamespace = (((($node.member)[0]).value.innertext) -split ":")[0]
+				}
+				[array]$AttachmentList = $AttachmentList + $ChangeObject
+			}
+			$AttachmentList
 		}
-		[array]$MediaChanges = $MediaChanges + $ChangeObject
-	}
-	return $MediaChanges
+	} # process
+
+	end {
+
+	} # end
 }
