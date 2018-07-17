@@ -26,21 +26,30 @@
 		[Parameter(Mandatory = $true,
 				   Position = 1,
 				   HelpMessage = 'The DokuSession from which to get the page list.')]
-		[ValidateScript({ ($_.WebSession -ne $null) -or ($_.Headers.Keys -contains "Authorization") })]
+		[ValidateScript({ ($null -ne $_.WebSession) -or ($_.Headers.Keys -contains "Authorization") })]
 		[psobject]$DokuSession
 	)
 
-	$payload = (ConvertTo-XmlRpcMethodCall -Name "dokuwiki.getXMLRPCAPIVersion") -replace "<value></value>", ""
-	if ($DokuSession.SessionMethod -eq "HttpBasic") {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-	} else {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-	}
+	begin {
 
-	$APIVersion = [int]([xml]$httpResponse.Content | Select-Xml -XPath "//value/int").node.InnerText
-	$VersionObject = New-Object PSObject -Property @{
-		Server = $DokuSession.Server
-		XmlRpcVersion = $APIVersion
-	}
-	return $VersionObject
+	} # begin
+
+	process {
+		$payload = (ConvertTo-XmlRpcMethodCall -Name "dokuwiki.getXMLRPCAPIVersion") -replace "<value></value>", ""
+		if ($DokuSession.SessionMethod -eq "HttpBasic") {
+			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
+		} else {
+			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
+		}
+		$APIVersion = [int]([xml]$httpResponse.Content | Select-Xml -XPath "//value/int").node.InnerText
+		$VersionObject = New-Object PSObject -Property @{
+			Server = $DokuSession.Server
+			XmlRpcVersion = $APIVersion
+		}
+		$VersionObject
+	} # process
+
+	end {
+
+	} # end
 }
