@@ -2,26 +2,26 @@
 <#
 	.SYNOPSIS
 		Returns a list of media files in a given namespace
-	
+
 	.DESCRIPTION
 		Returns a list of media files in a given namespace
-	
+
 	.PARAMETER DokuSession
 		The DokuSession from which to get the attachments
-	
+
 	.PARAMETER Namespace
 		The namespace to search for attachments
-	
+
 	.EXAMPLE
 		PS C:\> Get-DokuAttachmentList -DokuSession $DokuSession -Namespace 'namespace'
-	
+
 	.OUTPUTS
 		System.Management.Automation.PSObject[]
-	
+
 	.NOTES
 		AndyDLP - 2018-05-26
 #>
-	
+
 	[CmdletBinding()]
 	[OutputType([psobject[]])]
 	param
@@ -37,14 +37,14 @@
 		[ValidateNotNullOrEmpty()]
 		[string]$Namespace
 	)
-	
+
 	$payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getAttachments" -Params $FullName) -replace "String", "string"
 	if ($DokuSession.SessionMethod -eq "HttpBasic") {
 		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
 	} else {
 		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
 	}
-	
+
 	$MemberNodes = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node
 	foreach ($node in $MemberNodes) {
 		$ChangeObject = New-Object PSObject -Property @{

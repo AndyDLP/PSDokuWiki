@@ -74,7 +74,6 @@
     } # begin
 
     process {
-
         # TODO: write my own xmlrpc cmdlets, this is just silly!
         $payload = (ConvertTo-XmlRpcMethodCall -Name "dokuwiki.appendPage" -Params @($FullName, $RawWikiText, @{ sum = $SummaryText; minor = $MinorChange })) -replace "String", "string"
         $payload = $payload -replace "Boolean", "boolean"
@@ -99,8 +98,9 @@
             }
             $PageObject
         } else {
-            $ResultBoolean = [boolean]([xml]$httpResponse.Content | Select-Xml -XPath "//value/boolean").node.InnerText
-            $ResultBoolean
+            # Return Nothing = more like built in cmdlets??
+            # $ResultBoolean = [boolean]([xml]$httpResponse.Content | Select-Xml -XPath "//value/boolean").node.InnerText
+            # $ResultBoolean
         }
     } # process
 
