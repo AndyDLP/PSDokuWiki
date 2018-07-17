@@ -36,6 +36,8 @@
 		[psobject]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
+				   ValueFromPipeline = $true,
+				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The full page name for which to return the page data')]
 		[ValidateNotNullOrEmpty()]
 		[string[]]$FullName,
