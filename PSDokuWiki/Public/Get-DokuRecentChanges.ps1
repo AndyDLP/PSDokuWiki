@@ -34,27 +34,38 @@
 		[psobject]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
+				   ValueFromPipeline = $true,
+				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'Get all pages since this timestamp')]
 		[ValidateNotNullOrEmpty()]
 		[int]$VersionTimestamp
 	)
 
-	$payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getRecentChanges" -Params $VersionTimestamp) -replace "Int32", "i4"
-	if ($DokuSession.SessionMethod -eq "HttpBasic") {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-	} else {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-	}
+	begin {
 
-	$MemberNodes = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node
-	foreach ($node in $MemberNodes) {
-		$ChangeObject = New-Object PSObject -Property @{
-			FullName = (($node.member)[0]).value.innertext
-			LastModified = Get-Date -Date ((($node.member)[1]).value.innertext)
-			Author = (($node.member)[2]).value.innertext
-			VersionTimestamp = (($node.member)[3]).value.innertext
+	} # begin
+
+	process {
+		$payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getRecentChanges" -Params $VersionTimestamp) -replace "Int32", "i4"
+		if ($DokuSession.SessionMethod -eq "HttpBasic") {
+			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
+		} else {
+			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
 		}
-		[array]$PageChanges = $PageChanges + $ChangeObject
-	}
-	$PageChanges
+		$MemberNodes = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node
+		foreach ($node in $MemberNodes) {
+			$ChangeObject = New-Object PSObject -Property @{
+				FullName = (($node.member)[0]).value.innertext
+				LastModified = Get-Date -Date ((($node.member)[1]).value.innertext)
+				Author = (($node.member)[2]).value.innertext
+				VersionTimestamp = (($node.member)[3]).value.innertext
+			}
+			[array]$PageChanges = $PageChanges + $ChangeObject
+		}
+		$PageChanges
+	} # process
+
+	end {
+
+	} # end
 }
