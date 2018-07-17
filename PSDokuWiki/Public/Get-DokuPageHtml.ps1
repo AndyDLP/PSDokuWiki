@@ -68,9 +68,9 @@
 				RootNamespace = ($PageName -split ":")[0]
 			}
 			if ($Raw) {
-				return $PageObject.RenderedHtml
+				$PageObject.RenderedHtml
 			} else {
-				return $PageObject
+				$PageObject
 			}
 		} # foreach
 	} # process
