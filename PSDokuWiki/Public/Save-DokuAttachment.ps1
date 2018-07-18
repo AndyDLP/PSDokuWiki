@@ -39,9 +39,11 @@
 		[psobject]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
+				   ValueFromPipeline = $true,
+				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The full name of the file to get')]
 		[ValidateNotNullOrEmpty()]
-		[string]$FullName,
+		[string[]]$FullName,
 		[Parameter(Mandatory = $true,
 				   Position = 3,
 				   HelpMessage = 'The path to save the attachment to, including filename & extension')]
@@ -50,23 +52,33 @@
 		[Parameter(HelpMessage = 'Force creation of output file, overwriting any existing files')]
 		[switch]$Force
 	)
-	
-	$payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getAttachment" -Params $FullName) -replace "String", "string"
-	if ($DokuSession.SessionMethod -eq "HttpBasic") {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-	} else {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-	}
-	
-	
-	if ((Test-Path -Path $Path) -and (!$Force)) {
-		throw "File with that name already exists at: $Path"
-	} else {
-		Remove-Item -Path $Path -Force -ErrorAction Stop
-		$RawFileData = [string]([xml]$httpResponse.Content | Select-Xml -XPath "//value/base64").node.InnerText
-		$RawBytes = [Convert]::FromBase64String($RawFileData)
-		[IO.File]::WriteAllBytes($Path, $RawBytes) | Out-Null
-		$ItemObject = (Get-Item -Path $Path)
-		return $ItemObject
-	}
+
+	begin {
+
+	} # begin
+
+	process {
+		foreach ($AttachmentName in $FullName) {
+			$payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getAttachment" -Params $AttachmentName) -replace "String", "string"
+			if ($DokuSession.SessionMethod -eq "HttpBasic") {
+				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
+			} else {
+				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
+			}
+			if ((Test-Path -Path $Path) -and (!$Force)) {
+				throw "File with that name already exists at: $Path"
+			} else {
+				Remove-Item -Path $Path -Force -ErrorAction Stop
+				$RawFileData = [string]([xml]$httpResponse.Content | Select-Xml -XPath "//value/base64").node.InnerText
+				$RawBytes = [Convert]::FromBase64String($RawFileData)
+				[IO.File]::WriteAllBytes($Path, $RawBytes) | Out-Null
+				$ItemObject = (Get-Item -Path $Path)
+				$ItemObject
+			}
+		}
+	} # process
+
+	end {
+
+	} # end
 }
