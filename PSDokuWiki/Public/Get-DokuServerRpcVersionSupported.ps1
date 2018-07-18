@@ -28,6 +28,7 @@
 	(
 		[Parameter(Mandatory = $true,
 				   Position = 1,
+				   ValueFromPipeline = $true,
 				   HelpMessage = 'The DokuSession from which to get the supported version.')]
 		[ValidateNotNullOrEmpty()]
 		[PSObject]$DokuSession

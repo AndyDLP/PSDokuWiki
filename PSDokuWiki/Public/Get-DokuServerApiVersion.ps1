@@ -25,6 +25,7 @@
 	(
 		[Parameter(Mandatory = $true,
 				   Position = 1,
+				   ValueFromPipeline = $true,
 				   HelpMessage = 'The DokuSession from which to get the page list.')]
 		[ValidateScript({ ($null -ne $_.WebSession) -or ($_.Headers.Keys -contains "Authorization") })]
 		[psobject]$DokuSession
