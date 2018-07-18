@@ -44,7 +44,7 @@
 				   HelpMessage = 'The full name of the file to get')]
 		[ValidateNotNullOrEmpty()]
 		[string[]]$FullName,
-		[Parameter(Mandatory = $true,
+		[Parameter(Mandatory = $false,
 				   Position = 3,
 				   HelpMessage = 'The path to save the attachment to, including filename & extension')]
 		[ValidateScript({ Test-Path -Path $_ -IsValid })]
@@ -54,11 +54,15 @@
 	)
 
 	begin {
-
+		
 	} # begin
 
 	process {
 		foreach ($AttachmentName in $FullName) {
+
+			# if path null set to current folder
+			# also set filename + ext as same as source
+
 			$payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getAttachment" -Params $AttachmentName) -replace "String", "string"
 			if ($DokuSession.SessionMethod -eq "HttpBasic") {
 				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop

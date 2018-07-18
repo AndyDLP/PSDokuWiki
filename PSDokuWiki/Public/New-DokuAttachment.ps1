@@ -44,8 +44,6 @@
 		[string]$FullName,
 		[Parameter(Mandatory = $true,
 				   Position = 3,
-				   ValueFromPipeline = $true,
-				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The file path of the attachment to upload')]
 		[ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
 		[string]$Path,
