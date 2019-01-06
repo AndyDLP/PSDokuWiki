@@ -5,3 +5,5 @@ Use *New-DokuSession* first, and use the resulting object for authentication to 
 
 Requires the XmlRpc module:
   Install-Module -Name XmlRpc -Force
+
+*for now
