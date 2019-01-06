@@ -28,6 +28,8 @@
     (
         [Parameter(Mandatory = $true,
             Position = 1,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The DokuSession from which to get the pages')]
         [ValidateNotNullOrEmpty()]
         [psobject]$DokuSession
@@ -55,7 +57,7 @@
             }
             [array]$AllPages = $AllPages + $PageObject
         }
-        return $AllPages
+        $AllPages
     } # process
 
     end {

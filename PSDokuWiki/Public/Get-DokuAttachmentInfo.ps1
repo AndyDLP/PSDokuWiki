@@ -33,34 +33,37 @@
         [psobject]$DokuSession,
         [Parameter(Mandatory = $true,
             Position = 2,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The full name of the file to get information from')]
         [ValidateNotNullOrEmpty()]
-        [string]$FullName
+        [string[]]$FullName
     )
 
     begin {
 
-	} # begin
+    } # begin
 
     process {
-        $payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getAttachmentInfo" -Params $FullName) -replace "String", "string"
-        if ($DokuSession.SessionMethod -eq "HttpBasic") {
-            $httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-        } else {
-            $httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
+        foreach ($attachmentName in $FullName) {
+            $payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getAttachmentInfo" -Params $attachmentName) -replace "String", "string"
+            if ($DokuSession.SessionMethod -eq "HttpBasic") {
+                $httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
+            } else {
+                $httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
+            }
+            $ArrayValues = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node.Member.Value.Innertext
+            $attachmentObject = New-Object PSObject -Property @{
+                FullName        = $attachmentName
+                Size            = $ArrayValues[1]
+                LastModified    = Get-Date -Date ($ArrayValues[0])
+                FileName        = ($attachmentName -split ":")[-1]
+                ParentNamespace = ($attachmentName -split ":")[-2]
+                RootNamespace   = if (($attachmentName -split ":")[0] -eq $attachmentName) {"::"} else {($attachmentName -split ":")[0]}
+            }
+            $attachmentObject
         }
-
-        $ArrayValues = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node.Member.Value.Innertext
-        $attachmentObject = New-Object PSObject -Property @{
-            FullName        = $FullName
-            Size            = $ArrayValues[1]
-            LastModified    = Get-Date -Date ($ArrayValues[0])
-            FileName        = ($FullName -split ":")[-1]
-            ParentNamespace = ($FullName -split ":")[-2]
-            RootNamespace   = ($FullName -split ":")[0]
-        }
-        return $attachmentObject
-	} # process
+    } # process
 
     end {
 
