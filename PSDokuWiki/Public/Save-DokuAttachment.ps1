@@ -59,16 +59,7 @@
 
 	process {
 		foreach ($AttachmentName in $FullName) {
-
-			# if path null set to current folder
-			# also set filename + ext as same as source
-
-			$payload = ConvertTo-XmlRpcMethodCall -Name "wiki.getAttachment" -Params $AttachmentName
-			if ($DokuSession.SessionMethod -eq "HttpBasic") {
-				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-			} else {
-				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-			}
+			$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getAttachment' -MethodParameters @($AttachmentName)
 			if ((Test-Path -Path $Path) -and (!$Force)) {
 				throw "File with that name already exists at: $Path"
 			} else {

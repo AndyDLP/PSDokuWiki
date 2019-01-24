@@ -74,13 +74,7 @@
     } # begin
 
     process {
-        $payload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.appendPage" -Params @($FullName, $RawWikiText, @{ sum = $SummaryText; minor = [int]$MinorChange })
-
-        if ($DokuSession.SessionMethod -eq "HttpBasic") {
-            Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop | Out-Null
-        } else {
-            Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession | Out-Null
-        }
+        $httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.appendPage' -MethodParameters @($FullName, $RawWikiText, @{ sum = $SummaryText; minor = [int]$MinorChange })
 
         if ($PassThru) {
             $PageObject = New-Object PSObject -Property @{

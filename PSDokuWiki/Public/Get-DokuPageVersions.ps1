@@ -53,12 +53,7 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$payload = ConvertTo-XmlRpcMethodCall -Name "wiki.getPageVersions" -Params @($PageName, $Offset)
-			if ($DokuSession.SessionMethod -eq "HttpBasic") {
-				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-			} else {
-				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-			}
+			$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getPageVersions' -MethodParameters @($PageName,$Offset)
 			$MemberNodes = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node
 			foreach ($node in $MemberNodes) {
 				$PageObject = New-Object PSObject -Property @{

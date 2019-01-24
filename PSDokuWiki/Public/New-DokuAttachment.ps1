@@ -53,15 +53,7 @@
 
 	$FileBytes = [IO.File]::ReadAllBytes($Path)
 	$FileData = [Convert]::ToBase64String($FileBytes)
-
-	$payload = ConvertTo-XmlRpcMethodCall -Name wiki.putAttachment -Params @($FullName,$FileData,@{'ow' = [bool]$Forced})
-
-	if ($DokuSession.SessionMethod -eq "HttpBasic") {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-	} else {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-	}
-
+	$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.putAttachment' -MethodParameters @($FullName,$FileData,@{'ow' = [bool]$Forced})
 	$FileItem = (Get-Item -Path $Path)
 	$ResultString = [string]([xml]$httpResponse.Content | Select-Xml -XPath "//value/string").node.InnerText
 	if ($ResultString -ne $FullName) {

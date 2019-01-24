@@ -46,13 +46,7 @@
 		[string]$Principal
 	)
 	
-	$payload = ConvertTo-XmlRpcMethodCall -Name "plugin.acl.delAcl" -Params @($FullName,$Principal)
-	if ($DokuSession.SessionMethod -eq "HttpBasic") {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-	} else {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-	}
-	
+	$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'plugin.acl.delAcl' -MethodParameters @($FullName,$Principal)
 	$ReturnValue = ([xml]$httpResponse.Content | Select-Xml -XPath "//value/boolean").Node.InnerText
 	if ($ReturnValue -eq 0) {
 		# error code generated = Fail

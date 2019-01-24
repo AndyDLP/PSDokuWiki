@@ -64,13 +64,7 @@
 		[switch]$PassThru
 	)
 	
-	$payload = ConvertTo-XmlRpcMethodCall -Name "wiki.putPage" -Params @($FullName, $RawWikiText, @{ sum = $SummaryText; minor = $MinorChange })
-	if ($DokuSession.SessionMethod -eq "HttpBasic") {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-	} else {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-	}
-	
+	$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName '' -MethodParameters @($FullName,$RawWikiText, @{'sum' = $SummaryText; 'minor' = $MinorChange})
 	if ($PassThru) {
 		$PageObject = New-Object PSObject -Property @{
 			FullName = $FullName

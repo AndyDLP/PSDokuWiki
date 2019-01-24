@@ -34,13 +34,7 @@
 		[string]$FullName
 	)
 	
-	$payload = ConvertTo-XmlRpcMethodCall -Name "wiki.deleteAttachment" -Params $FullName
-	if ($DokuSession.SessionMethod -eq "HttpBasic") {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-	} else {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-	}
-	
+	$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.deleteAttachment' -MethodParameters @($FullName)
 	$FailReason = ([xml]$httpResponse.Content | Select-Xml -XPath "//value/string").Node.InnerText
 	if ($FailReason) {
 		# error code generated = Fail

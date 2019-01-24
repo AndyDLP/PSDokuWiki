@@ -39,12 +39,7 @@
 	} # begin
 
 	process {
-		$payload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.getVersion"
-		if ($DokuSession.SessionMethod -eq "HttpBasic") {
-			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-		} else {
-			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-		}
+		$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getVersion' -MethodParameters @()
 		$RawDokuVersion = [string]([xml]$httpResponse.Content | Select-Xml -XPath "//value/string").node.InnerText
 		$CodeName = $RawDokuVersion | ForEach-Object -Process { [regex]::match($_, '(?<=")(.+)(?=")') } | Select-Object -ExpandProperty value
 		$SplitVersion = $RawDokuVersion -split " "

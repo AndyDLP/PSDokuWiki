@@ -45,13 +45,7 @@
 	} # begin
 
 	process {
-		# No parameters is still creating the value key
-		$payload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.getTime"
-		if ($DokuSession.SessionMethod -eq "HttpBasic") {
-			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-		} else {
-			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-		}
+		$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getTime' -MethodParameters @()
 		[int]$RawDokuTime = ([xml]$httpResponse.Content | Select-Xml -XPath "//value/int").Node.InnerText
 		if ($Raw) {
 			$RawDokuTime

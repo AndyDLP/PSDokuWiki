@@ -39,12 +39,7 @@
 	} # begin
 
 	process {
-		$payload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.getTitle"
-		if ($DokuSession.SessionMethod -eq "HttpBasic") {
-			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-		} else {
-			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-		}
+		$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getTitle' -MethodParameters @()
 		[string]$DokuTitle = ([xml]$httpResponse.Content | Select-Xml -XPath "//value/string").node.InnerText
 		$Titlebject = New-Object PSObject -Property @{
 			Server = $DokuSession.Server

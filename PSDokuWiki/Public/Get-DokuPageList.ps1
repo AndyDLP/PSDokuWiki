@@ -40,12 +40,7 @@
 	} # begin
 
 	process {
-		$payload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.getPagelist" -Params @()
-		if ($DokuSession.SessionMethod -eq "HttpBasic") {
-			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-		} else {
-			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-		}
+		$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getPagelist' -MethodParameters @()
 		$MemberNodes = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node
 		foreach ($node in $MemberNodes) {
 			$PageObject = New-Object PSObject -Property @{

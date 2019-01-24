@@ -46,12 +46,7 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$payload = ConvertTo-XmlRpcMethodCall -Name "wiki.getPageInfo" -Params $PageName
-			if ($DokuSession.SessionMethod -eq "HttpBasic") {
-				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-			} else {
-				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-			}
+			$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getPageInfo' -MethodParameters @($PageName)
 			$ArrayValues = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node.Member.Value.Innertext
 			$PageObject = New-Object PSObject -Property @{
 				FullName = $PageName

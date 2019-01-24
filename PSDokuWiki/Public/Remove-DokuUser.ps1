@@ -35,16 +35,7 @@
 		[string[]]$Username
 	)
 	
-	#$payload = "<?xml version='1.0'?><methodCall><methodName>dokuwiki.deleteUsers</methodName><params><param><value><array><data><value><string>$Username</string></value></data></array></value></param></params></methodCall>"
-	
-	$payload = ConvertTo-XmlRpcMethodCall -Name dokuwiki.deleteUsers -Params @([array]$Username,$null)
-
-	if ($DokuSession.SessionMethod -eq "HttpBasic") {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
-	} else {
-		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop -WebSession $DokuSession.WebSession
-	}
-	
+	$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.deleteUsers' -MethodParameters @([array]$Username,$null)
 	$FailReason = ([xml]$httpResponse.Content | Select-Xml -XPath "//value/boolean").Node.InnerText
 	if ($FailReason -eq 0) {
 		# error code generated = Fail
