@@ -10,7 +10,7 @@
 		The DokuSession to delete the users from
 	
 	.PARAMETER Username
-		The username you want to remove
+		The username(s) you want to remove
 	
 	.EXAMPLE
 		PS C:\> Remove-DokuUser -DokuSession $DokuSession -Username 'value2'
@@ -30,12 +30,15 @@
 		[psobject]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
-				   HelpMessage = 'The username you want to remove')]
+				   HelpMessage = 'The username(s) you want to remove')]
 		[ValidateNotNullOrEmpty()]
-		[string]$Username
+		[string[]]$Username
 	)
 	
-	$payload = "<?xml version='1.0'?><methodCall><methodName>dokuwiki.deleteUsers</methodName><params><param><value><array><data><value><string>$Username</string></value></data></array></value></param></params></methodCall>"
+	#$payload = "<?xml version='1.0'?><methodCall><methodName>dokuwiki.deleteUsers</methodName><params><param><value><array><data><value><string>$Username</string></value></data></array></value></param></params></methodCall>"
+	
+	$payload = ConvertTo-XmlRpcMethodCall -Name dokuwiki.deleteUsers -Params @([array]$Username,$null)
+
 	if ($DokuSession.SessionMethod -eq "HttpBasic") {
 		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
 	} else {

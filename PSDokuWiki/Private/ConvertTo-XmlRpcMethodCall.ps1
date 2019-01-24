@@ -67,7 +67,9 @@ function ConvertTo-XmlRpcMethodCall
             if($Params)
             {
                 $Params | ForEach-Object {
-                    "<param>$(&{ConvertTo-XmlRpcType $_ -CustomTypes $CustomTypes})</param>"
+                    if ($null -ne $_) {
+                        "<param>$(&{ConvertTo-XmlRpcType $_ -CustomTypes $CustomTypes})</param>"
+                    }
                 }
             }
             else

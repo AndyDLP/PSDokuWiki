@@ -51,11 +51,11 @@
 		[switch]$Force
 	)
 
-	$Forced = if ($Force) { 1 } else { 0 }
 	$FileBytes = [IO.File]::ReadAllBytes($Path)
 	$FileData = [Convert]::ToBase64String($FileBytes)
 
-	$payload = "<?xml version='1.0'?><methodCall><methodName>wiki.putAttachment</methodName><params><param><value><string>$FullName</string></value></param><param><value><base64>$FileData</base64></value></param><param><value><struct><member><name>ow</name><value><boolean>$Forced</boolean></value></member></struct></value></param></params></methodCall>"
+	$payload = ConvertTo-XmlRpcMethodCall -Name wiki.putAttachment -Params @($FullName,$FileData,@{'ow' = [bool]$Forced})
+
 	if ($DokuSession.SessionMethod -eq "HttpBasic") {
 		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
 	} else {

@@ -72,15 +72,25 @@ function ConvertTo-XmlRpcType
         $Type = $Type.ToLower()
 
         # Return simple Types
-        if (('Double','Boolean','False') -contains $Type)
+        if (('Double','False') -contains $Type)
         {
             return "<value><$($Type)>$($inputObject)</$($Type)></value>"
         }
 
-        # Encode string to HTML
+        if ($Type -eq 'Boolean')
+        {
+            return "<value><$($Type)>$([int]$inputObject)</$($Type)></value>"
+        }
+
         if ($Type -eq 'String')
         {
-            return "<value><$Type>$([System.Web.HttpUtility]::HtmlEncode($inputObject))</$Type></value>"
+            if ($InputObject -match '^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$') {
+                # Base64 encoded string
+                return "<value><base64>$InputObject</base64></value>"
+            } else {
+                # Normal string: Encode string to HTML
+                return "<value><$Type>$([System.Web.HttpUtility]::HtmlEncode($inputObject))</$Type></value>"
+            }
         }
 
         # Int16 must be casted as Int
@@ -118,6 +128,10 @@ function ConvertTo-XmlRpcType
         {
             try
             {
+                
+
+                # Old way
+
                 return "<value><array><data>$(
                     [string]::Join(
                         '',
@@ -128,6 +142,17 @@ function ConvertTo-XmlRpcType
                         } )
                     )
                 )</data></array></value>"
+                
+                
+                <#
+                foreach ($item in $array) {
+                    if ($null -ne $item) {
+                        [array]$resultArray = $resultArray + (ConvertTo-XmlRpcType $item -CustomTypes $CustomTypes)
+                    }
+                }
+                [string]$joinedArray = $resultArray -join ''
+                return "<value><array><data>$joinedArray</data></array></value>"
+                #>
             }
             catch
             {
