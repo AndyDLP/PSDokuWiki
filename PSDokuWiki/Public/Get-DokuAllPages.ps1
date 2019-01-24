@@ -41,7 +41,7 @@
 
     process {
         $httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getAllPages'
-
+        
         $MemberNodes = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node
         foreach ($node in $MemberNodes) {
             $PageObject = New-Object PSObject -Property @{
