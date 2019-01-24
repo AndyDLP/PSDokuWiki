@@ -28,7 +28,7 @@
 		System.Management.Automation.PSObject
 
 	.NOTES
-		Updated 2018-05-28
+	Updated 2018-05-28
 #>
 
 	[CmdletBinding(PositionalBinding = $true)]
@@ -42,7 +42,7 @@
 		[string]$Server,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
-				   HelpMessage = 'The username of the user that will be logging in')]
+				   HelpMessage = 'The credentials of the user that will be logging in')]
 		[ValidateNotNullOrEmpty()]
 		[pscredential]$Credential,
 		[Parameter(Mandatory = $true,
@@ -50,7 +50,8 @@
 				   HelpMessage = 'The authentication method that you want to use with subsequent commands to the API')]
 		[ValidateSet('HttpBasic', 'Cookie', IgnoreCase = $true)]
 		[string]$SessionMethod,
-		[Parameter(Position = 4,
+		[Parameter(Mandatory = $false,
+				   Position = 4,
 				   HelpMessage = 'Send the request to the unencrypted endpoint instead')]
 		[switch]$Unencrypted
 	)
