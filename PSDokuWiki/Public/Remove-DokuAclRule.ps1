@@ -46,7 +46,7 @@
 		[string]$Principal
 	)
 	
-	$payload = (ConvertTo-XmlRpcMethodCall -Name "plugin.acl.delAcl" -Params @($FullName,$Principal)) -replace "String", "string"
+	$payload = ConvertTo-XmlRpcMethodCall -Name "plugin.acl.delAcl" -Params @($FullName,$Principal)
 	if ($DokuSession.SessionMethod -eq "HttpBasic") {
 		$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
 	} else {

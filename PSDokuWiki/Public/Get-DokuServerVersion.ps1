@@ -30,7 +30,7 @@
 				   Position = 1,
 				   ValueFromPipeline = $true,
 				   HelpMessage = 'The DokuSession from which to get the page list.')]
-		[ValidateScript({ ($_.WebSession -ne $null) -or ($_.Headers.Keys -contains "Authorization") })]
+		[ValidateScript({ ($null -ne $_.WebSession ) -or ($_.Headers.Keys -contains "Authorization") })]
 		[psobject]$DokuSession
 	)
 
@@ -39,7 +39,7 @@
 	} # begin
 
 	process {
-		$payload = (ConvertTo-XmlRpcMethodCall -Name "dokuwiki.getVersion") -replace "<value></value>", ""
+		$payload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.getVersion"
 		if ($DokuSession.SessionMethod -eq "HttpBasic") {
 			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
 		} else {

@@ -45,7 +45,7 @@
 	} # begin
 
 	process {
-		$payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getRecentMediaChanges" -Params $VersionTimestamp) -replace "Int32", "i4"
+		$payload = ConvertTo-XmlRpcMethodCall -Name "wiki.getRecentMediaChanges" -Params $VersionTimestamp
 		if ($DokuSession.SessionMethod -eq "HttpBasic") {
 			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
 		} else {

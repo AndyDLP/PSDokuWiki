@@ -15,3 +15,5 @@ foreach ( $folder in @( 'private', 'public', 'classes' ) )
             ForEach-Object { Write-Verbose $_.name; . $_.FullName }
     } # 
 } # 
+
+Add-Type -AssemblyName System.Web

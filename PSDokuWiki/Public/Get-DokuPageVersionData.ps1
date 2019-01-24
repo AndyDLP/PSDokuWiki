@@ -54,8 +54,7 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getPageVersion" -Params @($PageName, $VersionTimestamp)) -replace "String", "string"
-			$payload = $payload -replace "Int32", "i4"
+			$payload = ConvertTo-XmlRpcMethodCall -Name "wiki.getPageVersion" -Params @($PageName, $VersionTimestamp)
 			if ($DokuSession.SessionMethod -eq "HttpBasic") {
 				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
 			} else {

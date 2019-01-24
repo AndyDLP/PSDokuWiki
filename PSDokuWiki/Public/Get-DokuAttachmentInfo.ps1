@@ -46,7 +46,7 @@
 
     process {
         foreach ($attachmentName in $FullName) {
-            $payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getAttachmentInfo" -Params $attachmentName) -replace "String", "string"
+            $payload = ConvertTo-XmlRpcMethodCall -Name "wiki.getAttachmentInfo" -Params $attachmentName
             if ($DokuSession.SessionMethod -eq "HttpBasic") {
                 $httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
             } else {

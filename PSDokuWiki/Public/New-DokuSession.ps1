@@ -68,8 +68,8 @@
 			$encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($pair))
 			$headers.Add("Authorization", "Basic $encodedCreds")
 		} else {
-			# Dokuwiki doesnt like capital 'S' in String
-			$XMLPayload = (ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)) -replace "String", "string"
+			$XMLPayload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)
+			# $Websession var defined here
 			Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop | Out-Null
 		}
 
@@ -84,7 +84,9 @@
 		} -ErrorAction Stop
 
 		return $DokuSession
-	} catch {
+	}
+
+	catch {
 		Write-Error "Failed to create session. Error: $_"
 	}
 }

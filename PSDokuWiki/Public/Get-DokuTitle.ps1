@@ -39,7 +39,7 @@
 	} # begin
 
 	process {
-		$payload = (ConvertTo-XmlRpcMethodCall -Name "dokuwiki.getTitle") -replace "<value></value>", ""
+		$payload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.getTitle"
 		if ($DokuSession.SessionMethod -eq "HttpBasic") {
 			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
 		} else {

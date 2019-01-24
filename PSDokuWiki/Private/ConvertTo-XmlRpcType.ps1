@@ -57,7 +57,7 @@ function ConvertTo-XmlRpcType
     }
 
     Process
-    {
+    {  
         if ($null -ne $inputObject)
         {
             [string]$Type=$inputObject.GetType().Name
@@ -65,11 +65,14 @@ function ConvertTo-XmlRpcType
         }
         else
         {
-            return "<value></value>"
+            return ""
         }
 
+        # DokuWiki doesn't like capital letters
+        $Type = $Type.ToLower()
+
         # Return simple Types
-        if (('Double','Int32','Boolean','False') -contains $Type)
+        if (('Double','Boolean','False') -contains $Type)
         {
             return "<value><$($Type)>$($inputObject)</$($Type)></value>"
         }
@@ -80,10 +83,16 @@ function ConvertTo-XmlRpcType
             return "<value><$Type>$([System.Web.HttpUtility]::HtmlEncode($inputObject))</$Type></value>"
         }
 
-        # Int32 must be casted as Int
+        # Int16 must be casted as Int
         if ($Type -eq 'Int16')
         {
             return "<value><int>$inputObject</int></value>"
+        }
+
+        # Int32 must be casted as i4
+        if ($Type -eq 'Int32')
+        {
+            return "<value><i4>$inputObject</i4></value>"
         }
 
         if ($type -eq "SwitchParameter")

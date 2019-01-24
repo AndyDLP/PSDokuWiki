@@ -33,7 +33,7 @@
 				   Position = 1,
 				   ValueFromPipeline = $true,
 				   HelpMessage = 'The DokuSession from which to get the page list.')]
-		[ValidateScript({ ($_.WebSession -ne $null) -or ($_.Headers.Keys -contains "Authorization") })]
+		[ValidateScript({ ( $null -ne $_.WebSession) -or ($_.Headers.Keys -contains "Authorization") })]
 		[psobject]$DokuSession,
 		[Parameter(Position = 2,
 				   HelpMessage = 'Output the raw response from the server in UNIX time')]
@@ -46,7 +46,7 @@
 
 	process {
 		# No parameters is still creating the value key
-		$payload = (ConvertTo-XmlRpcMethodCall -Name "dokuwiki.getTime") -replace "<value></value>",""
+		$payload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.getTime"
 		if ($DokuSession.SessionMethod -eq "HttpBasic") {
 			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
 		} else {

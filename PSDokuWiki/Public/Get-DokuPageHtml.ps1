@@ -53,7 +53,7 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getPageHTML" -Params $PageName) -replace "String", "string"
+			$payload = ConvertTo-XmlRpcMethodCall -Name "wiki.getPageHTML" -Params $PageName
 			if ($DokuSession.SessionMethod -eq "HttpBasic") {
 				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
 			} else {

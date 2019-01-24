@@ -46,7 +46,7 @@
 
 	process {
 		foreach ($string in $SearchString) {
-			$payload = (ConvertTo-XmlRpcMethodCall -Name "dokuwiki.search" -Params @($string)) -replace "String","string"
+			$payload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.search" -Params @($string)
 			if ($DokuSession.SessionMethod -eq "HttpBasic") {
 				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
 			} else {

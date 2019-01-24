@@ -78,8 +78,7 @@
             Write-Debug "Page name: $page"
             foreach ($Name in $Principal) {
                 Write-Debug "Principal name: $Name"
-                $payload = (ConvertTo-XmlRpcMethodCall -Name "plugin.acl.addAcl" -Params $page, $Name, $Acl) -replace "String", "string"
-                $payload = $payload -replace "Int32", "i4"
+                $payload = ConvertTo-XmlRpcMethodCall -Name "plugin.acl.addAcl" -Params $page, $Name, $Acl
                 Write-Debug "XMLRPC payload: $payload"
                 if ($DokuSession.SessionMethod -eq "HttpBasic") {
                     $httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop

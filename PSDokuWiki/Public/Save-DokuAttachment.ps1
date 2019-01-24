@@ -63,7 +63,7 @@
 			# if path null set to current folder
 			# also set filename + ext as same as source
 
-			$payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getAttachment" -Params $AttachmentName) -replace "String", "string"
+			$payload = ConvertTo-XmlRpcMethodCall -Name "wiki.getAttachment" -Params $AttachmentName
 			if ($DokuSession.SessionMethod -eq "HttpBasic") {
 				$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
 			} else {

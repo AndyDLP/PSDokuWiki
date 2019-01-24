@@ -74,11 +74,7 @@
     } # begin
 
     process {
-        # TODO: write my own xmlrpc cmdlets, this is just silly!
-        $payload = (ConvertTo-XmlRpcMethodCall -Name "dokuwiki.appendPage" -Params @($FullName, $RawWikiText, @{ sum = $SummaryText; minor = $MinorChange })) -replace "String", "string"
-        $payload = $payload -replace "Boolean", "boolean"
-        $payload = $payload -replace "True", "1"
-        $payload = $payload -replace "False", "0"
+        $payload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.appendPage" -Params @($FullName, $RawWikiText, @{ sum = $SummaryText; minor = [int]$MinorChange })
 
         if ($DokuSession.SessionMethod -eq "HttpBasic") {
             Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop | Out-Null

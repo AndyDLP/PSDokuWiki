@@ -36,7 +36,7 @@
 	} # begin
 
 	process {
-		$payload = (ConvertTo-XmlRpcMethodCall -Name "wiki.getRPCVersionSupported") -replace "<value></value>", ""
+		$payload = ConvertTo-XmlRpcMethodCall -Name "wiki.getRPCVersionSupported"
 		if ($DokuSession.SessionMethod -eq "HttpBasic") {
 			$httpResponse = Invoke-WebRequest -Uri $DokuSession.TargetUri -Method Post -Headers $DokuSession.Headers -Body $payload -ErrorAction Stop
 		} else {
