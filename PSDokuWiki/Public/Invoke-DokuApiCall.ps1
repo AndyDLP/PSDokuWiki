@@ -54,12 +54,13 @@ function Invoke-DokuApiCall {
     )
 
     begin {
-
+        Write-Debug "$($MyInvocation.MyCommand.Name):: Function started"
     } # begin
 
     process {
         $payload = ConvertTo-XmlRpcMethodCall -Name $MethodName -Params $MethodParameters
         Write-Debug "XMLRPC payload: $payload"
+
         $params = @{
             Uri = $DokuSession.TargetUri
             Method = 'Post'
@@ -70,12 +71,30 @@ function Invoke-DokuApiCall {
         if ($DokuSession.SessionMethod -eq "Cookie") {
             $params.Add('WebSession',$DokuSession.WebSession)
         }
-        $httpResponse = Invoke-WebRequest @params
 
-        return $httpResponse
+        try {
+            $httpResponse = Invoke-WebRequest @params
+            $XMLContent = [xml]($httpResponse.Content)
+            if ($null -ne ($xml | Select-Xml -XPath "//fault").node) {
+                # Web request worked but failed on API side
+            } else {
+                
+            }
+            return $httpResponse
+        }
+        catch [System.Net.WebException] {
+            # 401 unauthorized - faultCode -32603 faultString server error. not authorized to call method XXXXXX
+            # ?? find other errors
+            Write-Error "Caught by exception type: [System.Net.WebException]"
+            Write-Error $PSItem
+        }
+        catch {
+            # Catch other errors
+            Write-Error $PSItem
+        }
     } # process
 
     end {
-
+        Write-Debug "$($MyInvocation.MyCommand.Name):: Function ended"
     } # end
 }

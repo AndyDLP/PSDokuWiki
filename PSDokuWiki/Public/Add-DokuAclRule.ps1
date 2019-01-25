@@ -70,7 +70,7 @@
     )
 
     begin {
-
+        Write-Debug "$($MyInvocation.MyCommand.Name):: Function started"
     } # begin
 
     process {
@@ -92,6 +92,6 @@
     } # process
 
     end {
-
+        Write-Debug "$($MyInvocation.MyCommand.Name):: Function ended"
     } # end
 }

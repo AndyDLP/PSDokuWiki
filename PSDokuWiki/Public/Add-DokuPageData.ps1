@@ -76,6 +76,8 @@
     process {
         $httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.appendPage' -MethodParameters @($FullName, $RawWikiText, @{ sum = $SummaryText; minor = [int]$MinorChange })
 
+        # check if respone is successful?
+
         if ($PassThru) {
             $PageObject = New-Object PSObject -Property @{
                 FullName        = $FullName
