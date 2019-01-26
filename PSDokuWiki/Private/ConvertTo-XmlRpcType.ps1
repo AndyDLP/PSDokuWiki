@@ -51,7 +51,6 @@ function ConvertTo-XmlRpcType
 
     Begin
     {
-        Write-Verbose "$($MyInvocation.MyCommand.Name):: Function started"
         $Objects = @('Object')
         $objects += $CustomTypes
     }
@@ -212,5 +211,5 @@ function ConvertTo-XmlRpcType
     }
 
     End
-        { Write-Verbose "$($MyInvocation.MyCommand.Name):: Function Ended" }
+        {  }
 }

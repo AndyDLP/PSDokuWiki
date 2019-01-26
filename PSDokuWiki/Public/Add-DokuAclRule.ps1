@@ -70,28 +70,35 @@
     )
 
     begin {
-        Write-Debug "$($MyInvocation.MyCommand.Name):: Function started"
+        
     } # begin
 
     process {
         foreach ($page in $FullName) {
-            Write-Debug "Page name: $page"
+            Write-Verbose "Page name: $page"
             foreach ($Name in $Principal) {
-                Write-Debug "Principal name: $Name"
-                $httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName plugin.acl.addAcl -MethodParameters @($page,$Name,$Acl)
-
-                [bool]$ReturnValue = ([xml]$httpResponse.Content | Select-Xml -XPath "//value/boolean").Node.InnerText
-                if ($ReturnValue -eq $false) {
-                    # error code generated = Fail
-                    Write-Error "Error: $ReturnValue - $($httpResponse.content)"
+                Write-Verbose "Principal name: $Name"
+                $APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'plugin.acl.addAcl' -MethodParameters @($page,$Name,$Acl) -ErrorAction 'Stop'
+                if ($APIResponse.CompletedSuccessfully -eq $true) {
+                    $httpResponse = $APIResponse.RawHttpResponse
+                    [bool]$ReturnValue = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").Node.InnerText
+                    if ($ReturnValue -eq $false) {
+                        # error code generated = Fail
+                        Write-Error "Error: $ReturnValue - $($httpResponse.content)"
+                    } else {
+                        # it worked! no news = good news
+                        Write-Verbose "Successfully applied Acl: $Acl for user: $Principal to entity: $Fullname"
+                    }
+                } elseif ($null -eq $APIResponse.ExceptionMessage) {
+                    Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
                 } else {
-                    # it worked!
+                    Write-Error "Exception: $($APIResponse.ExceptionMessage)"
                 }
             } # foreach principal
         } # foreach page
     } # process
 
     end {
-        Write-Debug "$($MyInvocation.MyCommand.Name):: Function ended"
+        
     } # end
 }

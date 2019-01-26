@@ -75,13 +75,14 @@ function Invoke-DokuApiCall {
         $outputObjectParams = @{
             TargetUri = $DokuSession.TargetUri
             Method = $MethodName
-            # MethodParameters = $MethodParameters
+            MethodParameters = $MethodParameters
             XMLPayloadSent = $payload
             SessionMethod = $DokuSession.SessionMethod
         }
 
         try {
             $httpResponse = Invoke-WebRequest @params
+            $outputObjectParams.Add('RawHttpResponse',$httpResponse)
             $XMLContent = [xml]($httpResponse.Content)
             $outputObjectParams.Add('XMLPayloadResponse',$XMLContent)
             if ($null -ne ($XMLContent | Select-Xml -XPath "//fault").node) {
@@ -98,7 +99,6 @@ function Invoke-DokuApiCall {
             $outputObjectParams.Add('FaultCode',(($PSItem.Exception.message) -split ' ')[1])
             $outputObjectParams.Add('FaultString',(($PSItem.Exception.message) -split 'faultString ')[1])
             $outputObjectParams.Add('ExceptionMessage',$PSItem.Exception.message)
-            Write-Error $PSItem
         }
         $outputObject = [PSCustomObject]$outputObjectParams
         return $outputObject
