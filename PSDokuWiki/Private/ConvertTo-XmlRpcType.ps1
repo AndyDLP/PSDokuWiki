@@ -200,6 +200,7 @@ function ConvertTo-XmlRpcType
         # XML
         if ('XmlElement','XmlDocument' -contains $Type)
         {
+            # data types listed as System.String rather than string....
             return $inputObject.InnerXml.ToString()
         }
 

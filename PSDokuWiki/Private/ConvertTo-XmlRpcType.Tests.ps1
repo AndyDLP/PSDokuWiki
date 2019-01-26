@@ -24,5 +24,9 @@ Describe "ConvertTo-XmlRpcType" {
     }
     It "Converts hashtables" {
         ConvertTo-XmlRpcType -InputObject @{'ow' = 1} | Should -be "<value><struct><member><name>ow</name><value><i4>1</i4></value></member></struct></value>"
+    }   
+    It "Converts XML" {
+        # How to create a valid xml object without ConvertTo-Xml ???
+        ConvertTo-XmlRpcType -InputObject (ConvertTo-Xml -InputObject @("lol",1,"hello")) | Should -be '<?xml version="1.0" encoding="utf-8"?><Objects><Object Type="System.Object[]"><Property Type="System.String">lol</Property><Property Type="System.Int32">1</Property><Property Type="System.String">hello</Property></Object></Objects>'
     }
 }

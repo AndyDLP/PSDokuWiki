@@ -72,26 +72,36 @@ function Invoke-DokuApiCall {
             $params.Add('WebSession',$DokuSession.WebSession)
         }
 
+        $outputObjectParams = @{
+            TargetUri = $DokuSession.TargetUri
+            Method = $MethodName
+            # MethodParameters = $MethodParameters
+            XMLPayloadSent = $payload
+            SessionMethod = $DokuSession.SessionMethod
+        }
+
         try {
             $httpResponse = Invoke-WebRequest @params
             $XMLContent = [xml]($httpResponse.Content)
-            if ($null -ne ($xml | Select-Xml -XPath "//fault").node) {
+            $outputObjectParams.Add('XMLPayloadResponse',$XMLContent)
+            if ($null -ne ($XMLContent | Select-Xml -XPath "//fault").node) {
                 # Web request worked but failed on API side
+                $outputObjectParams.Add('CompletedSuccessfully',$false)
+                $outputObjectParams.Add('FaultCode',($XMLContent | Select-Xml -XPath "//struct").node.member[0].value.int)
+                $outputObjectParams.Add('FaultString',($XMLContent | Select-Xml -XPath "//struct").node.member[1].value.string)
             } else {
-                
+                $outputObjectParams.Add('CompletedSuccessfully',$true)
             }
-            return $httpResponse
-        }
-        catch [System.Net.WebException] {
-            # 401 unauthorized - faultCode -32603 faultString server error. not authorized to call method XXXXXX
-            # ?? find other errors
-            Write-Error "Caught by exception type: [System.Net.WebException]"
-            Write-Error $PSItem
         }
         catch {
-            # Catch other errors
+            $outputObjectParams.Add('CompletedSuccessfully',$false)
+            $outputObjectParams.Add('FaultCode',(($PSItem.Exception.message) -split ' ')[1])
+            $outputObjectParams.Add('FaultString',(($PSItem.Exception.message) -split 'faultString ')[1])
+            $outputObjectParams.Add('ExceptionMessage',$PSItem.Exception.message)
             Write-Error $PSItem
         }
+        $outputObject = [PSCustomObject]$outputObjectParams
+        return $outputObject
     } # process
 
     end {
