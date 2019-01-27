@@ -3,10 +3,10 @@ PSDokuWiki is a (WIP) PowerShell wrapper for DokuWiki's XML RPC API
 
 Use *New-DokuSession* first, and use the resulting object for authentication to the API e.g.
 
-`
+```powershell
 $DokuSession = New-DokuSession -Server wiki.example.com -Credential (Get-Credential) -Unencrypted -SessionMethod Cookie
 Add-DokuPageData -DokuSession $DokuSession -FullName 'namespace1:namespace2:page1' -RawWikiText 'This will appear at the bottom of the page'
-`
+````
 
 ## Fault codes
 
