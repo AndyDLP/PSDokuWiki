@@ -29,4 +29,10 @@ Describe "ConvertTo-XmlRpcType" {
         # How to create a valid xml object without ConvertTo-Xml ???
         ConvertTo-XmlRpcType -InputObject (ConvertTo-Xml -InputObject @("lol",1,"hello")) | Should -be '<?xml version="1.0" encoding="utf-8"?><Objects><Object Type="System.Object[]"><Property Type="System.String">lol</Property><Property Type="System.Int32">1</Property><Property Type="System.String">hello</Property></Object></Objects>'
     }
+    It "Converts mixed data" {
+        ConvertTo-XmlRpcType -InputObject @("Hello World",1,@{'Key1' = "Value1"; 'Key2' = 2; 'Key3' = @(1,2,3)}) | Should -be "<value><array><data><value><string>Hello World</string></value><value><i4>1</i4></value><value><struct><member><name>Key3</name><value><array><data><value><i4>1</i4></value><value><i4>2</i4></value><value><i4>3</i4></value></data></array></value></member><member><name>Key1</name><value><string>Value1</string></value></member><member><name>Key2</name><value><i4>2</i4></value></member></struct></value></data></array></value>"
+    }
+    It "Converts NULL" {
+        ConvertTo-XmlRpcType -InputObject $null | Should -be ""
+    }
 }

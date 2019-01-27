@@ -80,11 +80,10 @@
                 Write-Verbose "Principal name: $Name"
                 $APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'plugin.acl.addAcl' -MethodParameters @($page,$Name,$Acl) -ErrorAction 'Stop'
                 if ($APIResponse.CompletedSuccessfully -eq $true) {
-                    $httpResponse = $APIResponse.RawHttpResponse
                     [bool]$ReturnValue = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").Node.InnerText
                     if ($ReturnValue -eq $false) {
                         # error code generated = Fail
-                        Write-Error "Error: $ReturnValue - $($httpResponse.content)"
+                        Write-Error "Failed to apply Acl: $Acl for user: $Principal to entity: $Fullname"
                     } else {
                         # it worked! no news = good news
                         Write-Verbose "Successfully applied Acl: $Acl for user: $Principal to entity: $Fullname"
