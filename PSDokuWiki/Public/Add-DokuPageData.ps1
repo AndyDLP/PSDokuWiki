@@ -74,25 +74,25 @@
     } # begin
 
     process {
-        $httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.appendPage' -MethodParameters @($FullName, $RawWikiText, @{ sum = $SummaryText; minor = [int]$MinorChange })
-
-        # check if respone is successful?
-
-        if ($PassThru) {
-            $PageObject = New-Object PSObject -Property @{
-                FullName        = $FullName
-                AddedText       = $RawWikiText
-                MinorChange     = $MinorChange
-                SummaryText     = $SummaryText
-                PageName        = ($FullName -split ":")[-1]
-                ParentNamespace = ($FullName -split ":")[-2]
-                RootNamespace   = ($FullName -split ":")[0]
+        $Change = if ($MinorChange) {$true} else {$false}
+        $APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.appendPage' -MethodParameters @($FullName, $RawWikiText, @{ sum = $SummaryText; minor = [int]$Change })
+        if ($APIResponse.CompletedSuccessfully -eq $true) {
+            if ($PassThru) {
+                $PageObject = New-Object PSObject -Property @{
+                    FullName        = $FullName
+                    AddedText       = $RawWikiText
+                    MinorChange     = $MinorChange
+                    SummaryText     = $SummaryText
+                    PageName        = ($FullName -split ":")[-1]
+                    ParentNamespace = ($FullName -split ":")[-2]
+                    RootNamespace   = ($FullName -split ":")[0]
+                }
+                $PageObject
             }
-            $PageObject
+        } elseif ($null -eq $APIResponse.ExceptionMessage) {
+            Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
         } else {
-            # Return Nothing = more like built in cmdlets??
-            # $ResultBoolean = [boolean]([xml]$httpResponse.Content | Select-Xml -XPath "//value/boolean").node.InnerText
-            # $ResultBoolean
+            Write-Error "Exception: $($APIResponse.ExceptionMessage)"
         }
     } # process
 

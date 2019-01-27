@@ -41,24 +41,29 @@
     )
 
     begin {
-
+        
     } # begin
 
     process {
         foreach ($attachmentName in $FullName) {
-            $httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getAttachmentInfo' -MethodParameters @($attachmentName)
-
-            $ArrayValues = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node.Member.Value.Innertext
-            $attachmentObject = New-Object PSObject -Property @{
-                FullName        = $attachmentName
-                Size            = $ArrayValues[1]
-                LastModified    = Get-Date -Date ($ArrayValues[0])
-                FileName        = ($attachmentName -split ":")[-1]
-                ParentNamespace = ($attachmentName -split ":")[-2]
-                RootNamespace   = if (($attachmentName -split ":")[0] -eq $attachmentName) {"::"} else {($attachmentName -split ":")[0]}
+            $APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getAttachmentInfo' -MethodParameters @($attachmentName)
+            if ($APIResponse.CompletedSuccessfully -eq $true) {
+                $ArrayValues = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node.Member.Value.Innertext
+                $attachmentObject = New-Object PSObject -Property @{
+                    FullName        = $attachmentName
+                    Size            = $ArrayValues[1]
+                    LastModified    = Get-Date -Date ($ArrayValues[0])
+                    FileName        = ($attachmentName -split ":")[-1]
+                    ParentNamespace = ($attachmentName -split ":")[-2]
+                    RootNamespace   = if (($attachmentName -split ":")[0] -eq $attachmentName) {"::"} else {($attachmentName -split ":")[0]}
+                }
+                $attachmentObject            
+            } elseif ($null -eq $APIResponse.ExceptionMessage) {
+                Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+            } else {
+                Write-Error "Exception: $($APIResponse.ExceptionMessage)"
             }
-            $attachmentObject
-        }
+        } # foreach attachment
     } # process
 
     end {

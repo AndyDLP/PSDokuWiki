@@ -46,26 +46,31 @@
 
 	process {
 		foreach ($curr in $Namespace) {
-			$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getAttachments' -MethodParameters @($curr)
-
-			$MemberNodes = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node
-			foreach ($node in $MemberNodes) {
-				$ChangeObject = New-Object PSObject -Property @{
-					FullName = ((($node.member)[0]).value.innertext)
-					Name = (($node.member)[1]).value.innertext
-					Size = [int](($node.member)[2]).value.innertext
-					VersionTimestamp = [int](($node.member)[3]).value.innertext
-					IsWritable = [boolean](($node.member)[4]).value.innertext
-					IsImage = [boolean](($node.member)[5]).value.innertext
-					Acl = [int](($node.member)[6]).value.innertext
-					LastModified = [datetime](($node.member)[7]).value.innertext
-					ParentNamespace = (((($node.member)[0]).value.innertext) -split ":")[-2]
-					RootNamespace = (((($node.member)[0]).value.innertext) -split ":")[0]
+			$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getAttachments' -MethodParameters @($curr)
+			if ($APIResponse.CompletedSuccessfully -eq $true) {
+				$MemberNodes = ($APIResponse.XMLPayloadResponse| Select-Xml -XPath "//struct").Node
+				foreach ($node in $MemberNodes) {
+					$ChangeObject = New-Object PSObject -Property @{
+						FullName = ((($node.member)[0]).value.innertext)
+						Name = (($node.member)[1]).value.innertext
+						Size = [int](($node.member)[2]).value.innertext
+						VersionTimestamp = [int](($node.member)[3]).value.innertext
+						IsWritable = [boolean](($node.member)[4]).value.innertext
+						IsImage = [boolean](($node.member)[5]).value.innertext
+						Acl = [int](($node.member)[6]).value.innertext
+						LastModified = [datetime](($node.member)[7]).value.innertext
+						ParentNamespace = (((($node.member)[0]).value.innertext) -split ":")[-2]
+						RootNamespace = (((($node.member)[0]).value.innertext) -split ":")[0]
+					}
+					[array]$AttachmentList = $AttachmentList + $ChangeObject
 				}
-				[array]$AttachmentList = $AttachmentList + $ChangeObject
+				$AttachmentList
+			} elseif ($null -eq $APIResponse.ExceptionMessage) {
+				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+			} else {
+				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 			}
-			$AttachmentList
-		}
+		} # foreach namespace
 	} # process
 
 	end {

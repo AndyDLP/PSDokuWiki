@@ -54,17 +54,22 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getPageVersion' -MethodParameters @($PageName,$VersionTimestamp)
-
-			$PageObject = New-Object PSObject -Property @{
-				FullName = $PageName
-				VersionTimestamp = $VersionTimestamp
-				RawText = [string]([xml]$httpResponse.Content | Select-Xml -XPath "//value/string").Node.InnerText
-				PageName = ($PageName -split ":")[-1]
-				ParentNamespace = ($PageName -split ":")[-2]
-				RootNamespace = ($PageName -split ":")[0]
+			$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getPageVersion' -MethodParameters @($PageName,$VersionTimestamp)
+			if ($APIResponse.CompletedSuccessfully -eq $true) {
+				$PageObject = New-Object PSObject -Property @{
+					FullName = $PageName
+					VersionTimestamp = $VersionTimestamp
+					RawText = [string]($APIResponse.XMLPayloadResponse  | Select-Xml -XPath "//value/string").Node.InnerText
+					PageName = ($PageName -split ":")[-1]
+					ParentNamespace = ($PageName -split ":")[-2]
+					RootNamespace = ($PageName -split ":")[0]
+				}
+				$PageObject
+			} elseif ($null -eq $APIResponse.ExceptionMessage) {
+				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+			} else {
+				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 			}
-			$PageObject
 		}
 	} # process
 

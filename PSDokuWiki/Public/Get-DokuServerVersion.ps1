@@ -39,17 +39,23 @@
 	} # begin
 
 	process {
-		$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getVersion' -MethodParameters @()
-		$RawDokuVersion = [string]([xml]$httpResponse.Content | Select-Xml -XPath "//value/string").node.InnerText
-		$CodeName = $RawDokuVersion | ForEach-Object -Process { [regex]::match($_, '(?<=")(.+)(?=")') } | Select-Object -ExpandProperty value
-		$SplitVersion = $RawDokuVersion -split " "
-		$VersionObject = New-Object PSObject -Property @{
-			Server = $DokuSession.Server
-			Type = $SplitVersion[0] # Does this even change?
-			ReleaseDate = $SplitVersion[1] # TODO: Convert to date time - replace letter(s)?
-			ReleaseName = $CodeName
+		$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getVersion' -MethodParameters @()
+		if ($APIResponse.CompletedSuccessfully -eq $true) {
+			$RawDokuVersion = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/string").node.InnerText
+			$CodeName = $RawDokuVersion | ForEach-Object -Process { [regex]::match($_, '(?<=")(.+)(?=")') } | Select-Object -ExpandProperty value
+			$SplitVersion = $RawDokuVersion -split " "
+			$VersionObject = New-Object PSObject -Property @{
+				Server = $DokuSession.Server
+				Type = $SplitVersion[0] # Does this ever change?
+				ReleaseDate = $SplitVersion[1] # TODO: Convert to date time - replace letter(s)?
+				ReleaseName = $CodeName
+			}
+			$VersionObject
+		} elseif ($null -eq $APIResponse.ExceptionMessage) {
+			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+		} else {
+			Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 		}
-		$VersionObject
 	} # process
 
 	end {

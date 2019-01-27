@@ -53,21 +53,27 @@
 
 	$FileBytes = [IO.File]::ReadAllBytes($Path)
 	$FileData = [Convert]::ToBase64String($FileBytes)
-	$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.putAttachment' -MethodParameters @($FullName,$FileData,@{'ow' = [bool]$Forced})
-	$FileItem = (Get-Item -Path $Path)
-	$ResultString = [string]([xml]$httpResponse.Content | Select-Xml -XPath "//value/string").node.InnerText
-	if ($ResultString -ne $FullName) {
-		throw "Error: $ResultString - Fullname: $FullName"
+	$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.putAttachment' -MethodParameters @($FullName,$FileData,@{'ow' = [bool]$Forced})
+	if ($APIResponse.CompletedSuccessfully -eq $true) {
+		$FileItem = (Get-Item -Path $Path)
+		$ResultString = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/string").node.InnerText
+		if ($ResultString -ne $FullName) {
+			Write-Error "Error: $ResultString - Fullname: $FullName"
+		}
+	
+		$attachmentObject = New-Object PSObject -Property @{
+			FullName = $FullName
+			SourceFilePath = $Path
+			Size = $FileItem.Length
+			SourceFileLastModified = $FileItem.LastWriteTimeUtc
+			FileName = ($FullName -split ":")[-1]
+			ParentNamespace = ($FullName -split ":")[-2]
+			RootNamespace = ($FullName -split ":")[0]
+		}
+		$attachmentObject
+	} elseif ($null -eq $APIResponse.ExceptionMessage) {
+		Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+	} else {
+		Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 	}
-
-	$attachmentObject = New-Object PSObject -Property @{
-		FullName = $FullName
-		SourceFilePath = $Path
-		Size = $FileItem.Length
-		SourceFileLastModified = $FileItem.LastWriteTimeUtc
-		FileName = ($FullName -split ":")[-1]
-		ParentNamespace = ($FullName -split ":")[-2]
-		RootNamespace = ($FullName -split ":")[0]
-	}
-	return $attachmentObject
 }

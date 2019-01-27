@@ -36,13 +36,19 @@
 	} # begin
 
 	process {
-		$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getXMLRPCAPIVersion' -MethodParameters @()
-		$APIVersion = [int]([xml]$httpResponse.Content | Select-Xml -XPath "//value/int").node.InnerText
-		$VersionObject = New-Object PSObject -Property @{
-			Server = $DokuSession.Server
-			XmlRpcVersion = $APIVersion
+		$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getXMLRPCAPIVersion' -MethodParameters @()
+		if ($APIResponse.CompletedSuccessfully -eq $true) {
+			$APIVersion = [int]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/int").node.InnerText
+			$VersionObject = New-Object PSObject -Property @{
+				Server = $DokuSession.Server
+				XmlRpcVersion = $APIVersion
+			}
+			$VersionObject
+		} elseif ($null -eq $APIResponse.ExceptionMessage) {
+			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+		} else {
+			Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 		}
-		$VersionObject
 	} # process
 
 	end {

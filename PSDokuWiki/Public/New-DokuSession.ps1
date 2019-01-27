@@ -83,8 +83,8 @@
 			UnencryptedEndpoint = $Unencrypted
 		} -ErrorAction Stop
 
-		return $DokuSession
-	}
+		$DokuSession
+	} # try
 
 	catch {
 		Write-Error "Failed to create session. Error: $_"

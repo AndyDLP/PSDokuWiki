@@ -39,13 +39,19 @@
 	} # begin
 
 	process {
-		$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getTitle' -MethodParameters @()
-		[string]$DokuTitle = ([xml]$httpResponse.Content | Select-Xml -XPath "//value/string").node.InnerText
-		$Titlebject = New-Object PSObject -Property @{
-			Server = $DokuSession.Server
-			Title = $DokuTitle
+		$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getTitle' -MethodParameters @()
+		if ($APIResponse.CompletedSuccessfully -eq $true) {
+			[string]$DokuTitle = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/string").node.InnerText
+			$TitleObject = New-Object PSObject -Property @{
+				Server = $DokuSession.Server
+				Title = $DokuTitle
+			}
+			$TitleObject
+		} elseif ($null -eq $APIResponse.ExceptionMessage) {
+			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+		} else {
+			Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 		}
-		$Titlebject
 	} # process
 
 	end {

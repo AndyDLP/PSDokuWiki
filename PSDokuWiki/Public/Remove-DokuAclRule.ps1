@@ -46,13 +46,16 @@
 		[string]$Principal
 	)
 	
-	$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'plugin.acl.delAcl' -MethodParameters @($FullName,$Principal)
-	$ReturnValue = ([xml]$httpResponse.Content | Select-Xml -XPath "//value/boolean").Node.InnerText
-	if ($ReturnValue -eq 0) {
-		# error code generated = Fail
-		Write-Error "Error: $ReturnValue - $($httpResponse.content)"
-		return $false
+	$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'plugin.acl.delAcl' -MethodParameters @($FullName,$Principal)
+	if ($APIResponse.CompletedSuccessfully -eq $true) { 
+		$ReturnValue = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").Node.InnerText
+		if ($ReturnValue -eq 0) {
+			# error code generated = Fail
+			Write-Error "Error: $ReturnValue - $($APIResponse.XMLPayloadResponse)"
+		}
+	} elseif ($null -eq $APIResponse.ExceptionMessage) {
+		Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 	} else {
-		return $true
+		Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 	}
 }

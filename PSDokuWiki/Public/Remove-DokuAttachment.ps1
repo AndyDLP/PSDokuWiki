@@ -34,12 +34,12 @@
 		[string]$FullName
 	)
 	
-	$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.deleteAttachment' -MethodParameters @($FullName)
-	$FailReason = ([xml]$httpResponse.Content | Select-Xml -XPath "//value/string").Node.InnerText
-	if ($FailReason) {
-		# error code generated = Fail
-		throw "Error: $FailReason - FullName $FullName"
+	$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.deleteAttachment' -MethodParameters @($FullName)
+	if ($APIResponse.CompletedSuccessfully -eq $true) { 
+		# do nothing?
+	} elseif ($null -eq $APIResponse.ExceptionMessage) {
+		Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 	} else {
-		# Do nothing = Delete successful
+		Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 	}
 }

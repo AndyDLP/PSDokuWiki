@@ -40,21 +40,27 @@
 	} # begin
 
 	process {
-		$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getPagelist' -MethodParameters @()
-		$MemberNodes = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node
-		foreach ($node in $MemberNodes) {
-			$PageObject = New-Object PSObject -Property @{
-				FullName = (($node.member)[0]).value.string
-				Revision = (($node.member)[1]).value.int
-				ModifiedTime = (($node.member)[2]).value.int
-				Size = (($node.member)[3]).value.int
-				PageName = (((($node.member)[0]).value.string) -split ":")[-1]
-				ParentNamespace = (((($node.member)[0]).value.string) -split ":")[-2]
-				RootNamespace = (((($node.member)[0]).value.string) -split ":")[0]
+		$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getPagelist' -MethodParameters @()
+		if ($APIResponse.CompletedSuccessfully -eq $true) {
+			$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
+			foreach ($node in $MemberNodes) {
+				$PageObject = New-Object PSObject -Property @{
+					FullName = (($node.member)[0]).value.string
+					Revision = (($node.member)[1]).value.int
+					ModifiedTime = (($node.member)[2]).value.int
+					Size = (($node.member)[3]).value.int
+					PageName = (((($node.member)[0]).value.string) -split ":")[-1]
+					ParentNamespace = (((($node.member)[0]).value.string) -split ":")[-2]
+					RootNamespace = (((($node.member)[0]).value.string) -split ":")[0]
+				}
+				[array]$AllDokuwikiPages = $AllDokuwikiPages + $PageObject
 			}
-			[array]$AllDokuwikiPages = $AllDokuwikiPages + $PageObject
+			$AllDokuwikiPages
+		} elseif ($null -eq $APIResponse.ExceptionMessage) {
+			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+		} else {
+			Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 		}
-		$AllDokuwikiPages
 	} # process
 
 	end {

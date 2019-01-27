@@ -63,21 +63,37 @@
 				   HelpMessage = 'Pass the new page object back through')]
 		[switch]$PassThru
 	)
-	
-	$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName '' -MethodParameters @($FullName,$RawWikiText, @{'sum' = $SummaryText; 'minor' = $MinorChange})
-	if ($PassThru) {
-		$PageObject = New-Object PSObject -Property @{
-			FullName = $FullName
-			AddedText = $RawWikiText
-			MinorChange = $MinorChange
-			SummaryText = $SummaryText
-			PageName = ($FullName -split ":")[-1]
-			ParentNamespace = ($FullName -split ":")[-2]
-			RootNamespace = ($FullName -split ":")[0]
+
+	begin {
+
+	}
+
+	process {
+		$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.putPage' -MethodParameters @($FullName,$RawWikiText, @{'sum' = $SummaryText; 'minor' = $MinorChange})
+		if ($APIResponse.CompletedSuccessfully -eq $true) {
+			if ($PassThru) {
+				$PageObject = New-Object PSObject -Property @{
+					FullName = $FullName
+					AddedText = $RawWikiText
+					MinorChange = $MinorChange
+					SummaryText = $SummaryText
+					PageName = ($FullName -split ":")[-1]
+					ParentNamespace = ($FullName -split ":")[-2]
+					RootNamespace = ($FullName -split ":")[0]
+				}
+				$PageObject
+			} else {
+				$ResultBoolean = [boolean]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").node.InnerText
+				$ResultBoolean
+			}
+		} elseif ($null -eq $APIResponse.ExceptionMessage) {
+			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+		} else {
+			Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 		}
-		return $PageObject
-	} else {
-		$ResultBoolean = [boolean]([xml]$httpResponse.Content | Select-Xml -XPath "//value/boolean").node.InnerText
-		return $ResultBoolean
+	} # process 
+
+	end {
+
 	}
 }

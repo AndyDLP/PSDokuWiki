@@ -46,16 +46,21 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.aclCheck' -MethodParameters @($PageName)
-
-			$PageObject = New-Object PSObject -Property @{
-				FullName = $PageName
-				Acl = [int]([xml]$httpResponse.Content | Select-Xml -XPath "//value/int").Node.InnerText
-				PageName = ($PageName -split ":")[-1]
-				ParentNamespace = ($PageName -split ":")[-2]
-				RootNamespace = ($PageName -split ":")[0]
+			$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.aclCheck' -MethodParameters @($PageName)
+			if ($APIResponse.CompletedSuccessfully -eq $true) {
+				$PageObject = New-Object PSObject -Property @{
+					FullName = $PageName
+					Acl = [int]($APIResponse.XMLPayloadResponse  | Select-Xml -XPath "//value/int").Node.InnerText
+					PageName = ($PageName -split ":")[-1]
+					ParentNamespace = ($PageName -split ":")[-2]
+					RootNamespace = ($PageName -split ":")[0]
+				}
+				$PageObject
+			} elseif ($null -eq $APIResponse.ExceptionMessage) {
+				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+			} else {
+				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 			}
-			$PageObject
 		}
 	} # process
 

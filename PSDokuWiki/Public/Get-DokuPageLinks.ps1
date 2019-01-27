@@ -46,19 +46,25 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.listLinks' -MethodParameters @($PageName)
-			$MemberNodes = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node
-			foreach ($node in $MemberNodes) {
-				$PageObject = New-Object PSObject -Property @{
-					FullName = $PageName
-					Type = (($node.member)[0]).value.string
-					TargetPageName = (($node.member)[1]).value.string
-					URL = (($node.member)[2]).value.string
+			$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.listLinks' -MethodParameters @($PageName)
+			if ($APIResponse.CompletedSuccessfully -eq $true) {
+				$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
+				foreach ($node in $MemberNodes) {
+					$PageObject = New-Object PSObject -Property @{
+						FullName = $PageName
+						Type = (($node.member)[0]).value.string
+						TargetPageName = (($node.member)[1]).value.string
+						URL = (($node.member)[2]).value.string
+					}
+					[array]$PageLinks = $PageLinks + $PageObject
 				}
-				[array]$PageLinks = $PageLinks + $PageObject
+				$PageLinks
+			} elseif ($null -eq $APIResponse.ExceptionMessage) {
+				Write-Error "API Fault code: $($APIResponse.FaultCode) - API Fault string: $($APIResponse.FaultString)"
+			} else {
+				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 			}
-			$PageLinks
-		}
+		} # foreach page
 	} # process
 
 	end {

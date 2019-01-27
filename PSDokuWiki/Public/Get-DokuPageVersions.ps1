@@ -53,24 +53,29 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getPageVersions' -MethodParameters @($PageName,$Offset)
-			$MemberNodes = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node
-			foreach ($node in $MemberNodes) {
-				$PageObject = New-Object PSObject -Property @{
-					FullName = $PageName
-					User = (($node.member)[0]).value.string
-					IpAddress = (($node.member)[1]).value.string
-					Type = (($node.member)[2]).value.string
-					Summary = (($node.member)[3]).value.string
-					Modified = Get-Date -Date ((($node.member)[4]).value.InnerText)
-					VersionTimestamp = (($node.member)[5]).value.int
-					PageName = ($PageName -split ":")[-1]
-					ParentNamespace = ($PageName -split ":")[-2]
-					RootNamespace = ($PageName -split ":")[0]
+			$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getPageVersions' -MethodParameters @($PageName,$Offset)
+			if ($APIResponse.CompletedSuccessfully -eq $true) {
+				$MemberNodes = ($APIResponse.XMLPayloadResponse  | Select-Xml -XPath "//struct").Node
+				foreach ($node in $MemberNodes) {
+					$PageObject = New-Object PSObject -Property @{
+						FullName = $PageName
+						User = (($node.member)[0]).value.string
+						IpAddress = (($node.member)[1]).value.string
+						Type = (($node.member)[2]).value.string
+						Summary = (($node.member)[3]).value.string
+						Modified = Get-Date -Date ((($node.member)[4]).value.InnerText)
+						VersionTimestamp = (($node.member)[5]).value.int
+						PageName = ($PageName -split ":")[-1]
+						ParentNamespace = ($PageName -split ":")[-2]
+						RootNamespace = ($PageName -split ":")[0]
+					}
+					$PageObject
 				}
-				[array]$PageVersions = $PageVersions + $PageObject
+			} elseif ($null -eq $APIResponse.ExceptionMessage) {
+				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+			} else {
+				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 			}
-			$PageVersions
 		} # foreach
 	} # process
 

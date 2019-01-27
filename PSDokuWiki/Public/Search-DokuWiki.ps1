@@ -46,25 +46,30 @@
 
 	process {
 		foreach ($string in $SearchString) {
-			$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.search' -MethodParameters @($string)
-			$MemberNodes = ([xml]$httpResponse.Content | Select-Xml -XPath "//struct").Node
-			foreach ($node in $MemberNodes) {
-				$PageObject = New-Object PSObject -Property @{
-					FullName = (($node.member)[0]).value.string
-					Score = (($node.member)[1]).value.int
-					Revision = (($node.member)[2]).value.int
-					ModifiedTime = (($node.member)[3]).value.int
-					Size = (($node.member)[4]).value.int
-					Snippet = (($node.member)[5]).value.string
-					Title = (($node.member)[6]).value.string
-					PageName = (((($node.member)[0]).value.string) -split ":")[-1]
-					ParentNamespace = (((($node.member)[0]).value.string) -split ":")[-2]
-					RootNamespace = (((($node.member)[0]).value.string) -split ":")[0]
+			$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.search' -MethodParameters @($string)
+			if ($APIResponse.CompletedSuccessfully -eq $true) {
+				$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
+				foreach ($node in $MemberNodes) {
+					$PageObject = New-Object PSObject -Property @{
+						FullName = (($node.member)[0]).value.string
+						Score = (($node.member)[1]).value.int
+						Revision = (($node.member)[2]).value.int
+						ModifiedTime = (($node.member)[3]).value.int
+						Size = (($node.member)[4]).value.int
+						Snippet = (($node.member)[5]).value.string
+						Title = (($node.member)[6]).value.string
+						PageName = (((($node.member)[0]).value.string) -split ":")[-1]
+						ParentNamespace = (((($node.member)[0]).value.string) -split ":")[-2]
+						RootNamespace = (((($node.member)[0]).value.string) -split ":")[0]
+					}
+					$PageObject
 				}
-				[array]$AllDokuwikiPages = $AllDokuwikiPages + $PageObject
+			} elseif ($null -eq $APIResponse.ExceptionMessage) {
+				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+			} else {
+				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 			}
-			$AllDokuwikiPages
-		}
+		} # foreach string in array of searchstrings
 	} # process
 
 	end {

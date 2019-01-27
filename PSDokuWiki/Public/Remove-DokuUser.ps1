@@ -35,12 +35,18 @@
 		[string[]]$Username
 	)
 	
-	$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.deleteUsers' -MethodParameters @([array]$Username,$null)
-	$FailReason = ([xml]$httpResponse.Content | Select-Xml -XPath "//value/boolean").Node.InnerText
-	if ($FailReason -eq 0) {
-		# error code generated = Fail
-		throw "Error: $FailReason - Username: $Username"
+	$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.deleteUsers' -MethodParameters @([array]$Username,$null)
+	if ($APIResponse.CompletedSuccessfully -eq $true) {			
+		$FailReason = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").Node.InnerText
+		if ($FailReason -eq 0) {
+			# error code generated = Fail
+			Write-Error "Error: $FailReason - Username: $Username"
+		} else {
+			# Do nothing = Delete successful
+		}
+	} elseif ($null -eq $APIResponse.ExceptionMessage) {
+		Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 	} else {
-		# Do nothing = Delete successful
+		Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 	}
 }

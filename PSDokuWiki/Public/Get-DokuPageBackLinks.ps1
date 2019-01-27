@@ -46,17 +46,23 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getBackLinks' -MethodParameters @($PageName)
-			$PageArray = ([xml]$httpResponse.Content | Select-Xml -XPath "//array/data/value").Node.InnerText
-			foreach ($Page in $PageArray) {
-				$PageObject = New-Object PSObject -Property @{
-					FullName = $PageName
-					BacklinkedFullName = $Page
+			$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getBackLinks' -MethodParameters @($PageName)
+			if ($APIResponse.CompletedSuccessfully -eq $true) {
+				$PageArray = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array/data/value").Node.InnerText
+				foreach ($Page in $PageArray) {
+					$PageObject = New-Object PSObject -Property @{
+						FullName = $PageName
+						BacklinkedFullName = $Page
+					}
+					[array]$PageLinks = $PageLinks + $PageObject
 				}
-				[array]$PageLinks = $PageLinks + $PageObject
+				$PageLinks
+			} elseif ($null -eq $APIResponse.ExceptionMessage) {
+				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+			} else {
+				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 			}
-			$PageLinks
-		} # foreach
+		} # foreach page
 	} # process
 
 	end {

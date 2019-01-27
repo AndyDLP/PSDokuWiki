@@ -59,18 +59,24 @@
 
 	process {
 		foreach ($AttachmentName in $FullName) {
-			$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getAttachment' -MethodParameters @($AttachmentName)
-			if ((Test-Path -Path $Path) -and (!$Force)) {
-				throw "File with that name already exists at: $Path"
+			$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getAttachment' -MethodParameters @($AttachmentName)
+			if ($APIResponse.CompletedSuccessfully -eq $true) {
+				if ((Test-Path -Path $Path) -and (!$Force)) {
+					Write-Error "File with that name already exists at: $Path"
+				} else {
+					Remove-Item -Path $Path -Force -ErrorAction Stop
+					$RawFileData = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/base64").node.InnerText
+					$RawBytes = [Convert]::FromBase64String($RawFileData)
+					[IO.File]::WriteAllBytes($Path, $RawBytes) | Out-Null
+					$ItemObject = (Get-Item -Path $Path)
+					$ItemObject
+				}
+			} elseif ($null -eq $APIResponse.ExceptionMessage) {
+				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 			} else {
-				Remove-Item -Path $Path -Force -ErrorAction Stop
-				$RawFileData = [string]([xml]$httpResponse.Content | Select-Xml -XPath "//value/base64").node.InnerText
-				$RawBytes = [Convert]::FromBase64String($RawFileData)
-				[IO.File]::WriteAllBytes($Path, $RawBytes) | Out-Null
-				$ItemObject = (Get-Item -Path $Path)
-				$ItemObject
+				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 			}
-		}
+		} # foreach attachment
 	} # process
 
 	end {

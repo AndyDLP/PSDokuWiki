@@ -45,12 +45,18 @@
 	} # begin
 
 	process {
-		$httpResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getTime' -MethodParameters @()
-		[int]$RawDokuTime = ([xml]$httpResponse.Content | Select-Xml -XPath "//value/int").Node.InnerText
-		if ($Raw) {
-			$RawDokuTime
+		$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.getTime' -MethodParameters @()
+		if ($APIResponse.CompletedSuccessfully -eq $true) {			
+			[int]$RawDokuTime = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/int").Node.InnerText
+			if ($Raw) {
+				$RawDokuTime
+			} else {
+				[datetime]$RawDokuTime
+			}
+		} elseif ($null -eq $APIResponse.ExceptionMessage) {
+			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 		} else {
-			[datetime]$RawDokuTime
+			Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 		}
 	} # process
 

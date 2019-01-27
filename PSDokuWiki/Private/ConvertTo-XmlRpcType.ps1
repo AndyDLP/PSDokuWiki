@@ -127,10 +127,6 @@ function ConvertTo-XmlRpcType
         {
             try
             {
-                
-
-                # Old way
-
                 return "<value><array><data>$(
                     [string]::Join(
                         '',
@@ -141,17 +137,6 @@ function ConvertTo-XmlRpcType
                         } )
                     )
                 )</data></array></value>"
-                
-                
-                <#
-                foreach ($item in $array) {
-                    if ($null -ne $item) {
-                        [array]$resultArray = $resultArray + (ConvertTo-XmlRpcType $item -CustomTypes $CustomTypes)
-                    }
-                }
-                [string]$joinedArray = $resultArray -join ''
-                return "<value><array><data>$joinedArray</data></array></value>"
-                #>
             }
             catch
             {
@@ -208,8 +193,9 @@ function ConvertTo-XmlRpcType
         {
             return $inputObject
         }
-    }
+    } # process
 
-    End
-        {  }
+    End {
+
+    } # end
 }
