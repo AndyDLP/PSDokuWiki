@@ -1,6 +1,5 @@
-﻿$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+﻿$TopLevelFolder = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Path -Parent) -Parent
+Import-Module (Join-Path -Path $TopLevelFolder -ChildPath 'PSDokuWiki\PSDokuWiki.psm1') -Force
 
 Describe "ConvertTo-XmlRpcType" {
     It "Converts string(s)" {
@@ -34,5 +33,14 @@ Describe "ConvertTo-XmlRpcType" {
     }
     It "Converts NULL" {
         ConvertTo-XmlRpcType -InputObject $null | Should -be ""
+    }
+}
+
+Describe "ConvertTo-XmlRpcType" {
+    function ConvertTo-XmlRpcType {  }
+    
+    Mock ConvertTo-XmlRpcType { return "" }
+    It "Works for methods with no params" {
+        ConvertTo-XmlRpcMethodCall -Name "wiki.getAllPages" | Should -be '<?xml version="1.0"?><methodCall><methodName>wiki.getAllPages</methodName><params></params></methodCall>'
     }
 }
