@@ -57,17 +57,15 @@ Describe 'ConvertTo-XmlRpcMethodCall' {
 Describe 'New-DokuSession' {
     Context 'Strict Mode' {
 
+        $credential = New-Object System.Management.Automation.PSCredential ('username', (ConvertTo-SecureString 'password' -AsPlainText -Force))
         Set-StrictMode -Version latest
         It 'Fails when specifying a non-existent server' {
-            $credential = New-Object System.Management.Automation.PSCredential ('username', (ConvertTo-SecureString 'password' -AsPlainText -Force))
             {New-DokuSession -Server 'wiki.localhost.local' -Unencrypted -SessionMethod 'Cookie' -Credential $credential}   | Should -Throw
         }
         It 'Fails when server is $null' {
-            $credential = New-Object System.Management.Automation.PSCredential ('username', (ConvertTo-SecureString 'password' -AsPlainText -Force))
             {New-DokuSession -Server $null -Unencrypted -SessionMethod 'Cookie' -Credential $credential}   | Should -Throw
         }
         It 'Fails when using a non-existent session method' {
-            $credential = New-Object System.Management.Automation.PSCredential ('username', (ConvertTo-SecureString 'password' -AsPlainText -Force))
             {New-DokuSession -Server 'wiki.localhost.local' -Unencrypted -SessionMethod 'Hello World' -Credential $credential}   | Should -Throw
         }
     }
