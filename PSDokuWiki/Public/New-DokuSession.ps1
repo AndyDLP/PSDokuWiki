@@ -56,37 +56,32 @@
 		[switch]$Unencrypted
 	)
 
-	try {
-		$headers = @{ "Content-Type" = "text/xml"; }
-		$Protocol = if ($Unencrypted) { "http" } else { "https" }
-		$TargetUri = ($Protocol + '://' + $Server + "/lib/exe/xmlrpc.php")
-		$BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credential.Password)
-		$password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+	$headers = @{ "Content-Type" = "text/xml"; }
+	$Protocol = if ($Unencrypted) { "http" } else { "https" }
+	$TargetUri = ($Protocol + '://' + $Server + "/lib/exe/xmlrpc.php")
+	$BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credential.Password)
+	$password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
-		if ($SessionMethod -eq "HttpBasic") {
-			$pair = "$($Credential.username):$($password)"
-			$encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($pair))
-			$headers.Add("Authorization", "Basic $encodedCreds")
-		} else {
-			$XMLPayload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)
-			# $Websession var defined here
-			Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop | Out-Null
-		}
-
-		$DokuSession = New-Object PSObject -Property @{
-			Server = $Server
-			TargetUri = $TargetUri
-			SessionMethod = $SessionMethod
-			Headers = $headers
-			WebSession = $WebSession
-			TimeStamp = (Get-Date)
-			UnencryptedEndpoint = $Unencrypted
-		} -ErrorAction Stop
-
-		$DokuSession
-	} # try
-
-	catch {
-		Write-Error "Failed to create session. Error: $_"
+	if ($SessionMethod -eq "HttpBasic") {
+		$pair = "$($Credential.username):$($password)"
+		$encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($pair))
+		$headers.Add("Authorization", "Basic $encodedCreds")
+	} else {
+		$XMLPayload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)
+		# $Websession var defined here
+		$NullVar = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
 	}
+
+
+	$DokuSession = New-Object PSObject -Property @{
+		Server = $Server
+		TargetUri = $TargetUri
+		SessionMethod = $SessionMethod
+		Headers = $headers
+		WebSession = $WebSession
+		TimeStamp = (Get-Date)
+		UnencryptedEndpoint = $Unencrypted
+	} -ErrorAction Stop
+
+	$DokuSession
 }
