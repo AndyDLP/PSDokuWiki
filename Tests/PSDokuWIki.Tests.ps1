@@ -40,12 +40,16 @@ Describe "ConvertTo-XmlRpcType" {
         }
     }
 }
+ # cm
+Describe "ConvertTo-XmlRpcMethodCall" {
+    Context 'Strict Mode' {
 
-Describe "ConvertTo-XmlRpcType" {
-    function ConvertTo-XmlRpcType {  }
-    
-    Mock ConvertTo-XmlRpcType { return "" }
-    It "Works for methods with no params" {
-        ConvertTo-XmlRpcMethodCall -Name "wiki.getAllPages" | Should -be '<?xml version="1.0"?><methodCall><methodName>wiki.getAllPages</methodName><params></params></methodCall>'
+        Set-StrictMode -Version latest
+        function ConvertTo-XmlRpcType {  }
+        
+        Mock ConvertTo-XmlRpcType { return "" }
+        It "Works for methods with no params" {
+            ConvertTo-XmlRpcMethodCall -Name "wiki.getAllPages" | Should -be '<?xml version="1.0"?><methodCall><methodName>wiki.getAllPages</methodName><params></params></methodCall>'
+        }
     }
 }
