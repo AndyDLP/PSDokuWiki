@@ -10,6 +10,7 @@ $DS = New-DokuSession -Server wiki.example.com -Credential (Get-Credential) -Une
 # Use it to add text to a page
 Add-DokuPageData -DokuSession $DS -FullName 'ns:page' -RawWikiText 'Hello World'
 ````
+https://ci.appveyor.com/api/projects/status/github/AndyDLP/PSDokuWiki?branch=master&svg=true
 
 ## Fault codes
 
