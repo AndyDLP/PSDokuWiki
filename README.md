@@ -1,4 +1,5 @@
 # PSDokuWiki
+![alt text](https://ci.appveyor.com/api/projects/status/github/AndyDLP/PSDokuWiki?branch=master&svg=true "")
 PSDokuWiki is a (WIP) PowerShell wrapper for DokuWiki's XML RPC API
 
 Use *New-DokuSession* first, and use the resulting object for authentication to the API e.g.
@@ -10,7 +11,6 @@ $DS = New-DokuSession -Server wiki.example.com -Credential (Get-Credential) -Une
 # Use it to add text to a page
 Add-DokuPageData -DokuSession $DS -FullName 'ns:page' -RawWikiText 'Hello World'
 ````
-https://ci.appveyor.com/api/projects/status/github/AndyDLP/PSDokuWiki?branch=master&svg=true
 
 ## Fault codes
 
