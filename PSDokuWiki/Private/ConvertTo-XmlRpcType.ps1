@@ -83,6 +83,7 @@ function ConvertTo-XmlRpcType
 
         if ($Type -eq 'String')
         {
+            throw
             if ($InputObject -match '^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$') {
                 # Base64 encoded string
                 return "<value><base64>$InputObject</base64></value>"
