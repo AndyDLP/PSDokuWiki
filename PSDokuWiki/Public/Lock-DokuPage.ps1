@@ -48,6 +48,7 @@ function Lock-DokuPage {
 
     process {
         # long random name in unlock array as its unlikely to be existing (do unlock in other function)
+        # xmltype converter doesn't like it to be empty?
         $APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.setLocks' -MethodParameters @(@{ 'lock' = [array]$FullName; 'unlock' = @("341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995") })
         if ($APIResponse.CompletedSuccessfully -eq $true) {
             # do nothing except when locks fail
