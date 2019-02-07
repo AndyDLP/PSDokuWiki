@@ -1,6 +1,17 @@
 # PSDokuWiki ![alt text](https://ci.appveyor.com/api/projects/status/github/AndyDLP/PSDokuWiki?branch=master&svg=true "")
 PSDokuWiki is a (WIP) PowerShell wrapper for DokuWiki's XML RPC API
 
+## How to install
+
+(Recommended) From the powershell gallery: https://www.powershellgallery.com/packages/PSDokuWik
+```powershell
+Install-Module -Name PSDokuWiki -Repository -PSGallery
+````
+
+(Not recommended) You can also clone this repository and copy the .\PSDokuWiki folder to one of the module folders
+
+## How to use
+
 Use *New-DokuSession* first, and use the resulting object for authentication to the API e.g.
 
 ```powershell
