@@ -111,6 +111,7 @@ function Connect-DokuServer {
             TimeStamp = (Get-Date)
             UnencryptedEndpoint = [boolean]$Unencrypted
         }
+        $DokuSession.PSTypeNames.Insert(0,'DokuWiki.Session.Detail')
         
         # Module scoped variables are defined like the below apparently
         [array]$Script:DokuServer += $DokuSession
