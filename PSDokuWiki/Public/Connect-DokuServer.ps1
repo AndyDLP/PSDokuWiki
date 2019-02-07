@@ -6,8 +6,20 @@ function Connect-DokuServer {
 	.DESCRIPTION
 		Connect to a DokuWiki API endpoint to 
 
-	.PARAMETER ComputerName
-		The server to connect to, can be an IP, FQDN or single label name. e.g. 192.168.0.1 / wiki.example.com / wiki
+	.PARAMETER Credential
+		The credentials used to authenticate to the API endpoint
+
+	.PARAMETER SessionMethod
+		The session method to use for the connection. Options are Cookie or HttpBasic
+
+	.PARAMETER Unencrypted
+		Specify that the APi endpoint is at a http rather than https address. Recommended for development only!!
+
+	.PARAMETER ApiPath
+		The web path that the api executable is at. DokuWiki default is /lib/exe/xmlrpc.php
+
+    .PARAMETER Force
+        Force a connection even if one is already established to the same endpoint
 
 	.EXAMPLE
 		PS C:\> Connect-DokuServer -Server wiki.example.com -Credential (Get-Credential)
@@ -35,8 +47,6 @@ function Connect-DokuServer {
         [string]$ComputerName,
 
         [Parameter(Mandatory = $true,
-            ValueFromPipeline = $true,
-			ValueFromPipelineByPropertyName=$true,
             Position = 2,
             HelpMessage = 'The credentials to use to connect')]
         [ValidateNotNullOrEmpty()]
@@ -51,7 +61,7 @@ function Connect-DokuServer {
         
         [Parameter(Mandatory = $false,
             Position = 4,
-            HelpMessage = 'Force connection, even to an unencrypted endpoint')]
+            HelpMessage = 'Connect to an unencrypted endpoint')]
         [ValidateNotNullOrEmpty()]
         [switch]$Unencrypted,
         
@@ -59,7 +69,13 @@ function Connect-DokuServer {
             Position = 5,
             HelpMessage = 'The path to the api endpoint')]
         [ValidateNotNullOrEmpty()]
-        [string]$APIPath = '/lib/exe/xmlrpc.php'
+        [string]$APIPath = '/lib/exe/xmlrpc.php',
+        
+        [Parameter(Mandatory = $false,
+            Position = 6,
+            HelpMessage = 'Force a re-connection')]
+        [ValidateNotNullOrEmpty()]
+        [switch]$Force
     )
 
     begin {
@@ -69,6 +85,9 @@ function Connect-DokuServer {
 
     process {
         $TargetUri = ($Protocol + "://" + $ComputerName + $APIPath)
+
+        # Check if server exists
+
         $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credential.Password)
         $password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
@@ -91,8 +110,7 @@ function Connect-DokuServer {
             WebSession = $WebSession
             TimeStamp = (Get-Date)
             UnencryptedEndpoint = [boolean]$Unencrypted
-        } -ErrorAction Stop
-
+        }
         
         # Module scoped variables are defined like the below apparently
         [array]$Script:DokuServer += $DokuSession
