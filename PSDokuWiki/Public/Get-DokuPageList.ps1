@@ -32,7 +32,7 @@
 				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The DokuSession from which to get the page list')]
 		[ValidateScript({ ($null -ne $_.WebSession) -or ($_.Headers.Keys -contains "Authorization") })]
-		[PSObject]$DokuSession
+		[DokuWiki.Session.Detail]$DokuSession
 	)
 
 	begin {

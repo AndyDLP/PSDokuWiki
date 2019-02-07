@@ -30,7 +30,7 @@
             Position = 1,
             HelpMessage = 'The DokuSession from which to get the attachment info')]
         [ValidateNotNullOrEmpty()]
-        [psobject]$DokuSession,
+        [DokuWiki.Session.Detail]$DokuSession,
         [Parameter(Mandatory = $true,
             Position = 2,
             ValueFromPipeline = $true,

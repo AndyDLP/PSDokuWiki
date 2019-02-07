@@ -34,7 +34,7 @@
 				   ValueFromPipeline = $true,
 				   HelpMessage = 'The DokuSession from which to get the page list.')]
 		[ValidateScript({ ( $null -ne $_.WebSession) -or ($_.Headers.Keys -contains "Authorization") })]
-		[psobject]$DokuSession,
+		[DokuWiki.Session.Detail]$DokuSession,
 		[Parameter(Position = 2,
 				   HelpMessage = 'Output the raw response from the server in UNIX time')]
 		[switch]$Raw

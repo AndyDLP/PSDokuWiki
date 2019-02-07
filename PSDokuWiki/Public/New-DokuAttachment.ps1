@@ -36,7 +36,7 @@
 				   Position = 1,
 				   HelpMessage = 'The DokuSession where the attachment will be uploaded')]
 		[ValidateNotNullOrEmpty()]
-		[psobject]$DokuSession,
+		[DokuWiki.Session.Detail]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
 				   HelpMessage = 'The FullName of the to-be-uploaded file, including namespace(s)')]

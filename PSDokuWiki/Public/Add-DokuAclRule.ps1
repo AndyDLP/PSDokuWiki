@@ -49,7 +49,7 @@
             Position = 1,
             HelpMessage = 'The DokuSession in which to make the ACL changes')]
         [ValidateNotNullOrEmpty()]
-        [psobject]$DokuSession,
+        [DokuWiki.Session.Detail]$DokuSession,
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
 			ValueFromPipelineByPropertyName=$true,

@@ -30,7 +30,7 @@
 				   Position = 1,
 				   HelpMessage = 'The DokuSession to get the page backlinks from')]
 		[ValidateNotNullOrEmpty()]
-		[psobject]$DokuSession,
+		[DokuWiki.Session.Detail]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
 				   ValueFromPipeline = $true,

@@ -36,7 +36,7 @@
 				   Position = 1,
 				   HelpMessage = 'The DokuSession from which to get the page data')]
 		[ValidateNotNullOrEmpty()]
-		[psobject]$DokuSession,
+		[DokuWiki.Session.Detail]$DokuSession,
 		[Parameter(Position = 4,
 				   HelpMessage = 'Return only the raw HTML, rather than an object')]
 		[switch]$Raw,

@@ -45,7 +45,7 @@
             Position = 1,
             HelpMessage = 'The DokuSession to add the page data to')]
         [ValidateNotNullOrEmpty()]
-        [psobject]$DokuSession,
+        [DokuWiki.Session.Detail]$DokuSession,
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
 			ValueFromPipelineByPropertyName=$true,

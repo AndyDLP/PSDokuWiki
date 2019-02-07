@@ -28,7 +28,7 @@
 				   ValueFromPipeline = $true,
 				   HelpMessage = 'The DokuSession from which to get the supported version.')]
 		[ValidateNotNullOrEmpty()]
-		[PSObject]$DokuSession
+		[DokuWiki.Session.Detail]$DokuSession
 	)
 
 	begin {

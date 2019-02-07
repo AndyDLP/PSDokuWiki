@@ -32,7 +32,7 @@
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The DokuSession from which to get the pages')]
         [ValidateNotNullOrEmpty()]
-        [psobject]$DokuSession
+        [DokuWiki.Session.Detail]$DokuSession
     )
 
     begin {

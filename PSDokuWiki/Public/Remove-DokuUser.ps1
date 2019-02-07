@@ -27,7 +27,7 @@
 				   Position = 1,
 				   HelpMessage = 'The DokuSession to delete the users from')]
 		[ValidateNotNullOrEmpty()]
-		[psobject]$DokuSession,
+		[DokuWiki.Session.Detail]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
 				   HelpMessage = 'The username(s) you want to remove')]

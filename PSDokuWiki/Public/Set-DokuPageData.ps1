@@ -47,7 +47,7 @@
 				   Position = 1,
 				   HelpMessage = 'The DokuSession in which to overwrite the page')]
 		[ValidateNotNullOrEmpty()]
-		[psobject]$DokuSession,
+		[DokuWiki.Session.Detail]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 3,
 				   HelpMessage = 'The raw wiki text that will be set')]

@@ -33,7 +33,7 @@
 				   Position = 1,
 				   HelpMessage = 'The DokuSession from which to remove the ACL')]
 		[ValidateNotNullOrEmpty()]
-		[psobject]$DokuSession,
+		[DokuWiki.Session.Detail]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
 				   HelpMessage = 'The full name of the scope to apply to ACL to')]

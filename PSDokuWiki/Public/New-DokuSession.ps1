@@ -72,7 +72,6 @@
 		$NullVar = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
 	}
 
-
 	$DokuSession = New-Object PSObject -Property @{
 		Server = $Server
 		TargetUri = $TargetUri
@@ -80,8 +79,8 @@
 		Headers = $headers
 		WebSession = $WebSession
 		TimeStamp = (Get-Date)
-		UnencryptedEndpoint = $Unencrypted
+		UnencryptedEndpoint = [bool]$Unencrypted
 	} -ErrorAction Stop
-
+	$DokuSession.PSTypeNames.Insert(0,'DokuWiki.Session.Detail')
 	$DokuSession
 }

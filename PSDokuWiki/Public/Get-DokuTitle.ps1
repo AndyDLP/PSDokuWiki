@@ -31,7 +31,7 @@
 				   ValueFromPipeline = $true,
 				   HelpMessage = 'The DokuSession from which to get the wiki title.')]
 		[ValidateNotNullOrEmpty()]
-		[psobject]$DokuSession
+		[DokuWiki.Session.Detail]$DokuSession
 	)
 
 	begin {
