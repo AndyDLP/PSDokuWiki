@@ -56,7 +56,7 @@ function ConvertTo-XmlRpcType
     }
 
     Process
-    {  
+    {
         if ($null -ne $inputObject)
         {
             [string]$Type=$inputObject.GetType().Name
