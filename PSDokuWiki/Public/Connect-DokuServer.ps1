@@ -99,14 +99,13 @@ function Connect-DokuServer {
             $NullVar = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
             Write-Verbose $NullVar
         }
-        
+
         # Check if target uri already exists
         if ($Script:DokuServer | Where-Object -FilterScript {$_.TargetUri -eq $TargetUri}) {
             # does exist
             if ($Force) {
                 # Remove old target URI from array
                 $Script:DokuServer = $Script:DokuServer |  Where-Object -FilterScript {$_.TargetUri -ne $TargetUri}
-                
             } else {
                 throw "Open connection already exists to: $TargetUri - Use the -Force parameter to connect anyway"
                 exit
