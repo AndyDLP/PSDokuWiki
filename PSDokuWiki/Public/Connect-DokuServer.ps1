@@ -86,6 +86,11 @@ function Connect-DokuServer {
     process {
         $TargetUri = ($Protocol + "://" + $ComputerName + $APIPath)
 
+        # Check if already connected
+        if (($null -ne $Script:DokuServer) -and (-not $Force)) {
+            throw "Open connection already exists to: $TargetUri - Use the -Force parameter to connect anyway"
+        }
+
         $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credential.Password)
         $password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
@@ -98,19 +103,6 @@ function Connect-DokuServer {
             # $Websession var defined here
             $NullVar = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
             Write-Verbose $NullVar
-        }
-        
-        # Check if target uri already exists
-        if ($Script:DokuServer | Where-Object -FilterScript {$_.TargetUri -eq $TargetUri}) {
-            # does exist
-            if ($Force) {
-                # Remove old target URI from array
-                $Script:DokuServer = $Script:DokuServer |  Where-Object -FilterScript {$_.TargetUri -ne $TargetUri}
-                
-            } else {
-                throw "Open connection already exists to: $TargetUri - Use the -Force parameter to connect anyway"
-                exit
-            }
         }
 
         $DokuSession = New-Object PSObject -Property @{
@@ -125,7 +117,7 @@ function Connect-DokuServer {
         $DokuSession.PSTypeNames.Insert(0,'DokuWiki.Session.Detail')
         
         # Module scoped variables are defined like the below apparently
-        [array]$Script:DokuServer += $DokuSession
+        $Script:DokuServer = $DokuSession
     } # process
 
     end {
