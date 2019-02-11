@@ -70,6 +70,7 @@
 		$XMLPayload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)
 		# $Websession var defined here
 		$NullVar = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
+		Write-Debug $NullVar
 	}
 
 	$DokuSession = New-Object PSObject -Property @{
