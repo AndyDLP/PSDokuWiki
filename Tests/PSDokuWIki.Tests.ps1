@@ -15,7 +15,7 @@ Describe 'ConvertTo-XmlRpcType' {
         It 'Successfully converts strings with a length in a multiple of 4' {
             ConvertTo-XmlRpcType -InputObject "TestWord" | Should -be '<value><string>TestWord</string></value>'
         }
-        It 'Successfully detects bytes and converts to Base64 Encoded strings' {
+        It 'Successfully converts bytes into Base64' {
             $Bytes = [System.Text.Encoding]::UTF8.GetBytes("Hello World")
             ConvertTo-XmlRpcType -InputObject $Bytes | Should -be '<value><base64>SGVsbG8gV29ybGQ=</base64></value>'
         }
