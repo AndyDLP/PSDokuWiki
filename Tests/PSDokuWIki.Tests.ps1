@@ -9,11 +9,18 @@ Describe 'ConvertTo-XmlRpcType' {
         It 'Successfully converts string(s)' {
             ConvertTo-XmlRpcType -InputObject 'Hello' | Should -be '<value><string>Hello</string></value>'
         }
+        It 'Successfully converts string(s) with double quotes' {
+            ConvertTo-XmlRpcType -InputObject "Hello" | Should -be '<value><string>Hello</string></value>'
+        }
+        It 'Successfully converts strings with a length in a multiple of 4' {
+            ConvertTo-XmlRpcType -InputObject "TestWord" | Should -be '<value><string>TestWord</string></value>'
+        }
+        It 'Successfully detects bytes and converts to Base64 Encoded strings' {
+            $Bytes = [System.Text.Encoding]::UTF8.GetBytes("Hello World")
+            ConvertTo-XmlRpcType -InputObject $Bytes | Should -be '<value><base64>SGVsbG8gV29ybGQ=</base64></value>'
+        }
         It 'Successfully converts Booleans' {
             ConvertTo-XmlRpcType -InputObject $true | Should -be '<value><boolean>1</boolean></value>'
-        }
-        It 'Successfully converts Base64 Encoded data' {
-            ConvertTo-XmlRpcType -InputObject 'SGVsbG8gV29ybGQ=' | Should -be '<value><base64>SGVsbG8gV29ybGQ=</base64></value>'
         }
         It 'Successfully converts Int32' {
             ConvertTo-XmlRpcType -InputObject 8 | Should -be '<value><i4>8</i4></value>'
@@ -40,16 +47,18 @@ Describe 'ConvertTo-XmlRpcType' {
         }
     }
 }
- # cm
+
 Describe 'ConvertTo-XmlRpcMethodCall' {
     Context 'Strict Mode' {
-
         Set-StrictMode -Version latest
-        function ConvertTo-XmlRpcType {  }
-        
-        Mock ConvertTo-XmlRpcType { return '' }
         It 'Succeeds for methods with no params' {
             ConvertTo-XmlRpcMethodCall -Name 'wiki.getAllPages' | Should -be '<?xml version="1.0"?><methodCall><methodName>wiki.getAllPages</methodName><params></params></methodCall>'
+        }
+        It 'Succeeds for methods with one (string) parameter' {
+            ConvertTo-XmlRpcMethodCall -Name 'wiki.getPage' -Params @('hello') | Should -be '<?xml version="1.0"?><methodCall><methodName>wiki.getPage</methodName><params><param><value><string>hello</string></value></param></params></methodCall>'
+        }
+        It 'Succeeds for methods with two parameters' {
+            ConvertTo-XmlRpcMethodCall -Name 'wiki.getPageVersion' -Params @("pagename",'pagename2') | Should -be '<?xml version="1.0"?><methodCall><methodName>wiki.getPageVersion</methodName><params><param><value><string>pagename</string></value></param><param><value><string>pagename2</string></value></param></params></methodCall>'
         }
     }
 }
@@ -57,7 +66,7 @@ Describe 'ConvertTo-XmlRpcMethodCall' {
 Describe 'New-DokuSession' {
     Context 'Strict Mode' {
 
-        $credential = New-Object System.Management.Automation.PSCredential ('username', (ConvertTo-SecureString 'password' -AsPlainText -Force))
+        $credential = New-Object -TypeName 'System.Management.Automation.PSCredential' -ArgumentList ('username', (ConvertTo-SecureString 'password' -AsPlainText -Force))
         Set-StrictMode -Version latest
         It 'Fails when specifying a non-existent server' {
             {New-DokuSession -Server 'wiki.localhost.local' -Unencrypted -SessionMethod 'Cookie' -Credential $credential}   | Should -Throw
@@ -70,3 +79,7 @@ Describe 'New-DokuSession' {
         }
     }
 }
+
+# Add-Type -AssemblyName System.Web
+# New-Object Microsoft.PowerShell.Commands.WebRequestSession
+# [xml]'<?xml version="1.0" encoding="utf-8"?><Hello>lol</Hello>'

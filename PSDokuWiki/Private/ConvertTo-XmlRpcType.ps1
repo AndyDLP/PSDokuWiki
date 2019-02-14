@@ -57,13 +57,10 @@ function ConvertTo-XmlRpcType
 
     Process
     {
-        if ($null -ne $inputObject)
-        {
+        if ($null -ne $inputObject) {
             [string]$Type=$inputObject.GetType().Name
             # [string]$BaseType=$inputObject.GetType().BaseType
-        }
-        else
-        {
+        } else {
             return ""
         }
 
@@ -71,40 +68,52 @@ function ConvertTo-XmlRpcType
         $Type = $Type.ToLower()
 
         # Return simple Types
-        if (('Double','False') -contains $Type)
+        if (('double','false') -contains $Type)
         {
             return "<value><$($Type)>$($inputObject)</$($Type)></value>"
         }
 
-        if ($Type -eq 'Boolean')
+        if ($Type -eq 'boolean')
         {
             return "<value><$($Type)>$([int]$inputObject)</$($Type)></value>"
         }
 
-        if ($Type -eq 'String')
+        if ($Type -eq 'byte[]')
         {
-            if ($InputObject -match '^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$') {
+	        $FileData = [Convert]::ToBase64String($InputObject)
+            return "<value><base64>$FileData</base64></value>"
+        }
+
+        if ($Type -eq 'string')
+        {
+            #if ($InputObject -match '^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$') {
+                # MAYBE Base64 (it's valid at least)
+                # 13-02-2019 check randomness?
+                # 14-02-2019 well defining and checking randomness is a massive rabbit hole...
                 # Base64 encoded string
-                return "<value><base64>$InputObject</base64></value>"
-            } else {
+                #return "<value><base64>$InputObject</base64></value>"
+            #} else {
+
                 # Normal string: Encode string to HTML
                 return "<value><$Type>$([System.Web.HttpUtility]::HtmlEncode($inputObject))</$Type></value>"
-            }
+
+
+            #}
         }
 
         # Int16 must be casted as Int
-        if ($Type -eq 'Int16')
+        if ($Type -eq 'int16')
         {
             return "<value><int>$inputObject</int></value>"
         }
 
         # Int32 must be casted as i4
-        if ($Type -eq 'Int32')
+        if ($Type -eq 'int32')
         {
             return "<value><i4>$inputObject</i4></value>"
         }
 
-        if ($type -eq "SwitchParameter")
+        if ($type -eq "switchparameter")
         {
             return "<value><boolean>$inputObject.IsPresent</boolean></value>"
         }
@@ -116,7 +125,7 @@ function ConvertTo-XmlRpcType
         }
 
         # DateTime
-        if('DateTime' -eq $Type)
+        if('dateTime' -eq $Type)
         {
             return "<value><dateTime.iso8601>$($inputObject.ToString(
             'yyyyMMddTHH:mm:ss'))</dateTime.iso8601></value>"
@@ -145,7 +154,7 @@ function ConvertTo-XmlRpcType
         }
 
         # Loop though HashTable Keys
-        if('Hashtable' -eq $Type)
+        if('hashtable' -eq $Type)
         {
             return "<value><struct>$(
                 [string]::Join(
@@ -182,7 +191,7 @@ function ConvertTo-XmlRpcType
         }
 
         # XML
-        if ('XmlElement','XmlDocument' -contains $Type)
+        if ('xmlelement','xmldocument' -contains $Type)
         {
             # data types listed as System.String rather than string....
             return $inputObject.InnerXml.ToString()

@@ -52,8 +52,8 @@
 	)
 
 	$FileBytes = [IO.File]::ReadAllBytes($Path)
-	$FileData = [Convert]::ToBase64String($FileBytes)
-	$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.putAttachment' -MethodParameters @($FullName,$FileData,@{'ow' = [bool]$Forced})
+	# Moved conversion to Base64 to inside the function0.
+	$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.putAttachment' -MethodParameters @($FullName,$FileBytes,@{'ow' = [bool]$Forced})
 	if ($APIResponse.CompletedSuccessfully -eq $true) {
 		$FileItem = (Get-Item -Path $Path)
 		$ResultString = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/string").node.InnerText
