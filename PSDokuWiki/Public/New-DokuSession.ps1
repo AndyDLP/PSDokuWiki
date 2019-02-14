@@ -45,11 +45,11 @@
 				   HelpMessage = 'The credentials of the user that will be logging in')]
 		[ValidateNotNullOrEmpty()]
 		[pscredential]$Credential,
-		[Parameter(Mandatory = $true,
+		[Parameter(Mandatory = $false,
 				   Position = 3,
 				   HelpMessage = 'The authentication method that you want to use with subsequent commands to the API')]
 		[ValidateSet('HttpBasic', 'Cookie', IgnoreCase = $true)]
-		[string]$SessionMethod,
+		[string]$SessionMethod = 'Cookie',
 		[Parameter(Mandatory = $false,
 				   Position = 4,
 				   HelpMessage = 'Send the request to the unencrypted endpoint instead')]
@@ -69,11 +69,10 @@
 	} else {
 		$XMLPayload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)
 		# $Websession var defined here
-		$NullVar = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
-		Write-Debug $NullVar
+		Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop | Out-Null
 	}
 
-	$DokuSession = New-Object PSObject -Property @{
+	$DokuSession = New-Object PSCustomObject -Property @{
 		Server = $Server
 		TargetUri = $TargetUri
 		SessionMethod = $SessionMethod

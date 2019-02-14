@@ -36,8 +36,8 @@ Describe 'ConvertTo-XmlRpcType' {
             ConvertTo-XmlRpcType -InputObject @{'ow' = 1} | Should -be '<value><struct><member><name>ow</name><value><i4>1</i4></value></member></struct></value>'
         }
         It 'Successfully converts XML' {
-            # How to create a valid xml object without ConvertTo-Xml ???
-            ConvertTo-XmlRpcType -InputObject (ConvertTo-Xml -InputObject @('lol',1,'hello')) | Should -be '<?xml version="1.0" encoding="utf-8"?><Objects><Object Type="System.Object[]"><Property Type="System.String">lol</Property><Property Type="System.Int32">1</Property><Property Type="System.String">hello</Property></Object></Objects>'
+            $XML = [xml]'<?xml version="1.0" encoding="utf-8"?><Body><Hello>lol</Hello></Body>'
+            ConvertTo-XmlRpcType -InputObject $XML | Should -be '<?xml version="1.0" encoding="utf-8"?><Body><Hello>lol</Hello></Body>'
         }
         It 'Successfully converts mixed data' {
             ConvertTo-XmlRpcType -InputObject @('Hello World',1,@{'Key1' = 'Value1'; 'Key2' = 2; 'Key3' = @(1,2,3)}) | Should -be '<value><array><data><value><string>Hello World</string></value><value><i4>1</i4></value><value><struct><member><name>Key3</name><value><array><data><value><i4>1</i4></value><value><i4>2</i4></value><value><i4>3</i4></value></data></array></value></member><member><name>Key1</name><value><string>Value1</string></value></member><member><name>Key2</name><value><i4>2</i4></value></member></struct></value></data></array></value>'
@@ -58,7 +58,13 @@ Describe 'ConvertTo-XmlRpcMethodCall' {
             ConvertTo-XmlRpcMethodCall -Name 'wiki.getPage' -Params @('hello') | Should -be '<?xml version="1.0"?><methodCall><methodName>wiki.getPage</methodName><params><param><value><string>hello</string></value></param></params></methodCall>'
         }
         It 'Succeeds for methods with two parameters' {
-            ConvertTo-XmlRpcMethodCall -Name 'wiki.getPageVersion' -Params @("pagename",'pagename2') | Should -be '<?xml version="1.0"?><methodCall><methodName>wiki.getPageVersion</methodName><params><param><value><string>pagename</string></value></param><param><value><string>pagename2</string></value></param></params></methodCall>'
+            ConvertTo-XmlRpcMethodCall -Name 'wiki.getPageVersion' -Params @("pagename",@{'Key1' = 'Value1'; 'Key2' = 2}) | Should -be '<?xml version="1.0"?><methodCall><methodName>wiki.getPageVersion</methodName><params><param><value><string>pagename</string></value></param><param><value><struct><member><name>Key1</name><value><string>Value1</string></value></member><member><name>Key2</name><value><i4>2</i4></value></member></struct></value></param></params></methodCall>'
+        }
+        It 'Fails for empty methods' {
+            { ConvertTo-XmlRpcMethodCall -Name '' -Params @("test") } | Should -Throw
+        }
+        It 'Fails for null methods' {
+            { ConvertTo-XmlRpcMethodCall -Name $null -Params @("test") } | Should -Throw
         }
     }
 }
@@ -68,18 +74,22 @@ Describe 'New-DokuSession' {
 
         $credential = New-Object -TypeName 'System.Management.Automation.PSCredential' -ArgumentList ('username', (ConvertTo-SecureString 'password' -AsPlainText -Force))
         Set-StrictMode -Version latest
+        
         It 'Fails when specifying a non-existent server' {
-            {New-DokuSession -Server 'wiki.localhost.local' -Unencrypted -SessionMethod 'Cookie' -Credential $credential}   | Should -Throw
+            {New-DokuSession -Server 'wiki.localhost.local' -Unencrypted -SessionMethod 'Cookie' -Credential $credential} | Should -Throw
         }
         It 'Fails when server is $null' {
-            {New-DokuSession -Server $null -Unencrypted -SessionMethod 'Cookie' -Credential $credential}   | Should -Throw
+            {New-DokuSession -Server $null -Unencrypted -SessionMethod 'Cookie' -Credential $credential} | Should -Throw
         }
         It 'Fails when using a non-existent session method' {
-            {New-DokuSession -Server 'wiki.localhost.local' -Unencrypted -SessionMethod 'Hello World' -Credential $credential}   | Should -Throw
+            {New-DokuSession -Server 'wiki.localhost.local' -Unencrypted -SessionMethod 'Hello World' -Credential $credential} | Should -Throw
+        }
+        It 'Successfully returns an object of the correct type' {
+            Mock Invoke-WebRequest { return "" }
+            New-DokuSession -Server 'wiki.localhost.local' -Credential $credential | Should -BeOfType [DokuWiki.Session.Detail]
         }
     }
 }
 
 # Add-Type -AssemblyName System.Web
 # New-Object Microsoft.PowerShell.Commands.WebRequestSession
-# [xml]'<?xml version="1.0" encoding="utf-8"?><Hello>lol</Hello>'
