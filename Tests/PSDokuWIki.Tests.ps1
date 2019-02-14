@@ -6,10 +6,10 @@ Describe 'ConvertTo-XmlRpcType' {
 
         Set-StrictMode -Version latest
 
-        It 'Successfully converts string(s)' {
+        It 'Successfully converts strings with single quotes' {
             ConvertTo-XmlRpcType -InputObject 'Hello' | Should -be '<value><string>Hello</string></value>'
         }
-        It 'Successfully converts string(s) with double quotes' {
+        It 'Successfully converts strings with double quotes' {
             ConvertTo-XmlRpcType -InputObject "Hello" | Should -be '<value><string>Hello</string></value>'
         }
         It 'Successfully converts strings with a length in a multiple of 4' {
@@ -34,7 +34,7 @@ Describe 'ConvertTo-XmlRpcType' {
         }
         It 'Successfully converts hashtables' {
             ConvertTo-XmlRpcType -InputObject @{'ow' = 1} | Should -be '<value><struct><member><name>ow</name><value><i4>1</i4></value></member></struct></value>'
-        }   
+        }
         It 'Successfully converts XML' {
             # How to create a valid xml object without ConvertTo-Xml ???
             ConvertTo-XmlRpcType -InputObject (ConvertTo-Xml -InputObject @('lol',1,'hello')) | Should -be '<?xml version="1.0" encoding="utf-8"?><Objects><Object Type="System.Object[]"><Property Type="System.String">lol</Property><Property Type="System.Int32">1</Property><Property Type="System.String">hello</Property></Object></Objects>'
