@@ -84,9 +84,11 @@ Describe 'New-DokuSession' {
         It 'Fails when using a non-existent session method' {
             {New-DokuSession -Server 'wiki.localhost.local' -Unencrypted -SessionMethod 'Hello World' -Credential $credential} | Should -Throw
         }
-        It 'Successfully returns an object of the correct type' {
+        It 'Successfully returns an object with the correct primary type name' {
             Mock Invoke-WebRequest { return "" }
-            New-DokuSession -Server 'wiki.localhost.local' -Credential $credential | Should -BeOfType [DokuWiki.Session.Detail]
+            # TODO: 
+            #  Do I need a class to do -BeOfType [DokuWiki.Session.Detail]
+            (New-DokuSession -Server 'wiki.localhost.local' -Credential $credential).PSTypeNames[0] | Should -Be 'DokuWiki.Session.Detail'
         }
     }
 }
