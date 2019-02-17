@@ -1,4 +1,4 @@
-# PSDokuWiki - Development Branch ![alt text](https://ci.appveyor.com/api/projects/status/github/AndyDLP/PSDokuWiki?branch=master&svg=true "")
+# PSDokuWiki - Development Branch ![alt text](https://ci.appveyor.com/api/projects/status/github/AndyDLP/PSDokuWiki?branch=dev&svg=true "")
 
 PSDokuWiki is a (WIP) PowerShell wrapper module for DokuWiki's XML RPC API, this also functions as my test bed for learning various powershell techniques.
 
