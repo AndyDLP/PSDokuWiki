@@ -1,4 +1,4 @@
-# PSDokuWiki - Development Branch - [![Build status](https://ci.appveyor.com/api/projects/status/n4d47tojqr1gcs54/branch/dev?svg=true)](https://ci.appveyor.com/project/AndyDLP/psdokuwiki/branch/dev)
+# PSDokuWiki - Development Branch [![Build status](https://ci.appveyor.com/api/projects/status/n4d47tojqr1gcs54/branch/dev?svg=true)](https://ci.appveyor.com/project/AndyDLP/psdokuwiki/branch/dev)
 
 PSDokuWiki is a (WIP) PowerShell wrapper module for DokuWiki's XML RPC API, this also functions as my test bed for learning various powershell techniques.
 
@@ -21,7 +21,7 @@ I am changing this away from using a "DokuSession" object to be more in line wit
 Connect-DokuServer -ComputerName 'wiki.example.com' -Credential (Get-Credential) -ErrorAction 'Stop'
 
 # Add text to a page contained in the API / on the server we connected to earlier
-Add-DokuPageData-FullName 'ns:page' -RawWikiText 'Hello World'
+Add-DokuPageData -FullName 'ns:page' -RawWikiText 'Hello World'
 ````
 
 ## Fault codes
