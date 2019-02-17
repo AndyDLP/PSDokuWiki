@@ -73,12 +73,12 @@ Describe 'New-DokuSession' {
     Context 'Strict Mode' {
 
         $credential = New-Object -TypeName 'System.Management.Automation.PSCredential' -ArgumentList ('username', (ConvertTo-SecureString 'password' -AsPlainText -Force))
-        $Server = 'wiki.localhost.local'
-        function Invoke-WebRequest {  }
+        # This is bad
+        $Server = 'www.dokuwiki.org/dokuwiki'
         Set-StrictMode -Version latest
         
         It 'Fails when specifying a non-existent server' {
-            {New-DokuSession -Server $Server -Unencrypted -SessionMethod 'Cookie' -Credential $credential} | Should -Throw
+            {New-DokuSession -Server 'Server.fake.domain.name.111' -Unencrypted -SessionMethod 'Cookie' -Credential $credential} | Should -Throw
         }
         It 'Fails when server is $null' {
             {New-DokuSession -Server $null -Unencrypted -SessionMethod 'Cookie' -Credential $credential} | Should -Throw
