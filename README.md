@@ -4,7 +4,7 @@ PSDokuWiki is a (WIP) PowerShell wrapper module for DokuWiki's XML RPC API, this
 
 ## How to install
 
-(Recommended) ![From the powershell gallery](https://www.powershellgallery.com/packages/PSDokuWiki)
+(Recommended) [From the powershell gallery](https://www.powershellgallery.com/packages/PSDokuWiki "PSGallery page")
 
 ```powershell
 Install-Module -Name PSDokuWiki -Repository -PSGallery -Force
@@ -14,14 +14,14 @@ Install-Module -Name PSDokuWiki -Repository -PSGallery -Force
 
 ## How to use
 
-Use *New-DokuSession* first, and use the resulting object for authentication to the API e.g.
+I am changing this away from using a "DokuSession" object to be more in line with other remote connection type cmdlets (such as VMWares Connect-VIServer / Connect-HVServer). As such I will aim to have it function like the below (still WIP)
 
 ```powershell
-# Create the session object
-$DS = New-DokuSession -Server wiki.example.com -Credential (Get-Credential) -Unencrypted -SessionMethod Cookie
+# Connect to the API
+Connect-DokuServer -ComputerName 'wiki.example.com' -Credential (Get-Credential) -ErrorAction 'Stop'
 
-# Use it to add text to a page
-Add-DokuPageData -DokuSession $DS -FullName 'ns:page' -RawWikiText 'Hello World'
+# Add text to a page contained in the API / on the server we connected to earlier
+Add-DokuPageData-FullName 'ns:page' -RawWikiText 'Hello World'
 ````
 
 ## Fault codes
