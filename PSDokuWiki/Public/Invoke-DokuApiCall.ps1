@@ -54,12 +54,12 @@ function Invoke-DokuApiCall {
     )
 
     begin {
-        Write-Debug "$($MyInvocation.MyCommand.Name):: Function started"
+        Write-Verbose "$($MyInvocation.MyCommand.Name):: Function started"
     } # begin
 
     process {
         $payload = ConvertTo-XmlRpcMethodCall -Name $MethodName -Params $MethodParameters
-        Write-Debug "XMLRPC payload: $payload"
+        Write-Verbose "XMLRPC payload: $payload"
 
         $params = @{
             Uri = $DokuSession.TargetUri
@@ -81,20 +81,24 @@ function Invoke-DokuApiCall {
         }
 
         try {
+            Write-Verbose "Attempting to connect to API endpoint: $TargetUri"
             $httpResponse = Invoke-WebRequest @params
             $outputObjectParams.Add('RawHttpResponse',$httpResponse)
             $XMLContent = [xml]($httpResponse.Content)
             $outputObjectParams.Add('XMLPayloadResponse',$XMLContent)
             if ($null -ne ($XMLContent | Select-Xml -XPath "//fault").node) {
                 # Web request worked but failed on API side
+                Write-Verbose "Connected to API endpoint: $TargetUri, but failed to execute API method $MethodName"
                 $outputObjectParams.Add('CompletedSuccessfully',$false)
                 $outputObjectParams.Add('FaultCode',($XMLContent | Select-Xml -XPath "//struct").node.member[0].value.int)
                 $outputObjectParams.Add('FaultString',($XMLContent | Select-Xml -XPath "//struct").node.member[1].value.string)
             } else {
+                Write-Verbose "Connected to API endpoint: $TargetUri and successfully executed API method $MethodName"
                 $outputObjectParams.Add('CompletedSuccessfully',$true)
             }
         }
         catch {
+            Write-Verbose "Failed to connect to API endpoint: $TargetUri"
             $outputObjectParams.Add('CompletedSuccessfully',$false)
             $outputObjectParams.Add('FaultCode',(($PSItem.Exception.message) -split ' ')[1])
             $outputObjectParams.Add('FaultString',(($PSItem.Exception.message) -split 'faultString ')[1])
@@ -105,6 +109,6 @@ function Invoke-DokuApiCall {
     } # process
 
     end {
-        Write-Debug "$($MyInvocation.MyCommand.Name):: Function ended"
+        Write-Verbose "$($MyInvocation.MyCommand.Name):: Function ended"
     } # end
 }

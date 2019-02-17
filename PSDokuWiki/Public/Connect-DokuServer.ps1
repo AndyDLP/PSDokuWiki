@@ -4,7 +4,10 @@ function Connect-DokuServer {
 		Connect to a DokuWiki API endpoint
 
 	.DESCRIPTION
-		Connect to a DokuWiki API endpoint to 
+		Connect to a DokuWiki API endpoint to enable subsequent DokuWiki commands from the same PowerShell session
+
+	.PARAMETER ComputerName
+		The computer name (single label or FQDN) / IP to connect to
 
 	.PARAMETER Credential
 		The credentials used to authenticate to the API endpoint
@@ -22,7 +25,7 @@ function Connect-DokuServer {
         Force a connection even if one is already established to the same endpoint
 
 	.EXAMPLE
-		PS C:\> Connect-DokuServer -Server wiki.example.com -Credential (Get-Credential)
+		PS C:\> Connect-DokuServer -ComputerName wiki.example.com -Credential (Get-Credential)
 
 	.OUTPUTS
 		Nothing
@@ -39,8 +42,6 @@ function Connect-DokuServer {
     (
         [Parameter(Mandatory = $true,
             Position = 1,
-            ValueFromPipeline = $true,
-			ValueFromPipelineByPropertyName=$true,
             HelpMessage = 'The server to connect to')]
         [ValidateNotNullOrEmpty()]
         [Alias('Server')]
@@ -79,11 +80,13 @@ function Connect-DokuServer {
     )
 
     begin {
-        $headers = @{ "Content-Type" = "text/xml"; }
-        $Protocol = if ($Unencrypted) { "http" } else { "https" }
-    } # begin
+        # intentionally empty
+    }
 
     process {
+        $headers = @{ "Content-Type" = "text/xml"; }
+        $Protocol = if ($Unencrypted) { "http" } else { "https" }
+
         $TargetUri = ($Protocol + "://" + $ComputerName + $APIPath)
 
         # Check if already connected
@@ -121,6 +124,6 @@ function Connect-DokuServer {
     } # process
 
     end {
-
-    } # end
+        # intentionally empty
+    }
 }
