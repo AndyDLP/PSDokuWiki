@@ -78,7 +78,7 @@
 		SessionMethod = $SessionMethod
 		Headers = $headers
 		WebSession = $WebSession
-		TimeStamp = (Get-Date)
+		#TimeStamp = (Get-Date)
 		UnencryptedEndpoint = [bool]$Unencrypted
 	} -ErrorAction Stop
 	$DokuSession.PSTypeNames.Insert(0,'DokuWiki.Session.Detail')
