@@ -74,8 +74,6 @@ Describe 'New-DokuSession' {
 
         $credential = New-Object -TypeName 'System.Management.Automation.PSCredential' -ArgumentList ('username', (ConvertTo-SecureString 'password' -AsPlainText -Force))
         $Server = 'wiki.localhost.local'
-        function Invoke-WebRequest {  }
-        Mock Invoke-WebRequest { return "" }
         Set-StrictMode -Version latest
         
         It 'Fails when specifying a non-existent server' {
@@ -88,11 +86,13 @@ Describe 'New-DokuSession' {
             {New-DokuSession -Server $Server -Unencrypted -SessionMethod 'Hello World' -Credential $credential} | Should -Throw
         }
         It 'Successfully returns an object with the correct primary type name' {
+            Mock Invoke-WebRequest { return "" }
             # TODO: 
             #  Do I need a class to do -BeOfType [DokuWiki.Session.Detail]
             (New-DokuSession -Server $Server -Credential $credential).PSTypeNames[0] | Should -Be 'DokuWiki.Session.Detail'
         }
         It 'Successfully returns an object with all the correct properties' {
+            Mock Invoke-WebRequest { return "" }
             $SessionObjectProperties = (New-DokuSession -Server $Server -Credential $credential).PSObject.Properties.Name 
             @('Server','TargetUri','SessionMethod','Headers','WebSession','TimeStamp','UnencryptedEndpoint') | Where-Object -FilterScript { $SessionObjectProperties -notcontains $_ } | Should -BeNullOrEmpty
         }
