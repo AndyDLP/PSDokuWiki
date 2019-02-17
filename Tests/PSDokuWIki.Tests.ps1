@@ -71,9 +71,8 @@ Describe 'ConvertTo-XmlRpcMethodCall' {
 
 Describe 'New-DokuSession' {
     Context 'Strict Mode' {
-
         $credential = New-Object -TypeName 'System.Management.Automation.PSCredential' -ArgumentList ('username', (ConvertTo-SecureString 'password' -AsPlainText -Force))
-        # This is bad
+        # This is bad :(
         $Server = 'www.dokuwiki.org/dokuwiki'
         Set-StrictMode -Version latest
         
