@@ -99,5 +99,11 @@ Describe 'New-DokuSession' {
     }
 }
 
+Describe 'Invoke-DokuApiCall' {
+    Context 'Strict Mode' {
+        Set-StrictMode -Version latest
+    }
+}
+
 # Add-Type -AssemblyName System.Web
 # New-Object Microsoft.PowerShell.Commands.WebRequestSession
