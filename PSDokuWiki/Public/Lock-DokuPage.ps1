@@ -6,14 +6,11 @@ function Lock-DokuPage {
 	.DESCRIPTION
 		Locks the page so it cannot be modified by users for 15 min. Also works for not yet existing pages (block create name)
 
-	.PARAMETER DokuSession
-		The DokuSession in which to lock the page
-
 	.PARAMETER FullName
 		The full name of the to-be-locked page, including parent namespace(s)
 
 	.EXAMPLE
-		PS C:\> Lock-DokuPage -DokuSession $DokuSession -FullName 'namespace:page'
+		PS C:\> Lock-DokuPage -FullName 'namespace:page'
 
 	.OUTPUTS
 		Nothing
@@ -28,11 +25,6 @@ function Lock-DokuPage {
     [CmdletBinding(PositionalBinding = $true)]
     param
     (
-        [Parameter(Mandatory = $true,
-            Position = 1,
-            HelpMessage = 'The DokuSession to add the page data to')]
-        [ValidateNotNullOrEmpty()]
-        [DokuWiki.Session.Detail]$DokuSession,
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
 			ValueFromPipelineByPropertyName=$true,
@@ -49,7 +41,7 @@ function Lock-DokuPage {
     process {
         # long random name in unlock array as its unlikely to be existing (do unlock in other function)
         # xmltype converter doesn't like it to be empty?
-        $APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.setLocks' -MethodParameters @(@{ 'lock' = [array]$FullName; 'unlock' = @("341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995") })
+        $APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.setLocks' -MethodParameters @(@{ 'lock' = [array]$FullName; 'unlock' = @("341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995") })
         if ($APIResponse.CompletedSuccessfully -eq $true) {
             # do nothing except when locks fail
             # $locked = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array").Node[0].data.value.innertext

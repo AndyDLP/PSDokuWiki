@@ -6,14 +6,11 @@
 	.DESCRIPTION
 		Returns an array of all links on a page
 
-	.PARAMETER DokuSession
-		The DokuSession from which to get the page links
-
 	.PARAMETER FullName
 		The full page name for which to return the data
 
 	.EXAMPLE
-		PS C:\> $PageLinks = Get-DokuPageLinks -DokuSession $DokuSession -FullName "namespace:namespace:page"
+		PS C:\> $PageLinks = Get-DokuPageLinks -FullName "namespace:namespace:page"
 
 	.OUTPUTS
 		System.Management.Automation.PSObject[]
@@ -26,11 +23,6 @@
 	[OutputType([psobject[]])]
 	param
 	(
-		[Parameter(Mandatory = $true,
-				   Position = 1,
-				   HelpMessage = 'The DokuSession from which to get the page links')]
-		[ValidateNotNullOrEmpty()]
-		[DokuWiki.Session.Detail]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
 				   ValueFromPipeline = $true,
@@ -46,7 +38,7 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.listLinks' -MethodParameters @($PageName)
+			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.listLinks' -MethodParameters @($PageName)
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
 				$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
 				foreach ($node in $MemberNodes) {

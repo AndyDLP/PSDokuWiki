@@ -7,14 +7,11 @@
 		Returns a list of recent changes since given timestamp.
 		As stated in recent_changes: Only the most recent change for each page is listed, regardless of how many times that page was changed
 
-	.PARAMETER DokuSession
-		The DokuSession from which to get the changes
-
 	.PARAMETER VersionTimestamp
 		Get all pages since this timestamp
 
 	.EXAMPLE
-		PS C:\> Get-DokuRecentChanges -DokuSession $DokuSession -VersionTimestamp $VersionTimestamp
+		PS C:\> Get-DokuRecentChanges -VersionTimestamp $VersionTimestamp
 
 	.OUTPUTS
 		System.Management.Automation.PSObject[]
@@ -27,11 +24,6 @@
 	[OutputType([psobject[]])]
 	param
 	(
-		[Parameter(Mandatory = $true,
-				   Position = 1,
-				   HelpMessage = 'The DokuSession from which to get the changes')]
-		[ValidateNotNullOrEmpty()]
-		[DokuWiki.Session.Detail]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
 				   ValueFromPipeline = $true,
@@ -46,7 +38,7 @@
 	} # begin
 
 	process {
-		$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getRecentChanges' -MethodParameters @($VersionTimestamp)
+		$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getRecentChanges' -MethodParameters @($VersionTimestamp)
 		if ($APIResponse.CompletedSuccessfully -eq $true) {
 			$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
 			foreach ($node in $MemberNodes) {

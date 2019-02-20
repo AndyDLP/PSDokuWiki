@@ -6,14 +6,11 @@
 	.DESCRIPTION
 		Returns a list of backlinks of a Wiki page
 
-	.PARAMETER DokuSession
-		The DokuSession to get the page backlinks from
-
 	.PARAMETER FullName
 		The full page name for which to return the data
 
 	.EXAMPLE
-		PS C:\> $PageBackLinks = Get-DokuPageBackLinks -DokuSession $DokuSession -FullName "namespace:namespace:page"
+		PS C:\> $PageBackLinks = Get-DokuPageBackLinks -FullName "namespace:namespace:page"
 
 	.OUTPUTS
 		System.Management.Automation.PSObject[]
@@ -26,11 +23,6 @@
 	[OutputType([psobject[]])]
 	param
 	(
-		[Parameter(Mandatory = $true,
-				   Position = 1,
-				   HelpMessage = 'The DokuSession to get the page backlinks from')]
-		[ValidateNotNullOrEmpty()]
-		[DokuWiki.Session.Detail]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
 				   ValueFromPipeline = $true,
@@ -46,7 +38,7 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getBackLinks' -MethodParameters @($PageName)
+			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getBackLinks' -MethodParameters @($PageName)
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
 				$PageArray = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array/data/value").Node.InnerText
 				foreach ($Page in $PageArray) {

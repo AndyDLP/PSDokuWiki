@@ -6,9 +6,6 @@
 	.DESCRIPTION
 		Allows you to remove a principal from an ACL. Use @groupname instead of user to remove an ACL rule for a group.
 	
-	.PARAMETER DokuSession
-		The DokuSession from which to remove the ACL
-	
 	.PARAMETER FullName
 		The full name of the scope to apply to ACL to
 	
@@ -16,7 +13,7 @@
 		The username or groupname to add to the ACL
 	
 	.EXAMPLE
-		PS C:\> Remove-DokuAclRule -DokuSession $DokuSession -FullName 'study' -Principal 'testuser'
+		PS C:\> Remove-DokuAclRule -FullName 'study' -Principal 'testuser'
 	
 	.OUTPUTS
 		System.Boolean
@@ -30,11 +27,6 @@
 	param
 	(
 		[Parameter(Mandatory = $true,
-				   Position = 1,
-				   HelpMessage = 'The DokuSession from which to remove the ACL')]
-		[ValidateNotNullOrEmpty()]
-		[DokuWiki.Session.Detail]$DokuSession,
-		[Parameter(Mandatory = $true,
 				   Position = 2,
 				   HelpMessage = 'The full name of the scope to apply to ACL to')]
 		[ValidateNotNullOrEmpty()]
@@ -46,7 +38,7 @@
 		[string]$Principal
 	)
 	
-	$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'plugin.acl.delAcl' -MethodParameters @($FullName,$Principal)
+	$APIResponse = Invoke-DokuApiCall -MethodName 'plugin.acl.delAcl' -MethodParameters @($FullName,$Principal)
 	if ($APIResponse.CompletedSuccessfully -eq $true) { 
 		$ReturnValue = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").Node.InnerText
 		if ($ReturnValue -eq 0) {
