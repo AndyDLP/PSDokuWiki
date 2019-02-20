@@ -29,21 +29,23 @@
 	[OutputType([psobject])]
 	param
 	(
-		[Parameter(Position = 4,
-				   HelpMessage = 'Return only the raw HTML, rather than an object')]
-		[switch]$Raw,
 		[Parameter(Mandatory = $true,
-				   Position = 2,
+				   Position = 1,
 				   ValueFromPipeline = $true,
 				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The full page name for which to return the data')]
 		[ValidateNotNullOrEmpty()]
 		[string[]]$FullName,
 		[Parameter(Mandatory = $true,
-				   Position = 3,
+				   Position = 2,
+				   ValueFromPipeline = $true,
+				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The timestamp for which version to get the info from')]
 		[ValidateNotNullOrEmpty()]
-		[int]$VersionTimestamp
+		[int]$VersionTimestamp,
+		[Parameter(Position = 3,
+				   HelpMessage = 'Return only the raw HTML, rather than an object')]
+		[switch]$Raw
 	)
 
 	begin {
