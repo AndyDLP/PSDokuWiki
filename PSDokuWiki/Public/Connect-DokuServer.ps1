@@ -104,8 +104,14 @@ function Connect-DokuServer {
         } else {
             $XMLPayload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)
             # $Websession var defined here
-            $NullVar = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
-            Write-Verbose $NullVar
+            try {
+                $NullVar = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
+                Write-Verbose $NullVar
+            }
+            catch {
+                throw $_
+                exit
+            }
         }
 
         $DokuSession = New-Object PSObject -Property @{
