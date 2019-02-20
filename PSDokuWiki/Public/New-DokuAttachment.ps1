@@ -6,9 +6,6 @@
 	.DESCRIPTION
 		Uploads a file as an attachment
 
-	.PARAMETER DokuSession
-		The DokuSession where the attachment will be uploaded
-
 	.PARAMETER FullName
 		The FullName of the to-be-uploaded file, including namespace(s)
 
@@ -19,7 +16,7 @@
 		Force upload of attachment, overwriting any existing files with the same name
 
 	.EXAMPLE
-		PS C:\> New-DokuAttachment -DokuSession $DokuSession -FullName 'value2' -FilePath 'value3'
+		PS C:\> New-DokuAttachment -FullName 'value2' -FilePath 'value3'
 
 	.OUTPUTS
 		System.Management.Automation.PSObject
@@ -32,11 +29,6 @@
 	[OutputType([psobject])]
 	param
 	(
-		[Parameter(Mandatory = $true,
-				   Position = 1,
-				   HelpMessage = 'The DokuSession where the attachment will be uploaded')]
-		[ValidateNotNullOrEmpty()]
-		[DokuWiki.Session.Detail]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
 				   HelpMessage = 'The FullName of the to-be-uploaded file, including namespace(s)')]
@@ -53,7 +45,7 @@
 
 	$FileBytes = [IO.File]::ReadAllBytes($Path)
 	# Moved conversion to Base64 to inside the function0.
-	$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.putAttachment' -MethodParameters @($FullName,$FileBytes,@{'ow' = [bool]$Forced})
+	$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.putAttachment' -MethodParameters @($FullName,$FileBytes,@{'ow' = [bool]$Forced})
 	if ($APIResponse.CompletedSuccessfully -eq $true) {
 		$FileItem = (Get-Item -Path $Path)
 		$ResultString = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/string").node.InnerText

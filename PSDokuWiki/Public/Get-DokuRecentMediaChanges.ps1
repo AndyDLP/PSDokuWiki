@@ -6,14 +6,11 @@
 	.DESCRIPTION
 		Returns a list of recently changed media since given timestamp
 
-	.PARAMETER DokuSession
-		The DokuSession from which to get the recent media changes
-
 	.PARAMETER VersionTimestamp
 		Get all media / attachment changes since this timestamp
 
 	.EXAMPLE
-		PS C:\> Get-DokuRecentMediaChanges -DokuSession $DokuSession -VersionTimestamp $VersionTimestamp
+		PS C:\> Get-DokuRecentMediaChanges -VersionTimestamp $VersionTimestamp
 
 	.OUTPUTS
 		System.Management.Automation.PSObject[]
@@ -26,11 +23,6 @@
 	[OutputType([psobject[]])]
 	param
 	(
-		[Parameter(Mandatory = $true,
-				   Position = 1,
-				   HelpMessage = 'The DokuSession from which to get the recent media changes')]
-		[ValidateNotNullOrEmpty()]
-		[DokuWiki.Session.Detail]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
 				   ValueFromPipeline = $true,
@@ -45,7 +37,7 @@
 	} # begin
 
 	process {
-		$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getRecentMediaChanges' -MethodParameters @($VersionTimestamp)
+		$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getRecentMediaChanges' -MethodParameters @($VersionTimestamp)
 		if ($APIResponse.CompletedSuccessfully -eq $true) {
 			$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
 			foreach ($node in $MemberNodes) {

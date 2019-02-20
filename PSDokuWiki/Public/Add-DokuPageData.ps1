@@ -9,9 +9,6 @@
 	.PARAMETER FullName
 		The full name of the to-be-edited page, including parent namespace(s)
 
-	.PARAMETER DokuSession
-		The DokuSession to add the page data to
-
 	.PARAMETER RawWikiText
 		The raw wiki text to append to the page
 
@@ -25,7 +22,7 @@
 		A short summary of the change, visible in the revisions list
 
 	.EXAMPLE
-		PS C:\> Add-DokuPageData -DokuSession $DokuSession -FullName 'namespace:page' -RawWikiText 'TEST TEST TEST'
+		PS C:\> Add-DokuPageData -FullName 'namespace:page' -RawWikiText 'TEST TEST TEST'
 
 	.OUTPUTS
 		System.Boolean, System.Management.Automation.PSObject
@@ -41,11 +38,6 @@
     [OutputType([boolean], [psobject])]
     param
     (
-        [Parameter(Mandatory = $true,
-            Position = 1,
-            HelpMessage = 'The DokuSession to add the page data to')]
-        [ValidateNotNullOrEmpty()]
-        [DokuWiki.Session.Detail]$DokuSession,
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
 			ValueFromPipelineByPropertyName=$true,
@@ -75,7 +67,7 @@
 
     process {
         $Change = if ($MinorChange) {$true} else {$false}
-        $APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.appendPage' -MethodParameters @($FullName, $RawWikiText, @{ sum = $SummaryText; minor = [int]$Change })
+        $APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.appendPage' -MethodParameters @($FullName, $RawWikiText, @{ sum = $SummaryText; minor = [int]$Change })
         if ($APIResponse.CompletedSuccessfully -eq $true) {
             if ($PassThru) {
                 $PageObject = New-Object PSObject -Property @{

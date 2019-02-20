@@ -6,14 +6,11 @@
 	.DESCRIPTION
 		Returns a list of media files in a given namespace
 
-	.PARAMETER DokuSession
-		The DokuSession from which to get the attachments
-
 	.PARAMETER Namespace
 		The namespace to search for attachments
 
 	.EXAMPLE
-		PS C:\> Get-DokuAttachmentList -DokuSession $DokuSession -Namespace 'namespace'
+		PS C:\> Get-DokuAttachmentList -Namespace 'namespace'
 
 	.OUTPUTS
 		System.Management.Automation.PSObject[]
@@ -26,11 +23,6 @@
 	[OutputType([psobject[]])]
 	param
 	(
-		[Parameter(Mandatory = $true,
-				   Position = 1,
-				   HelpMessage = 'The DokuSession from which to get the attachments')]
-		[ValidateNotNullOrEmpty()]
-		[DokuWiki.Session.Detail]$DokuSession,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
 				   ValueFromPipeline = $true,
@@ -46,7 +38,7 @@
 
 	process {
 		foreach ($curr in $Namespace) {
-			$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getAttachments' -MethodParameters @($curr)
+			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getAttachments' -MethodParameters @($curr)
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
 				$MemberNodes = ($APIResponse.XMLPayloadResponse| Select-Xml -XPath "//struct").Node
 				foreach ($node in $MemberNodes) {

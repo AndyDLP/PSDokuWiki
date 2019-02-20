@@ -4,16 +4,13 @@
 		Returns information about a media file
 
 	.DESCRIPTION
-		Returns information about a media file
-
-	.PARAMETER DokuSession
-		The DokuSession from which to get the attachment info
+		Returns information about an attached file
 
 	.PARAMETER FullName
 		The full name of the file to get information from
 
 	.EXAMPLE
-		PS C:\> Get-DokuAttachmentInfo -DokuSession $DokuSession -FullName 'namespace:filename.ext'
+		PS C:\> Get-DokuAttachmentInfo -FullName 'namespace:filename.ext'
 
 	.OUTPUTS
 		System.Management.Automation.PSObject
@@ -28,11 +25,6 @@
     (
         [Parameter(Mandatory = $true,
             Position = 1,
-            HelpMessage = 'The DokuSession from which to get the attachment info')]
-        [ValidateNotNullOrEmpty()]
-        [DokuWiki.Session.Detail]$DokuSession,
-        [Parameter(Mandatory = $true,
-            Position = 2,
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The full name of the file to get information from')]
@@ -46,7 +38,7 @@
 
     process {
         foreach ($attachmentName in $FullName) {
-            $APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getAttachmentInfo' -MethodParameters @($attachmentName)
+            $APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getAttachmentInfo' -MethodParameters @($attachmentName)
             if ($APIResponse.CompletedSuccessfully -eq $true) {
                 $ArrayValues = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node.Member.Value.Innertext
                 $attachmentObject = New-Object PSObject -Property @{
