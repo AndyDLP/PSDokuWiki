@@ -24,7 +24,7 @@
 	param
 	(
 		[Parameter(Mandatory = $true,
-				   Position = 2,
+				   Position = 1,
 				   ValueFromPipeline = $true,
 				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'Get all media / attachment changes since this timestamp')]

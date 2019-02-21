@@ -28,7 +28,7 @@ function Lock-DokuPage {
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
 			ValueFromPipelineByPropertyName=$true,
-            Position = 2,
+            Position = 1,
             HelpMessage = 'The full name of the to-be-locked page, including parent namespace(s)')]
         [ValidateNotNullOrEmpty()]
         [string[]]$FullName

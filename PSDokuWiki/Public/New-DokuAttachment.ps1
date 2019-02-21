@@ -30,12 +30,12 @@
 	param
 	(
 		[Parameter(Mandatory = $true,
-				   Position = 2,
+				   Position = 1,
 				   HelpMessage = 'The FullName of the to-be-uploaded file, including namespace(s)')]
 		[ValidateNotNullOrEmpty()]
 		[string]$FullName,
 		[Parameter(Mandatory = $true,
-				   Position = 3,
+				   Position = 2,
 				   HelpMessage = 'The file path of the attachment to upload')]
 		[ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
 		[string]$Path,

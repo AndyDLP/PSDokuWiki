@@ -27,14 +27,14 @@
 	param
 	(
 		[Parameter(Mandatory = $true,
-				   Position = 2,
+				   Position = 1,
 				   ValueFromPipeline = $true,
 				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The full page name for which to return the data')]
 		[ValidateNotNullOrEmpty()]
 		[string[]]$FullName,
 		[Parameter(Mandatory = $false,
-				   Position = 3,
+				   Position = 2,
 				   HelpMessage = 'Return just the raw HTML instead of an object')]
 		[switch]$Raw
 	)

@@ -21,7 +21,7 @@
 	param
 	(
 		[Parameter(Mandatory = $true,
-				   Position = 2,
+				   Position = 1,
 				   HelpMessage = 'The username(s) you want to remove')]
 		[ValidateNotNullOrEmpty()]
 		[string[]]$Username

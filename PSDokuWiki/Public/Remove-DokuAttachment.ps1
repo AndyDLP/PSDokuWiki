@@ -20,7 +20,7 @@
 	param
 	(
 		[Parameter(Mandatory = $true,
-				   Position = 2,
+				   Position = 1,
 				   HelpMessage = 'The full name of the attachment to delete')]
 		[ValidateNotNullOrEmpty()]
 		[string]$FullName

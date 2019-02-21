@@ -27,12 +27,12 @@
 	param
 	(
 		[Parameter(Mandatory = $true,
-				   Position = 2,
+				   Position = 1,
 				   HelpMessage = 'The full name of the scope to apply to ACL to')]
 		[ValidateNotNullOrEmpty()]
 		[string]$FullName,
 		[Parameter(Mandatory = $true,
-				   Position = 3,
+				   Position = 2,
 				   HelpMessage = 'The username or @groupname to add to the ACL')]
 		[ValidateNotNullOrEmpty()]
 		[string]$Principal

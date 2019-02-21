@@ -30,14 +30,14 @@
 	param
 	(
 		[Parameter(Mandatory = $true,
-				   Position = 2,
+				   Position = 1,
 				   ValueFromPipeline = $true,
 				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The full name of the file to get')]
 		[ValidateNotNullOrEmpty()]
 		[string[]]$FullName,
 		[Parameter(Mandatory = $false,
-				   Position = 3,
+				   Position = 2,
 				   HelpMessage = 'The path to save the attachment to, including filename & extension')]
 		[ValidateScript({ Test-Path -Path $_ -IsValid })]
 		[string]$Path,

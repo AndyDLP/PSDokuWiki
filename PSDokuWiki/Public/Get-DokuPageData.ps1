@@ -27,13 +27,13 @@
 	param
 	(
 		[Parameter(Mandatory = $true,
-				   Position = 2,
+				   Position = 1,
 				   ValueFromPipeline = $true,
 				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The full page name for which to return the page data')]
 		[ValidateNotNullOrEmpty()]
 		[string[]]$FullName,
-		[Parameter(Position = 3,
+		[Parameter(Position = 2,
 				   HelpMessage = 'Return only the raw wiki text, intead of an object')]
 		[switch]$Raw
 	)

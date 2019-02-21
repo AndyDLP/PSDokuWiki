@@ -41,22 +41,22 @@
         [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
 			ValueFromPipelineByPropertyName=$true,
-            Position = 2,
+            Position = 1,
             HelpMessage = 'The full name of the to-be-edited page, including parent namespace(s)')]
         [ValidateNotNullOrEmpty()]
         [string]$FullName,
         [Parameter(Mandatory = $true,
-            Position = 3,
+            Position = 2,
             HelpMessage = 'The raw wiki text to append to the page')]
         [ValidateNotNullOrEmpty()]
         [string]$RawWikiText,
-        [Parameter(Position = 4,
+        [Parameter(Position = 3,
             HelpMessage = 'State if the change was minor or not')]
         [switch]$MinorChange,
-        [Parameter(Position = 5,
+        [Parameter(Position = 4,
             HelpMessage = 'A short summary of the change')]
         [string]$SummaryText,
-        [Parameter(Position = 6,
+        [Parameter(Position = 5,
             HelpMessage = 'Pass the newly created object back out')]
         [switch]$PassThru
     )
