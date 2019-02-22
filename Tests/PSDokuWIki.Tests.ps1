@@ -139,13 +139,20 @@ Describe 'Invoke-DokuApiCall' {
             Add-Type -AssemblyName System.Web
             $Script:DokuServer = [PSCustomObject]@{
                 Headers = @{ "Content-Type" = "text/xml"; }
-                TargetUri = 'http://www.dokuwiki.org/dokuwiki/lib/exe/xmlrpc.php'
+                #TargetUri = 'http://www.dokuwiki.org/dokuwiki/lib/exe/xmlrpc.php'
+                TargetUri = 'not a real target'
                 SessionMethod = 'Cookie'
                 UnencryptedEndPoint = $true
                 WebSession = (New-Object Microsoft.PowerShell.Commands.WebRequestSession)
             }
 
-            Invoke-DokuApiCall -MethodName 'wiki.getAllPages' | Should -be 1
+            It "Should successfully return an object with the base properties" {
+                $APIObjectProperties = (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').PSObject.Properties.Name 
+                @('CompletedSuccessfully','TargetUri','SessionMethod','Method','MethodParameters','XMLPayloadSent','XMLPayloadResponse','RawHttpResponse') | Where-Object -FilterScript { $APIObjectProperties -notcontains $_ } | Should -BeNullOrEmpty
+            }
+            It "Should successfully return an object with some properties" {
+                $APIObjectProperties = (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').PSObject.Properties.Name | Should -BeNullOrEmpty
+            }
         }
     }
 }

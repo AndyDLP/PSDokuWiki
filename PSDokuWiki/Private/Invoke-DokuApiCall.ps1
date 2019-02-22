@@ -76,7 +76,11 @@ function Invoke-DokuApiCall {
             Write-Verbose "Attempting to connect to API endpoint: $TargetUri"
             $httpResponse = Invoke-WebRequest @params
             $outputObjectParams.Add('RawHttpResponse',$httpResponse)
-            $XMLContent = [xml]($httpResponse.Content)
+
+            $XMLContent = ConvertTo-Xml -InputObject ($httpResponse.Content) -ErrorAction Stop
+            #$XMLContent = [xml]($httpResponse.Content)
+
+
             $outputObjectParams.Add('XMLPayloadResponse',$XMLContent)
             if ($null -ne ($XMLContent | Select-Xml -XPath "//fault").node) {
                 # Web request worked but failed on API side
