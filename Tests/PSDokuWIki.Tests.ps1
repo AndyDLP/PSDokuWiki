@@ -133,13 +133,20 @@ Describe 'Connect-DokuServer' {
 
 Describe 'Invoke-DokuApiCall' {
     Context 'Strict Mode' {
-        $credential = New-Object -TypeName 'System.Management.Automation.PSCredential' -ArgumentList ('username', (ConvertTo-SecureString 'password' -AsPlainText -Force))
-        # This is bad :(
-        $Server = 'Server.fake.domain.name.111'
         Set-StrictMode -Version latest
         
-        
-        
+        InModuleScope PSDokuWiki {
+            Add-Type -AssemblyName System.Web
+            $Script:DokuServer = [PSCustomObject]@{
+                Headers = @{ "Content-Type" = "text/xml"; }
+                TargetUri = 'http://www.dokuwiki.org/dokuwiki/lib/exe/xmlrpc.php'
+                SessionMethod = 'Cookie'
+                UnencryptedEndPoint = $true
+                WebSession = (New-Object Microsoft.PowerShell.Commands.WebRequestSession)
+            }
+
+            Invoke-DokuApiCall -MethodName 'wiki.getAllPages' | Should -be 1
+        }
     }
 }
 
