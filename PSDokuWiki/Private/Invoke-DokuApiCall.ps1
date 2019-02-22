@@ -100,6 +100,7 @@ function Invoke-DokuApiCall {
             $outputObjectParams.Add('FaultString',(($PSItem.Exception.message) -split 'faultString ')[1])
             $outputObjectParams.Add('ExceptionMessage',$PSItem.Exception.message)
         }
+        
         $outputObject = [PSCustomObject]$outputObjectParams
         return $outputObject
     } # process

@@ -136,22 +136,34 @@ Describe 'Invoke-DokuApiCall' {
         Set-StrictMode -Version latest
         
         InModuleScope PSDokuWiki {
-            Add-Type -AssemblyName System.Web
+
+
+            $Script:DokuServer = $null 
+            It "Fails when not connected to DokuServer" {
+                (Invoke-DokuApiCall -MethodName 'wiki.getAllPages' -ErrorAction Stop -Verbose).ExceptionMessage | Should -Be "Cannot validate argument on parameter 'Uri'. The argument is null or empty. Provide an argument that is not null or empty, and then try the command again."
+            }
+
             $Script:DokuServer = [PSCustomObject]@{
                 Headers = @{ "Content-Type" = "text/xml"; }
-                #TargetUri = 'http://www.dokuwiki.org/dokuwiki/lib/exe/xmlrpc.php'
                 TargetUri = 'not a real target'
                 SessionMethod = 'Cookie'
                 UnencryptedEndPoint = $true
                 WebSession = (New-Object Microsoft.PowerShell.Commands.WebRequestSession)
             }
-
+            It "Fails when unable to communicate with DokuServer (Wrong IP / non-existent name)" {
+                (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').ExceptionMessage | Should -Be 'Invalid URI: The hostname could not be parsed.'
+            }
+            
+            $Script:DokuServer = [PSCustomObject]@{
+                Headers = @{ "Content-Type" = "text/xml"; }
+                TargetUri = 'www.google.com'
+                SessionMethod = 'Cookie'
+                UnencryptedEndPoint = $true
+                WebSession = (New-Object Microsoft.PowerShell.Commands.WebRequestSession)
+            }
             It "Should successfully return an object with the base properties" {
                 $APIObjectProperties = (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').PSObject.Properties.Name 
                 @('CompletedSuccessfully','TargetUri','SessionMethod','Method','MethodParameters','XMLPayloadSent','XMLPayloadResponse','RawHttpResponse') | Where-Object -FilterScript { $APIObjectProperties -notcontains $_ } | Should -BeNullOrEmpty
-            }
-            It "Should successfully return an object with some properties" {
-                $APIObjectProperties = (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').PSObject.Properties.Name | Should -BeNullOrEmpty
             }
         }
     }
