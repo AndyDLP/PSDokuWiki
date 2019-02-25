@@ -73,28 +73,36 @@ function Invoke-DokuApiCall {
         }
 
         try {
-            Write-Verbose "Attempting to connect to API endpoint: $TargetUri"
+            Write-Verbose "Attempting to connect to API endpoint: $($Script:DokuServer.TargetUri)"
             $httpResponse = Invoke-WebRequest @params
             $outputObjectParams.Add('RawHttpResponse',$httpResponse)
 
-            $XMLContent = ConvertTo-Xml -InputObject ($httpResponse.Content) -ErrorAction Stop
-            #$XMLContent = [xml]($httpResponse.Content)
+            #$XMLContent = ConvertTo-Xml -InputObject ($httpResponse.Content) -ErrorAction Stop
+            $XMLContent = [xml]($httpResponse.Content)
 
 
             $outputObjectParams.Add('XMLPayloadResponse',$XMLContent)
             if ($null -ne ($XMLContent | Select-Xml -XPath "//fault").node) {
                 # Web request worked but failed on API side
-                Write-Verbose "Connected to API endpoint: $TargetUri, but failed to execute API method $MethodName"
+                Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri), but failed to execute API method $MethodName"
                 $outputObjectParams.Add('CompletedSuccessfully',$false)
                 $outputObjectParams.Add('FaultCode',($XMLContent | Select-Xml -XPath "//struct").node.member[0].value.int)
                 $outputObjectParams.Add('FaultString',($XMLContent | Select-Xml -XPath "//struct").node.member[1].value.string)
+            } elseif ($null -eq ($XMLContent | Select-Xml -XPath "//methodResponse").node) {
+                Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri) but did not receive valid response"
+                $outputObjectParams.Add('CompletedSuccessfully',$false)
             } else {
-                Write-Verbose "Connected to API endpoint: $TargetUri and successfully executed API method $MethodName"
+                Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri) and successfully executed API method $MethodName"
                 $outputObjectParams.Add('CompletedSuccessfully',$true)
             }
         }
+        catch [System.Management.Automation.PSInvalidCastException] {
+            Write-Verbose "API responded with data in an invalid format (not XML)"
+            $outputObjectParams.Add('CompletedSuccessfully',$false)
+            $outputObjectParams.Add('ExceptionMessage',$PSItem.Exception.message)
+        }
         catch {
-            Write-Verbose "Failed to connect to API endpoint: $TargetUri"
+            Write-Verbose "Failed to connect to API endpoint: $($Script:DokuServer.TargetUri)"
             $outputObjectParams.Add('CompletedSuccessfully',$false)
             $outputObjectParams.Add('FaultCode',(($PSItem.Exception.message) -split ' ')[1])
             $outputObjectParams.Add('FaultString',(($PSItem.Exception.message) -split 'faultString ')[1])

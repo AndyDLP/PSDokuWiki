@@ -33,15 +33,15 @@ function Get-DokuServer {
     if ($null -ne $Script:DokuServer) {
         Write-Verbose "Currently connected to DokuWiki server: $($Script:DokuServer.TargetUri)"
         if ($IsConnected) {
-            $true
+            return $true
         } else {
             $Output += $Script:DokuServer
-            $Output
+            return $Output
         }
     } else {
         Write-Verbose "Not currently connected to any DokuWiki servers"
         if ($IsConnected) {
-            $false
+            return $false
         }
     }
 }

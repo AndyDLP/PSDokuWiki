@@ -134,13 +134,10 @@ Describe 'Connect-DokuServer' {
 Describe 'Invoke-DokuApiCall' {
     Context 'Strict Mode' {
         Set-StrictMode -Version latest
-        
         InModuleScope PSDokuWiki {
-
-
             $Script:DokuServer = $null 
             It "Fails when not connected to DokuServer" {
-                (Invoke-DokuApiCall -MethodName 'wiki.getAllPages' -ErrorAction Stop -Verbose).ExceptionMessage | Should -Be "Cannot validate argument on parameter 'Uri'. The argument is null or empty. Provide an argument that is not null or empty, and then try the command again."
+                (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').ExceptionMessage | Should -Be "Cannot validate argument on parameter 'Uri'. The argument is null or empty. Provide an argument that is not null or empty, and then try the command again."
             }
 
             $Script:DokuServer = [PSCustomObject]@{
@@ -156,14 +153,13 @@ Describe 'Invoke-DokuApiCall' {
             
             $Script:DokuServer = [PSCustomObject]@{
                 Headers = @{ "Content-Type" = "text/xml"; }
-                TargetUri = 'www.google.com'
+                TargetUri = 'www.gmail.com'
                 SessionMethod = 'Cookie'
                 UnencryptedEndPoint = $true
                 WebSession = (New-Object Microsoft.PowerShell.Commands.WebRequestSession)
             }
-            It "Should successfully return an object with the base properties" {
-                $APIObjectProperties = (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').PSObject.Properties.Name 
-                @('CompletedSuccessfully','TargetUri','SessionMethod','Method','MethodParameters','XMLPayloadSent','XMLPayloadResponse','RawHttpResponse') | Where-Object -FilterScript { $APIObjectProperties -notcontains $_ } | Should -BeNullOrEmpty
+            It "Fails when using a valid web server that isnt dokuwiki" {
+                (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').CompletedSuccessfully | Should -Be $false
             }
         }
     }

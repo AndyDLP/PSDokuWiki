@@ -91,7 +91,7 @@ function Connect-DokuServer {
 
         # Check if already connected
         if (($null -ne $Script:DokuServer) -and (-not $Force)) {
-            throw "Open connection already exists to: $TargetUri - Use the -Force parameter to connect anyway"
+            throw "Open connection already exists to: $($Script:DokuServer.TargetUri) - Use the -Force parameter to connect anyway"
         }
 
         $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credential.Password)
