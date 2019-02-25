@@ -137,7 +137,11 @@ Describe 'Invoke-DokuApiCall' {
         InModuleScope PSDokuWiki {
             $Script:DokuServer = $null 
             It "Fails when not connected to DokuServer" {
-                (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').ExceptionMessage | Should -Be "Cannot validate argument on parameter 'Uri'. The argument is null or empty. Provide an argument that is not null or empty, and then try the command again."
+                (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').ExceptionMessage | Should -Be "The argument is null or empty. Provide an argument that is not null or empty, and then try the command again."
+            }
+            It "Should produce an object with the correct properties when DokuServer is NULL" {
+                $ResponseObject = (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').PSObject.Properties.Name
+                @('Method','CompletedSuccessfully','TargetUri','SessionMethod','MethodParameters','XMLPayloadSent','ExceptionMessage') | Where-Object -FilterScript { $ResponseObject -notcontains $_ } | Should -BeNullOrEmpty
             }
 
             $Script:DokuServer = [PSCustomObject]@{
@@ -150,16 +154,18 @@ Describe 'Invoke-DokuApiCall' {
             It "Fails when unable to communicate with DokuServer (Wrong IP / non-existent name)" {
                 (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').ExceptionMessage | Should -Be 'Invalid URI: The hostname could not be parsed.'
             }
-            
-            $Script:DokuServer = [PSCustomObject]@{
-                Headers = @{ "Content-Type" = "text/xml"; }
-                TargetUri = 'www.gmail.com'
-                SessionMethod = 'Cookie'
-                UnencryptedEndPoint = $true
-                WebSession = (New-Object Microsoft.PowerShell.Commands.WebRequestSession)
+            It "Should produce an object with the correct properties when target uri is unreachable" {
+                $ResponseObject = (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').PSObject.Properties.Name
+                @('Method','TargetUri','SessionMethod','MethodParameters','XMLPayloadSent','ExceptionMessage') | Where-Object -FilterScript { $ResponseObject -notcontains $_ } | Should -BeNullOrEmpty
             }
+            
+            $Script:DokuServer.TargetUri = 'www.google.com'
             It "Fails when using a valid web server that isnt dokuwiki" {
                 (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').CompletedSuccessfully | Should -Be $false
+            }
+            It "Should produce an object with the correct properties when target uri is reachable but invalid" {
+                $ResponseObject = (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').PSObject.Properties.Name
+                @('Method','TargetUri','SessionMethod','MethodParameters','XMLPayloadSent','ExceptionMessage') | Where-Object -FilterScript { $ResponseObject -notcontains $_ } | Should -BeNullOrEmpty
             }
         }
     }
@@ -167,3 +173,4 @@ Describe 'Invoke-DokuApiCall' {
 
 # Add-Type -AssemblyName System.Web
 # New-Object Microsoft.PowerShell.Commands.WebRequestSession
+

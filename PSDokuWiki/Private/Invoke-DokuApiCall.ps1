@@ -101,6 +101,11 @@ function Invoke-DokuApiCall {
             $outputObjectParams.Add('CompletedSuccessfully',$false)
             $outputObjectParams.Add('ExceptionMessage',$PSItem.Exception.message)
         }
+        catch [System.Management.Automation.ValidationMetadataException] {
+            Write-Verbose "Error: Invalid parameters possibly NULL DokuServer"
+            $outputObjectParams.Add('CompletedSuccessfully',$false)
+            $outputObjectParams.Add('ExceptionMessage',$PSItem.Exception.message)
+        }
         catch {
             Write-Verbose "Failed to connect to API endpoint: $($Script:DokuServer.TargetUri)"
             $outputObjectParams.Add('CompletedSuccessfully',$false)
