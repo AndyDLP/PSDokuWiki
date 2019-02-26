@@ -136,7 +136,7 @@ Describe 'Invoke-DokuApiCall' {
         Set-StrictMode -Version latest
         InModuleScope PSDokuWiki {
             $Script:DokuServer = $null 
-            It "Fails when not connected to DokuServer" {
+            It "Fails when DokuServer is NULL" {
                 (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').ExceptionMessage | Should -Be "The argument is null or empty. Provide an argument that is not null or empty, and then try the command again."
             }
             It "Should produce an object with the correct properties when DokuServer is NULL" {
@@ -151,7 +151,7 @@ Describe 'Invoke-DokuApiCall' {
                 UnencryptedEndPoint = $true
                 WebSession = (New-Object Microsoft.PowerShell.Commands.WebRequestSession)
             }
-            It "Fails when unable to communicate with DokuServer (Wrong IP / non-existent name)" {
+            It "Fails when when target uri is unreachable" {
                 (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').ExceptionMessage | Should -Be 'Invalid URI: The hostname could not be parsed.'
             }
             It "Should produce an object with the correct properties when target uri is unreachable" {
@@ -160,7 +160,7 @@ Describe 'Invoke-DokuApiCall' {
             }
             
             $Script:DokuServer.TargetUri = 'www.google.com'
-            It "Fails when using a valid web server that isnt dokuwiki" {
+            It "Fails when target uri is reachable but invalid" {
                 (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').CompletedSuccessfully | Should -Be $false
             }
             It "Should produce an object with the correct properties when target uri is reachable but invalid" {
@@ -170,7 +170,3 @@ Describe 'Invoke-DokuApiCall' {
         }
     }
 }
-
-# Add-Type -AssemblyName System.Web
-# New-Object Microsoft.PowerShell.Commands.WebRequestSession
-
