@@ -106,7 +106,6 @@ function Connect-DokuServer {
             # $Websession var defined here
             try {
                 $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
-                Write-Verbose $httpResponse.Content
                 $XMLContent = [xml]($httpResponse.Content)
             }
             catch [System.Management.Automation.PSInvalidCastException] {

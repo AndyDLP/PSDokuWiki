@@ -116,14 +116,18 @@ Describe 'Connect-DokuServer' {
             {Connect-DokuServer -ComputerName $Server -Unencrypted -SessionMethod 'Hello World' -Credential $credential} | Should -Throw
         }
         It 'Successfully returns an object with the correct primary type name' {
-            Mock -ModuleName PSDokuWiki Invoke-WebRequest { return "nothing" }
+            Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
+                Content = '<?xml version="1.0"?><methodResponse><string>Hello World</string></methodResponse>'
+            }) }
             # TODO: 
             #  Do I need a class to do -BeOfType [DokuWiki.Session.Detail]
             Connect-DokuServer -Server $Server -Credential $credential
             (Get-DokuServer).PSTypeNames[0] | Should -Be 'DokuWiki.Session.Detail'
         }
         It 'Successfully returns an object with all the correct properties' {
-            Mock -ModuleName PSDokuWiki  Invoke-WebRequest { return "nothing" }
+            Mock -ModuleName PSDokuWiki  Invoke-WebRequest { return ([PSCustomObject]@{
+                Content = '<?xml version="1.0"?><methodResponse><string>Hello World</string></methodResponse>'
+            }) }
             Connect-DokuServer -Server $Server -Credential $credential -Force
             $SessionObjectProperties = (Get-DokuServer).PSObject.Properties.Name 
             @('Server','TargetUri','SessionMethod','Headers','WebSession','TimeStamp','UnencryptedEndpoint') | Where-Object -FilterScript { $SessionObjectProperties -notcontains $_ } | Should -BeNullOrEmpty
