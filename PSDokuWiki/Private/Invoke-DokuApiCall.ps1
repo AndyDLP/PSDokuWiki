@@ -86,8 +86,8 @@ function Invoke-DokuApiCall {
                 # Web request worked but failed on API side
                 Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri), but failed to execute API method $MethodName"
                 $outputObjectParams.Add('CompletedSuccessfully',$false)
-                $outputObjectParams.Add('FaultCode',($XMLContent | Select-Xml -XPath "//struct").node.member[0].value.int)
-                $outputObjectParams.Add('FaultString',($XMLContent | Select-Xml -XPath "//struct").node.member[1].value.string)
+                $outputObjectParams.Add('FaultCode',[int]($XMLContent | Select-Xml -XPath "//struct").node.member[0].value.innertext)
+                $outputObjectParams.Add('FaultString',[string]($XMLContent | Select-Xml -XPath "//struct").node.member[1].value.innertext)
             } elseif ($null -eq ($XMLContent | Select-Xml -XPath "//methodResponse").node) {
                 Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri) but did not receive valid response"
                 $outputObjectParams.Add('CompletedSuccessfully',$false)

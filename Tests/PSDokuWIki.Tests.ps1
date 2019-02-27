@@ -171,6 +171,15 @@ Describe 'Invoke-DokuApiCall' {
                 $ResponseObject = (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').PSObject.Properties.Name
                 @('Method','TargetUri','SessionMethod','MethodParameters','XMLPayloadSent','ExceptionMessage') | Where-Object -FilterScript { $ResponseObject -notcontains $_ } | Should -BeNullOrEmpty
             }
+
+            It 'Should correctly identify the fault code & fault message' {
+                Mock  Invoke-WebRequest { 
+                    return ([PSCustomObject]@{
+                        Content = '<?xml version="1.0"?><fault><member><name>faultCode</name><value><int>1234</int></value></member><member><name>faultString</name><value><string>Error Message</string></value></member></fault>'
+                    })
+                }
+                (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').faultCode | Should -Be 1234
+            }
         }
     }
 }
