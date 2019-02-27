@@ -172,7 +172,7 @@ Describe 'Invoke-DokuApiCall' {
                 @('Method','TargetUri','SessionMethod','MethodParameters','XMLPayloadSent','ExceptionMessage') | Where-Object -FilterScript { $ResponseObject -notcontains $_ } | Should -BeNullOrEmpty
             }
 
-            It 'Should correctly identify the fault code & fault message' {
+            It 'Should correctly identify the fault code' {
                 Mock  Invoke-WebRequest { 
                     return ([PSCustomObject]@{
                         Content = '<?xml version="1.0"?><fault><member><name>faultCode</name><value><int>1234</int></value></member><member><name>faultString</name><value><string>Error Message</string></value></member></fault>'
