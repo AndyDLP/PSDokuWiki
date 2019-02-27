@@ -172,14 +172,21 @@ Describe 'Invoke-DokuApiCall' {
                 @('Method','TargetUri','SessionMethod','MethodParameters','XMLPayloadSent','ExceptionMessage') | Where-Object -FilterScript { $ResponseObject -notcontains $_ } | Should -BeNullOrEmpty
             }
 
-            # fix pls
             It 'Should correctly identify the fault code' {
                 Mock  Invoke-WebRequest { 
                     return ([PSCustomObject]@{
-                        Content = '<?xml version="1.0"?><fault><member><name>faultCode</name><value><int>1234</int></value></member><member><name>faultString</name><value><string>Error Message</string></value></member></fault>'
+                        Content = '<?xml version="1.0"?><methodResponse><fault><value><struct><member><name>faultCode</name><value><int>1234</int></value></member><member><name>faultString</name><value><string>Test Fault</string></value></member></struct></value></fault></methodResponse>'
                     })
                 }
                 (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').faultCode | Should -Be 1234
+            }
+            It 'Should correctly identify the fault string' {
+                Mock  Invoke-WebRequest { 
+                    return ([PSCustomObject]@{
+                        Content = '<?xml version="1.0"?><methodResponse><fault><value><struct><member><name>faultCode</name><value><int>1234</int></value></member><member><name>faultString</name><value><string>Test Fault</string></value></member></struct></value></fault></methodResponse>'
+                    })
+                }
+                (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').faultString | Should -Be 'Test Fault'
             }
         }
     }
