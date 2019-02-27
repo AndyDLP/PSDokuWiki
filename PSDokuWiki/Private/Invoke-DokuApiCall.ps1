@@ -109,8 +109,6 @@ function Invoke-DokuApiCall {
         catch {
             Write-Verbose "Failed to connect to API endpoint: $($Script:DokuServer.TargetUri)"
             $outputObjectParams.Add('CompletedSuccessfully',$false)
-            $outputObjectParams.Add('FaultCode',(($PSItem.Exception.message) -split ' ')[1])
-            $outputObjectParams.Add('FaultString',(($PSItem.Exception.message) -split 'faultString ')[1])
             $outputObjectParams.Add('ExceptionMessage',$PSItem.Exception.message)
         }
         
