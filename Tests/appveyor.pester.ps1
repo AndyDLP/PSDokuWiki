@@ -12,7 +12,7 @@ param([switch]$Finalize)
     $ProjectRoot = $ENV:APPVEYOR_BUILD_FOLDER
     Set-Location $ProjectRoot
 
-    Get-ChildItem -Path 'C:\Program Files\WindowsPowerShell\Modules\' | Write-Host
+    Get-Module -ListAvailable | Write-Host
    
 
 #Run a test with the current version of PowerShell
