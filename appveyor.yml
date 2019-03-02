@@ -11,6 +11,7 @@ install:
 build: false
 
 test_script:
+  - ps: Get-Module Pester
 # Test with native PS version
   - ps: . .\Tests\appveyor.pester.ps1
 # Test with PS version 2
