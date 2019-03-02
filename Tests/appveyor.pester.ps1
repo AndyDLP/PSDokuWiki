@@ -11,8 +11,6 @@ param([switch]$Finalize)
     $TestFile = "TestResultsPS$PSVersion.xml"
     $ProjectRoot = $ENV:APPVEYOR_BUILD_FOLDER
     Set-Location $ProjectRoot
-
-    Get-Module -ListAvailable | Write-Host
    
 
 #Run a test with the current version of PowerShell
