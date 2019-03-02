@@ -18,7 +18,7 @@ param([switch]$Finalize)
     {
         "`n`tSTATUS: Testing with PowerShell $PSVersion`n"
     
-        Import-Module 'C:\Program Files\WindowsPowerShell\Modules\Pester\4.4.1\Pester.psd1'
+        Import-Module (Resolve-Path 'C:\Program Files\WindowsPowerShell\Modules\Pester\*\Pester.psd1')
 
         Invoke-Pester -Path "$ProjectRoot\Tests" -OutputFormat NUnitXml -OutputFile "$ProjectRoot\$TestFile" -PassThru |
             Export-Clixml -Path "$ProjectRoot\PesterResults$PSVersion.xml"
