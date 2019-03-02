@@ -40,7 +40,7 @@ Describe 'ConvertTo-XmlRpcType' {
             ConvertTo-XmlRpcType -InputObject $XML | Should -be '<?xml version="1.0" encoding="utf-8"?><Body><Hello>lol</Hello></Body>'
         }
         It 'Should convert mixed data' {
-            ConvertTo-XmlRpcType -InputObject @('Hello World',1,@{'Key1' = 'Value1'; 'Key2' = 2; 'Key3' = @(1,2,3)}) | Should -be '<value><array><data><value><string>Hello World</string></value><value><i4>1</i4></value><value><struct><member><name>Key3</name><value><array><data><value><i4>1</i4></value><value><i4>2</i4></value><value><i4>3</i4></value></data></array></value></member><member><name>Key1</name><value><string>Value1</string></value></member><member><name>Key2</name><value><i4>2</i4></value></member></struct></value></data></array></value>'
+            ConvertTo-XmlRpcType -InputObject @('Hello World',1,@{'Key1' = 'Value1'}) | Should -be '<value><array><data><value><string>Hello World</string></value><value><i4>1</i4></value><value><struct><member><name>Key1</name><value><string>Value1</string></value></member></struct></value></data></array></value>'
         }
         It 'Should convert NULL' {
             ConvertTo-XmlRpcType -InputObject $null | Should -be ''
@@ -58,7 +58,7 @@ Describe 'ConvertTo-XmlRpcMethodCall' {
             ConvertTo-XmlRpcMethodCall -Name 'wiki.getPage' -Params @('hello') | Should -be '<?xml version="1.0"?><methodCall><methodName>wiki.getPage</methodName><params><param><value><string>hello</string></value></param></params></methodCall>'
         }
         It 'Should work for methods with two parameters' {
-            ConvertTo-XmlRpcMethodCall -Name 'wiki.getPageVersion' -Params @("pagename",@{'Key1' = 'Value1'; 'Key2' = 2}) | Should -be '<?xml version="1.0"?><methodCall><methodName>wiki.getPageVersion</methodName><params><param><value><string>pagename</string></value></param><param><value><struct><member><name>Key1</name><value><string>Value1</string></value></member><member><name>Key2</name><value><i4>2</i4></value></member></struct></value></param></params></methodCall>'
+            ConvertTo-XmlRpcMethodCall -Name 'wiki.getPageVersion' -Params @("pagename",@{'Key1' = 'Value1'}) | Should -be '<?xml version="1.0"?><methodCall><methodName>wiki.getPageVersion</methodName><params><param><value><string>pagename</string></value></param><param><value><struct><member><name>Key1</name><value><string>Value1</string></value></member></struct></value></param></params></methodCall>'
         }
         It 'Should fail for empty methods' {
             { ConvertTo-XmlRpcMethodCall -Name '' -Params @("test") } | Should -Throw
