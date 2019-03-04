@@ -69,9 +69,9 @@ param([switch]$Finalize)
         #ScriptAnalyzer
         "`n`tScriptAnalyzer: checking code...`n"
         Add-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Running
-        $Results = Invoke-ScriptAnalyzer -Path $ProjectRoot -Recurse -Severity Error -ErrorAction SilentlyContinue
-        If ($Results) {
-            $ResultString = $Results | Out-String
+        $CodeResults = Invoke-ScriptAnalyzer -Path $ProjectRoot -Recurse -Severity Error -ErrorAction SilentlyContinue
+        If ($CodeResults) {
+            $ResultString = $CodeResults | Out-String
             Write-Warning $ResultString
             Add-AppveyorMessage -Message "PSScriptAnalyzer output contained one or more result(s) with 'Error' severity.`
             Check the 'Tests' tab of this build for more details." -Category Error
