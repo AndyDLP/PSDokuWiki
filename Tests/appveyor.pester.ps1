@@ -69,7 +69,7 @@ param([switch]$Finalize)
         #ScriptAnalyzer
         "`n`tScriptAnalyzer: checking code...`n"
         Add-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Running
-        $CodeResults = Invoke-ScriptAnalyzer -Path $ProjectRoot -Recurse -Severity Error -ErrorAction SilentlyContinue
+        $CodeResults = Invoke-ScriptAnalyzer -Path $ProjectRoot\PSDokuWiki -Recurse -Severity Error -ErrorAction SilentlyContinue
         If ($CodeResults) {
             $ResultString = $CodeResults | Out-String
             Write-Warning $ResultString
