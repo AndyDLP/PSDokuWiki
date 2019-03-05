@@ -72,12 +72,11 @@
                 Write-Verbose "Principal name: $Name"
                 $APIResponse = Invoke-DokuApiCall -MethodName 'plugin.acl.addAcl' -MethodParameters @($page,$Name,$Acl) -ErrorAction 'Stop'
                 if ($APIResponse.CompletedSuccessfully -eq $true) {
-                    [bool]$ReturnValue = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").Node.InnerText
+                    # Doesn't want to cast (string) '1' to true... so we cast to int to bool
+                    [bool]$ReturnValue = [int](($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").Node.InnerText)
                     if ($ReturnValue -eq $false) {
-                        # error code generated = Fail
                         Write-Error "Failed to apply Acl: $Acl for user: $Principal to entity: $Fullname"
                     } else {
-                        # it worked! no news = good news
                         Write-Verbose "Successfully applied Acl: $Acl for user: $Principal to entity: $Fullname"
                     }
                 } elseif ($null -eq $APIResponse.ExceptionMessage) {
