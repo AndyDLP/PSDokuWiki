@@ -58,6 +58,23 @@ Describe 'Add-DokuAclRule' {
             }
         }
     }
+    Context 'When one user is passed to two pages' {
+        Set-StrictMode -Version latest
+        InModuleScope PSDokuWiki {
+            It 'Should make one call to Invoke-DokuApiCall' {
+                Mock Invoke-DokuApiCall {
+                    return (
+                        [PSCustomObject]@{
+                            CompletedSuccessfully = $true
+                            XMLPayloadResponse = [xml]'<?xml version="1.0"?><methodResponse><value><boolean>1</boolean></value></methodResponse>'
+                        }
+                    )
+                }
+                Add-DokuAclRule -FullName 'namespace:pagename','pagename' -Principal 'username' -Acl 2
+                Assert-MockCalled -CommandName Invoke-DokuApiCall -Exactly -Times 2
+            }
+        }
+    }
     Context 'When two users are passed to one page' {
         Set-StrictMode -Version latest
         InModuleScope PSDokuWiki {
