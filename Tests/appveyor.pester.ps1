@@ -20,6 +20,9 @@ param([switch]$Finalize)
     
         Import-Module (Resolve-Path 'C:\Program Files\WindowsPowerShell\Modules\Pester\*\Pester.psd1')
 
+        $TopLevelFolder = Split-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Path -Parent) -Parent
+        Import-Module (Join-Path -Path $TopLevelFolder -ChildPath 'PSDokuWiki\PSDokuWiki.psm1') -Force
+
         Invoke-Pester -Path "$ProjectRoot\Tests" -OutputFormat NUnitXml -OutputFile "$ProjectRoot\$TestFile" -PassThru | Export-Clixml -Path "$ProjectRoot\PesterResults$PSVersion.xml"
     }
 
