@@ -39,6 +39,9 @@
                     Size         = (($node.member)[2]).value.InnerText
                     LastModified = Get-Date -Date ((($node.member)[3]).value.InnerText)
                     LastModifiedRaw = (($node.member)[3]).value.InnerText
+                    PageName        = (((($node.member)[0]).value.InnerText) -split ":")[-1]
+                    ParentNamespace = (((($node.member)[0]).value.InnerText) -split ":")[-2]
+                    RootNamespace   = (((($node.member)[0]).value.InnerText) -split ":")[0]
                 }
                 $PageObject
             }

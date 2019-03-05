@@ -32,7 +32,7 @@ Describe 'Get-DokuAllPages' {
             return (
                 [PSCustomObject]@{
                     CompletedSuccessfully = $true
-                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><value><struct><member><name>Name</name><value><string>Home</string></value></member><member><name>Acl</name><value><i4>2</i4></value></member><member><name>Size</name><value><int>2048</int></value></member><member><name>LastModified</name><value><string>01-01-2019</string></value></member></struct></value></methodResponse>'
+                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><value><struct><member><name>Name</name><value><string>rootns:ns:pagename</string></value></member><member><name>Acl</name><value><i4>2</i4></value></member><member><name>Size</name><value><int>2048</int></value></member><member><name>LastModified</name><value><string>01-01-2019</string></value></member></struct></value></methodResponse>'
                 }
             )
         }
@@ -40,6 +40,27 @@ Describe 'Get-DokuAllPages' {
 
         It 'Should return an object with all properties defined' {
             @('FullName','Acl','Size','LastModified','LastModifiedRaw') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty
+        }
+        It 'Should return an object with the correct value for FullName' {
+            $ResponseObject.FullName | Should -Be 'rootns:ns:pagename'
+        }
+        It 'Should return an object with the correct value for Acl' {
+            $ResponseObject.Acl | Should -Be 2
+        }
+        It 'Should return an object with the correct value for Size' {
+            $ResponseObject.Size | Should -Be 2048
+        }
+        It 'Should return an object with the correct value for LastModified' {
+            $ResponseObject.LastModified | Should -Be (Get-Date '01-01-2019')
+        }
+        It 'Should return an object with the correct value for LastModifiedRaw' {
+            $ResponseObject.LastModifiedRaw | Should -Be '01-01-2019'
+        }
+        It 'Should return an object with the correct value for ParentNamespace' {
+            $ResponseObject.ParentNamespace | Should -Be 'ns'
+        }
+        It 'Should return an object with the correct value for RootNamespace' {
+            $ResponseObject.RootNamespace | Should -Be 'rootns'
         }
     }
 }
