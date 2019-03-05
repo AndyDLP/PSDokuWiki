@@ -6,8 +6,6 @@ skip_commits:
   message: /updated readme.*/
 
 install:
-  - ps: Write-Host "Build version :`  $env:APPVEYOR_BUILD_VERSION"
-  - ps: Write-Host "Branch        :`  $env:APPVEYOR_REPO_BRANCH"
   - cinst pester
   - ps: Install-PackageProvider -Name NuGet -Force | Out-Null
   - ps: Install-Module PsScriptAnalyzer -Force | Out-Null

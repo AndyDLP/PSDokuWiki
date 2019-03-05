@@ -11,7 +11,9 @@ param([switch]$Finalize)
     $TestFile = "TestResultsPS$PSVersion.xml"
     $ProjectRoot = $ENV:APPVEYOR_BUILD_FOLDER
     Set-Location $ProjectRoot
-   
+
+    Write-Host "Build version :`  $env:APPVEYOR_BUILD_VERSION"
+    Write-Host "Branch        :`  $env:APPVEYOR_REPO_BRANCH"
 
 #Run a test with the current version of PowerShell
     if(-not $Finalize)
@@ -84,6 +86,7 @@ param([switch]$Finalize)
             Throw "Build failed"
         }
         Else {
+            "CODE ANALYSIS COMPLETE:`n`nNO ERRORS"
             Update-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Passed
         }
     }
