@@ -38,10 +38,10 @@
                     Acl          = (($node.member)[1]).value.InnerText
                     Size         = (($node.member)[2]).value.InnerText
                     LastModified = Get-Date -Date ((($node.member)[3]).value.InnerText)
+                    LastModifiedRaw = (($node.member)[3]).value.InnerText
                 }
-                [array]$AllPages = $AllPages + $PageObject
+                $PageObject
             }
-            $AllPages
         } elseif ($null -eq $APIResponse.ExceptionMessage) {
             Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
         } else {
