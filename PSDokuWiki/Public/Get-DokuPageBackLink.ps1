@@ -1,4 +1,4 @@
-﻿function Get-DokuPageBackLinks {
+﻿function Get-DokuPageBackLink {
 <#
 	.SYNOPSIS
 		Returns a list of backlinks of a Wiki page
@@ -10,7 +10,7 @@
 		The full page name for which to return the data
 
 	.EXAMPLE
-		PS C:\> $PageBackLinks = Get-DokuPageBackLinks -FullName "namespace:namespace:page"
+		PS C:\> $PageBackLink = Get-DokuPageBackLink -FullName "namespace:namespace:page"
 
 	.OUTPUTS
 		System.Management.Automation.PSObject[]
@@ -43,12 +43,13 @@
 				$PageArray = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array/data/value").Node.InnerText
 				foreach ($Page in $PageArray) {
 					$PageObject = New-Object PSObject -Property @{
-						FullName = $PageName
-						BacklinkedFullName = $Page
+						FullName = $Page
+						PageName = ($Page -split ":")[-1]
+						ParentNamespace = ($Page -split ":")[-2]
+						RootNamespace = ($Page -split ":")[0]
 					}
-					[array]$PageLinks = $PageLinks + $PageObject
+					$PageObject
 				}
-				$PageLinks
 			} elseif ($null -eq $APIResponse.ExceptionMessage) {
 				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 			} else {
