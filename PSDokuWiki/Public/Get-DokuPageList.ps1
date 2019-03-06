@@ -32,7 +32,7 @@
 				$PageObject = New-Object PSObject -Property @{
 					FullName = (($node.member)[0]).value.string
 					Revision = (($node.member)[1]).value.int
-					ModifiedTime = (($node.member)[2]).value.int
+					LastModified = (($node.member)[2]).value.int
 					Size = (($node.member)[3]).value.int
 					PageName = (((($node.member)[0]).value.string) -split ":")[-1]
 					ParentNamespace = (((($node.member)[0]).value.string) -split ":")[-2]
