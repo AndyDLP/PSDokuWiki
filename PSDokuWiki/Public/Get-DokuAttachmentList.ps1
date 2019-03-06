@@ -42,7 +42,7 @@
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
 				$MemberNodes = ($APIResponse.XMLPayloadResponse| Select-Xml -XPath "//struct").Node
 				foreach ($node in $MemberNodes) {
-					$ChangeObject = New-Object PSObject -Property @{
+					$MediaObject = New-Object PSObject -Property @{
 						FullName = ((($node.member)[0]).value.innertext)
 						Name = (($node.member)[1]).value.innertext
 						Size = [int](($node.member)[2]).value.innertext
@@ -54,9 +54,8 @@
 						ParentNamespace = (((($node.member)[0]).value.innertext) -split ":")[-2]
 						RootNamespace = (((($node.member)[0]).value.innertext) -split ":")[0]
 					}
-					[array]$AttachmentList = $AttachmentList + $ChangeObject
+					$MediaObject
 				}
-				$AttachmentList
 			} elseif ($null -eq $APIResponse.ExceptionMessage) {
 				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 			} else {
