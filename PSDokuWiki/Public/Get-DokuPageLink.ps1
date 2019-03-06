@@ -1,4 +1,4 @@
-﻿function Get-DokuPageLinks {
+﻿function Get-DokuPageLink {
 <#
 	.SYNOPSIS
 		Returns an array of all links on a page
@@ -10,7 +10,7 @@
 		The full page name for which to return the data
 
 	.EXAMPLE
-		PS C:\> $PageLinks = Get-DokuPageLinks -FullName "namespace:namespace:page"
+		PS C:\> $PageLinks = Get-DokuPageLink -FullName "namespace:namespace:page"
 
 	.OUTPUTS
 		System.Management.Automation.PSObject[]
@@ -48,11 +48,10 @@
 						TargetPageName = (($node.member)[1]).value.string
 						URL = (($node.member)[2]).value.string
 					}
-					[array]$PageLinks = $PageLinks + $PageObject
+					$PageObject
 				}
-				$PageLinks
 			} elseif ($null -eq $APIResponse.ExceptionMessage) {
-				Write-Error "API Fault code: $($APIResponse.FaultCode) - API Fault string: $($APIResponse.FaultString)"
+				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 			} else {
 				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 			}
