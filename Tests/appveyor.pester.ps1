@@ -65,7 +65,7 @@ if(-not $Finalize) {
         }
 
     # ScriptAnalyzer
-    "`n`tSCRIPTANALYZER: CHECKING...`n"
+    "`nSCRIPTANALYZER: CHECKING..."
     Add-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Running
     $CodeResults = Invoke-ScriptAnalyzer -Path $ProjectRoot\PSDokuWiki -Recurse -Severity Error -ErrorAction SilentlyContinue
     If ($CodeResults) {
@@ -84,7 +84,7 @@ if(-not $Finalize) {
     }
 
     
-    "`n`tCODE COVERAGE:`n"
+    "`nCODE COVERAGE:"
     Add-AppveyorTest -Name "PesterStatementCoverage" -Outcome Running
     Add-AppveyorTest -Name "PesterFunctionCoverage" -Outcome Running
     #region Show coverage
@@ -148,21 +148,23 @@ if(-not $Finalize) {
     "`n`tStatement coverage: $($CodeCoverage.Statement.Analyzed) analyzed, $($CodeCoverage.Statement.Executed) executed, $($CodeCoverage.Statement.Missed) missed, $($CodeCoverage.Statement.Coverage)%."
     if ($CodeCoverage.Statement.Coverage -gt $StatementThreshold) {
         # passed Statement coverage test
-        "`tPassed statement coverage threshold of: $StatementThreshold%`n"
+        "`tPassed statement coverage threshold of: $StatementThreshold%"
         Update-AppveyorTest -Name "PesterStatementCoverage" -Outcome Passed
     } else {
         # failed Statement coverage test
+        "`tFailed function coverage threshold of: $StatementThreshold%"
         Add-AppveyorMessage -Message "`tFailed function coverage threshold of: $StatementThreshold%`n" -Category Error
         Update-AppveyorTest -Name "PesterStatementCoverage" -Outcome Failed -ErrorMessage "Pester statement coverage did not meet threshold of $StatementThreshold%"
     }
     "`tFunction coverage: $($CodeCoverage.Function.Analyzed) analyzed, $($CodeCoverage.Function.Executed) executed, $($CodeCoverage.Function.Missed) missed, $($CodeCoverage.Function.Coverage)%."
     if ($CodeCoverage.Function.Coverage -gt $FunctionThreshold) {
         # passed Function coverage test
-        "`tPassed function coverage threshold of: $FunctionThreshold%`n"
+        "`tPassed function coverage threshold of: $FunctionThreshold%"
         Update-AppveyorTest -Name "PesterFunctionCoverage" -Outcome Passed
 
     } else {
         # failed Function coverage test
+        "`tFailed function coverage threshold of: $FunctionThreshold%"
         Add-AppveyorMessage -Message "`tFailed function coverage threshold of: $FunctionThreshold%`n" -Category Error
         Update-AppveyorTest -Name "PesterFunctionCoverage" -Outcome Failed -ErrorMessage "Pester statement coverage did not meet threshold of $FunctionThreshold%"
     }
