@@ -59,8 +59,7 @@ if(-not $Finalize) {
                     Name = "It $($Test.Name)"
                     Result = $Test.Result
                 }
-            } |
-                Sort-Object -Property Describe, Context, Name, Result | Format-List
+            } | Sort-Object -Property Describe, Context, Name, Result | Format-List
 
             throw "$FailedCount tests failed."
         }
@@ -153,7 +152,7 @@ if(-not $Finalize) {
         Update-AppveyorTest -Name "PesterStatementCoverage" -Outcome Passed
     } else {
         # failed Statement coverage test
-        "`tFailed function coverage threshold of: $StatementThreshold%`n"
+        Add-AppveyorMessage -Message "`tFailed function coverage threshold of: $StatementThreshold%`n" -Category Error
         Update-AppveyorTest -Name "PesterStatementCoverage" -Outcome Failed -ErrorMessage "Pester statement coverage did not meet threshold of $StatementThreshold%"
     }
     "`tFunction coverage: $($CodeCoverage.Function.Analyzed) analyzed, $($CodeCoverage.Function.Executed) executed, $($CodeCoverage.Function.Missed) missed, $($CodeCoverage.Function.Coverage)%."
@@ -164,7 +163,7 @@ if(-not $Finalize) {
 
     } else {
         # failed Function coverage test
-        "`tFailed function coverage threshold of: $FunctionThreshold%`n"
+        Add-AppveyorMessage -Message "`tFailed function coverage threshold of: $FunctionThreshold%`n" -Category Error
         Update-AppveyorTest -Name "PesterFunctionCoverage" -Outcome Failed -ErrorMessage "Pester statement coverage did not meet threshold of $FunctionThreshold%"
     }
 }
