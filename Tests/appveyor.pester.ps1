@@ -142,13 +142,13 @@ if(-not $Finalize) {
     $CodeCoverage.Function.Coverage = [math]::Round($CodeCoverage.Function.Executed / $CodeCoverage.Function.Analyzed * 100, 2)
     
     #endregion
-    $StatementThreshold = 80
+    $StatementThreshold = 20
     $FunctionThreshold = 100
     
     "`n`tStatement coverage: $($CodeCoverage.Statement.Analyzed) analyzed, $($CodeCoverage.Statement.Executed) executed, $($CodeCoverage.Statement.Missed) missed, $($CodeCoverage.Statement.Coverage)%."
     if ($CodeCoverage.Statement.Coverage -gt $StatementThreshold) {
         # passed Statement coverage test
-        "`tPassed statement coverage threshold of: $StatementThreshold%"
+        Write-Host "`tPassed statement coverage threshold of: $StatementThreshold%" -ForegroundColor Green
         Update-AppveyorTest -Name "PesterStatementCoverage" -Outcome Passed
     } else {
         # failed Statement coverage test
@@ -159,7 +159,7 @@ if(-not $Finalize) {
     "`n`tFunction coverage: $($CodeCoverage.Function.Analyzed) analyzed, $($CodeCoverage.Function.Executed) executed, $($CodeCoverage.Function.Missed) missed, $($CodeCoverage.Function.Coverage)%."
     if ($CodeCoverage.Function.Coverage -gt $FunctionThreshold) {
         # passed Function coverage test
-        "`tPassed function coverage threshold of: $FunctionThreshold%"
+        Write-Host "`tPassed function coverage threshold of: $FunctionThreshold%" -ForegroundColor Green
         Update-AppveyorTest -Name "PesterFunctionCoverage" -Outcome Passed
 
     } else {
