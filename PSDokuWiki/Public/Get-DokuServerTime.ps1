@@ -24,12 +24,7 @@
 
 	[CmdletBinding()]
 	[OutputType([datetime], [int])]
-	param
-	(
-		[Parameter(Position = 1,
-				   HelpMessage = 'Output the raw response from the server in UNIX time')]
-		[switch]$Raw
-	)
+	param ( )
 
 	begin {
 
@@ -39,11 +34,12 @@
 		$APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.getTime' -MethodParameters @()
 		if ($APIResponse.CompletedSuccessfully -eq $true) {			
 			[int]$RawDokuTime = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/int").Node.InnerText
-			if ($Raw) {
-				$RawDokuTime
-			} else {
-				[datetime]$RawDokuTime
+			$DateObject = New-Object PSObject -Property @{
+				Server = $Script:DokuServer.Server
+				UNIXTimestamp = $RawDokuTime
+				ServerTime = [datetime]$RawDokuTime
 			}
+			$DateObject
 		} elseif ($null -eq $APIResponse.ExceptionMessage) {
 			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 		} else {
