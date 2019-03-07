@@ -50,9 +50,9 @@ Describe 'Get-DokuPageList' {
         It 'Should return an object with the correct value for Size' {
             $ResponseObject.Size | Should -Be 2048
         }
-        #It 'Should return an object with the correct value for LastModified' {
-        #    $ResponseObject.LastModified | Should -Be (Get-Date '01-01-2019')
-        #}
+        It 'Should return an object with the correct value for LastModified' {
+            $ResponseObject.LastModified | Should -Be 11112019
+        }
         It 'Should return an object with the correct value for ParentNamespace' {
             $ResponseObject.ParentNamespace | Should -Be 'ns'
         }

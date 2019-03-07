@@ -1,4 +1,4 @@
-﻿function Get-DokuPageVersions {
+﻿function Get-DokuPageVersion {
 <#
 	.SYNOPSIS
 		Returns the available versions of a Wiki page.
@@ -13,7 +13,7 @@
 		used to list earlier versions in the history
 
 	.EXAMPLE
-		PS C:\> $PageVersions = Get-DokuPageVersions -FullName "namespace:namespace:page"
+		PS C:\> $PageVersions = Get-DokuPageVersion -FullName "namespace:namespace:page"
 
 	.OUTPUTS
 		System.Management.Automation.PSObject[]
@@ -55,7 +55,7 @@
 						IpAddress = (($node.member)[1]).value.string
 						Type = (($node.member)[2]).value.string
 						Summary = (($node.member)[3]).value.string
-						Modified = Get-Date -Date ((($node.member)[4]).value.InnerText)
+						LastModified = ([datetime]'1970-01-01 00:00:00').AddSeconds([bigint]((($node.member)[4]).value.InnerText))
 						VersionTimestamp = (($node.member)[5]).value.int
 						PageName = ($PageName -split ":")[-1]
 						ParentNamespace = ($PageName -split ":")[-2]

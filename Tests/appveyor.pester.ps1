@@ -142,7 +142,7 @@ if(-not $Finalize) {
     $CodeCoverage.Function.Coverage = [math]::Round($CodeCoverage.Function.Executed / $CodeCoverage.Function.Analyzed * 100, 2)
     
     #endregion
-    $StatementThreshold = 20
+    $StatementThreshold = 80
     $FunctionThreshold = 100
     
     "`n`tStatement coverage: $($CodeCoverage.Statement.Analyzed) analyzed, $($CodeCoverage.Statement.Executed) executed, $($CodeCoverage.Statement.Missed) missed, $($CodeCoverage.Statement.Coverage)%."
@@ -155,17 +155,20 @@ if(-not $Finalize) {
         Write-Warning "`tFailed function coverage threshold of: $StatementThreshold%"
         Add-AppveyorMessage -Message "`tFailed function coverage threshold of: $StatementThreshold%`n" -Category Error
         Update-AppveyorTest -Name "PesterStatementCoverage" -Outcome Failed -ErrorMessage "Pester statement coverage did not meet threshold of $StatementThreshold%"
+        # Failing the build
+        #Throw "Build failed"
     }
     "`n`tFunction coverage: $($CodeCoverage.Function.Analyzed) analyzed, $($CodeCoverage.Function.Executed) executed, $($CodeCoverage.Function.Missed) missed, $($CodeCoverage.Function.Coverage)%."
     if ($CodeCoverage.Function.Coverage -gt $FunctionThreshold) {
         # passed Function coverage test
         Write-Host "`tPassed function coverage threshold of: $FunctionThreshold%" -ForegroundColor Green
         Update-AppveyorTest -Name "PesterFunctionCoverage" -Outcome Passed
-
     } else {
         # failed Function coverage test
         Write-Warning "`tFailed function coverage threshold of: $FunctionThreshold%"
         Add-AppveyorMessage -Message "`tFailed function coverage threshold of: $FunctionThreshold%`n" -Category Error
         Update-AppveyorTest -Name "PesterFunctionCoverage" -Outcome Failed -ErrorMessage "Pester statement coverage did not meet threshold of $FunctionThreshold%"
+        # Failing the build
+        #Throw "Build failed"
     }
 }

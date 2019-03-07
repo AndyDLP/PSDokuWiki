@@ -1,4 +1,4 @@
-Describe 'Get-DokuPageData' {
+Describe 'Get-DokuPageVersionHtml' {
     Set-StrictMode -Version latest
     Context 'When the Invoke-DokuApiCall command fails' {
         It 'Should display the exception message' {
@@ -10,7 +10,7 @@ Describe 'Get-DokuPageData' {
                     }
                 )
             }
-            Get-DokuPageData -FullName 'rootns:ns:pagename' -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
+            Get-DokuPageVersionHtml -FullName 'rootns:ns:pagename' -VersionTimestamp 123456 -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
             $DokuErrorVariable.exception.message | Should -Be 'Exception: Test Exception'
         }
         It 'Should display the fault code & string' {
@@ -23,10 +23,11 @@ Describe 'Get-DokuPageData' {
                     }
                 )
             }
-            Get-DokuPageData -FullName 'rootns:ns:pagename' -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
+            Get-DokuPageVersionHtml -FullName 'rootns:ns:pagename' -VersionTimestamp 123456 -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
             $DokuErrorVariable.exception.message | Should -Be 'Fault code: 12345 - Fault string: Fault String'
         }
     }
+    <#
     Context 'When data for one page is requested' {
         Mock Invoke-DokuApiCall -ModuleName PSDokuWiki {
             return (
@@ -36,13 +37,13 @@ Describe 'Get-DokuPageData' {
                 }
             )
         }
-        $ResponseObject = Get-DokuPageData -FullName 'rootns:ns:pagename'
+        $ResponseObject = Get-DokuPageVersionHtml -FullName 'rootns:ns:pagename' -VersionTimestamp 123456
 
         It 'Should return an object with all properties defined' {
-            @('FullName','RawText','TimeChecked','PageName','RootNamespace','ParentNamespace') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty
+            @('FullName','RawText','VersionTimestamp','PageName','RootNamespace','ParentNamespace') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty
         }
-        It 'Should return an object with the correct value for TimeChecked' {
-            $ResponseObject.TimeChecked | Should -BeGreaterThan (Get-Date).AddSeconds(-3)
+        It 'Should return an object with the correct value for VersionTimestamp' {
+            $ResponseObject.VersionTimestamp | Should -Be 123456
         }
         It 'Should return an object with the correct value for FullName' {
             $ResponseObject.FullName | Should -Be 'rootns:ns:pagename'
@@ -59,6 +60,9 @@ Describe 'Get-DokuPageData' {
         It 'Should return an object with the correct value for RootNamespace' {
             $ResponseObject.RootNamespace | Should -Be 'rootns'
         }
+        It 'Should call Invoke-DokuApiCall once' {
+            Assert-MockCalled -CommandName Invoke-DokuApiCall -ModuleName PSDokuWIki -Exactly -Times 1
+        }
     }
     Context 'When data for two pages is requested' {
         Mock Invoke-DokuApiCall -ModuleName PSDokuWiki {
@@ -69,13 +73,13 @@ Describe 'Get-DokuPageData' {
                 }
             )
         }
-        $ResponseObject = (Get-DokuPageData -FullName 'rootns:ns:pagename','rootns2:ns2:pagename2')[1]
+        $ResponseObject = (Get-DokuPageVersionHtml -FullName 'rootns:ns:pagename','rootns2:ns2:pagename2' -VersionTimestamp 123456)[1]
 
         It 'Should return an object with all properties defined' {
-            @('FullName','RawText','TimeChecked','PageName','RootNamespace','ParentNamespace') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty
+            @('FullName','RawText','VersionTimestamp','PageName','RootNamespace','ParentNamespace') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty
         }
-        It 'Should return an object with the correct value for TimeChecked' {
-            $ResponseObject.TimeChecked | Should -BeGreaterThan (Get-Date).AddSeconds(-3)
+        It 'Should return an object with the correct value for VersionTimestamp' {
+            $ResponseObject.VersionTimestamp | Should -Be 123456
         }
         It 'Should return an object with the correct value for FullName' {
             $ResponseObject.FullName | Should -Be 'rootns2:ns2:pagename2'
@@ -105,7 +109,7 @@ Describe 'Get-DokuPageData' {
                 }
             )
         }
-        $ResponseObject = Get-DokuPageData -FullName 'rootns:ns:pagename' -Raw
+        $ResponseObject = Get-DokuPageVersionHtml -FullName 'rootns:ns:pagename' -VersionTimestamp 123456 -Raw
 
         It 'Should return a string' {
             $ResponseObject | Should -BeOfType [string]
@@ -114,4 +118,5 @@ Describe 'Get-DokuPageData' {
             $ResponseObject | Should -Be '### Page Data ###'
         }
     }
+    #>
 }
