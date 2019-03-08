@@ -39,7 +39,7 @@
 		[ValidateNotNullOrEmpty()]
 		[string[]]$Principal
 	)
-
+	
 	begin {}
 
 	process {

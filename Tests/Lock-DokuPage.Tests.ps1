@@ -27,30 +27,44 @@ Describe 'Lock-DokuPage' {
             $DokuErrorVariable.exception.message | Should -Be 'Fault code: 12345 - Fault string: Fault String'
         }
     }
-    Context 'When a page is locked successfully' {
-        Mock Invoke-DokuApiCall -ModuleName PSDokuWiki {
-            return (
-                [PSCustomObject]@{
-                    CompletedSuccessfully = $true
-                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><params><param><value><array><data><value><array><data><value><string>rootns:ns:pagename</string></value></data></array><array><data></data></array><array><data></data></array><array><data></data></array><array><data></data></array></value></data></array></value></param></params></methodResponse>'
-                }
-            )
-        }
-        It 'Should not throw' {
-            { Lock-DokuPage -FullName 'rootns:ns:pagename' -ErrorAction Stop -Verbose} | Should -Not -Throw
-        }
-    }
     Context 'When a page fails to lock' {
         Mock Invoke-DokuApiCall -ModuleName PSDokuWiki {
             return (
                 [PSCustomObject]@{
                     CompletedSuccessfully = $true
-                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><params><param><value><array><data><value><array><data></data></array><array><data><value><string>rootns:ns:pagename</string></value></data></array><array><data></data></array><array><data></data></array><array><data></data></array></value></data></array></value></param></params></methodResponse>'
+                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><params><param><value><struct><member><name>locked</name><value><array><data></data></array></value></member><member><name>lockfail</name><value><array><data><value><string>start:testpage</string></value></data></array></value></member><member><name>unlocked</name><value><array><data></data></array></value></member><member><name>unlockfail</name><value><array><data></data></array></value></member></struct></value></param></params></methodResponse>'
                 }
             )
         }
         It 'Should throw an error' {
-            { Lock-DokuPage -FullName 'rootns:ns:pagename' -ErrorAction Stop -Verbose} | Should -Not -Throw
+            { Lock-DokuPage -FullName 'rootns:ns:pagename' -ErrorAction Stop } | Should -Throw
+        }
+    }
+    Context 'When a page is locked successfully' {
+        Mock Invoke-DokuApiCall -ModuleName PSDokuWiki {
+            return (
+                [PSCustomObject]@{
+                    CompletedSuccessfully = $true
+                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><params><param><value><struct><member><name>locked</name><value><array><data><value><string>start:testpage</string></value></data></array></value></member><member><name>lockfail</name><value><array><data></data></array></value></member><member><name>unlocked</name><value><array><data></data></array></value></member><member><name>unlockfail</name><value><array><data></data></array></value></member></struct></value></param></params></methodResponse>'
+                }
+            )
+        }
+        It 'Should not throw' {
+            { Lock-DokuPage -FullName 'rootns:ns:pagename' -ErrorAction Stop } | Should -Not -Throw
+        }
+    }
+    Context 'When two pages are locked successfully' {
+        Mock Invoke-DokuApiCall -ModuleName PSDokuWiki {
+            return (
+                [PSCustomObject]@{
+                    CompletedSuccessfully = $true
+                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><params><param><value><struct><member><name>locked</name><value><array><data><value><string>start:testpage</string></value><value><string>start:testpage</string></value></data></array></value></member><member><name>lockfail</name><value><array><data></data></array></value></member><member><name>unlocked</name><value><array><data></data></array></value></member><member><name>unlockfail</name><value><array><data></data></array></value></member></struct></value></param></params></methodResponse>'
+                }
+            )
+        }
+        It 'Should only call Invoke-DokuApiCall once' {
+            Lock-DokuPage -FullName 'rootns:ns:pagename','rootns:ns:pagename'
+            Assert-MockCalled -CommandName Invoke-DokuApiCall -ModuleName PSDokuWiki -Exactly -Times 1
         }
     }
 }

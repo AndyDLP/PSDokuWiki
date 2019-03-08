@@ -94,6 +94,7 @@ function Invoke-DokuApiCall {
             } else {
                 Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri) and successfully executed API method $MethodName"
                 $outputObjectParams.Add('CompletedSuccessfully',$true)
+                Write-Verbose $XMLContent.InnerXml
             }
         }
         catch [System.Management.Automation.PSInvalidCastException] {
