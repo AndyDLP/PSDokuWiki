@@ -4,7 +4,7 @@ function Lock-DokuPage {
 		Locks a DokuWiki page for 15 min
 
 	.DESCRIPTION
-		Locks the page so it cannot be modified by users for 15 min. Also works for not yet existing pages (block create name)
+		Locks the page so it cannot be modified by users for 15 min. Also works for non-existent pages (block create name)
 
 	.PARAMETER FullName
 		The full name of the to-be-locked page, including parent namespace(s)
@@ -45,9 +45,13 @@ function Lock-DokuPage {
                 if ($APIResponse.CompletedSuccessfully -eq $true) {
                     # do nothing except when locks fail
                     # $locked = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array").Node[0].data.value.innertext
+                    Write-Verbose ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array").Node[0].data.value.innertext
                     $lockfail = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array").Node[1].data.value.innertext
+                    Write-Verbose ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array").Node[1].data.value.innertext
                     # $unlocked = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array").Node[2].data.value.innertext
+                    Write-Verbose ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array").Node[2].data.value.innertext
                     # $unlockfail = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array").Node[3].data.value.innertext
+                    Write-Verbose ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array").Node[3].data.value.innertext
                     if ($null -ne $lockfail) {
                         $lockfail | ForEach-Object -Process { Write-Error "Failed to lock page: $PSItem" }
                     }
