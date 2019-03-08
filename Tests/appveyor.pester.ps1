@@ -142,6 +142,8 @@ if(-not $Finalize) {
     $CodeCoverage.Function.Coverage = [math]::Round($CodeCoverage.Function.Executed / $CodeCoverage.Function.Analyzed * 100, 2)
     
     #endregion
+
+    # Define thresholds for pass / fail dont actually fail the build though yet, just for more info
     $StatementThreshold = 80
     $FunctionThreshold = 100
     
