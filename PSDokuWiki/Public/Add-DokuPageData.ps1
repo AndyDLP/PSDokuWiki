@@ -34,7 +34,7 @@
 		https://github.com/AndyDLP/PSDokuWiki
 #>
 
-    [CmdletBinding(PositionalBinding = $true)]
+    [CmdletBinding(PositionalBinding = $true, SupportsShouldProcess=$True, ConfirmImpact='Medium')]
     [OutputType([boolean], [psobject])]
     param
     (
@@ -44,7 +44,7 @@
             Position = 1,
             HelpMessage = 'The full name of the to-be-edited page, including parent namespace(s)')]
         [ValidateNotNullOrEmpty()]
-        [string]$FullName,
+        [string[]]$FullName,
         [Parameter(Mandatory = $true,
             Position = 2,
             HelpMessage = 'The raw wiki text to append to the page')]
@@ -66,26 +66,30 @@
     } # begin
 
     process {
-        $Change = if ($MinorChange) {$true} else {$false}
-        $APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.appendPage' -MethodParameters @($FullName, $RawWikiText, @{ sum = $SummaryText; minor = [int]$Change })
-        if ($APIResponse.CompletedSuccessfully -eq $true) {
-            if ($PassThru) {
-                $PageObject = New-Object PSObject -Property @{
-                    FullName        = $FullName
-                    AddedText       = $RawWikiText
-                    MinorChange     = $MinorChange
-                    SummaryText     = $SummaryText
-                    PageName        = ($FullName -split ":")[-1]
-                    ParentNamespace = ($FullName -split ":")[-2]
-                    RootNamespace   = ($FullName -split ":")[0]
+        foreach ($Page in $FullName) {
+            If ($PSCmdlet.ShouldProcess("Add data: $RawWikiText to page: $Page")) {
+                $Change = if ($MinorChange) {$true} else {$false}
+                $APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.appendPage' -MethodParameters @($Page, $RawWikiText, @{ sum = $SummaryText; minor = [int]$Change })
+                if ($APIResponse.CompletedSuccessfully -eq $true) {
+                    if ($PassThru) {
+                        $PageObject = New-Object PSObject -Property @{
+                            FullName        = $Page
+                            AddedText       = $RawWikiText
+                            MinorChange     = $MinorChange
+                            SummaryText     = $SummaryText
+                            PageName        = ($Page -split ":")[-1]
+                            ParentNamespace = ($Page -split ":")[-2]
+                            RootNamespace   = ($Page -split ":")[0]
+                        }
+                        $PageObject
+                    }
+                } elseif ($null -eq $APIResponse.ExceptionMessage) {
+                    Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+                } else {
+                    Write-Error "Exception: $($APIResponse.ExceptionMessage)"
                 }
-                $PageObject
-            }
-        } elseif ($null -eq $APIResponse.ExceptionMessage) {
-            Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
-        } else {
-            Write-Error "Exception: $($APIResponse.ExceptionMessage)"
-        }
+            } # should process
+        } # foreach
     } # process
 
     end {

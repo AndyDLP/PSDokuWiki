@@ -39,7 +39,7 @@
 		https://github.com/AndyDLP/PSDokuWiki
 #>
 
-    [CmdletBinding(PositionalBinding = $true)]
+    [CmdletBinding(PositionalBinding = $true, SupportsShouldProcess=$True, ConfirmImpact='Medium')]
     param
     (
         [Parameter(Mandatory = $true,
@@ -69,20 +69,22 @@
         foreach ($page in $FullName) {
             Write-Verbose "Page name: $page"
             foreach ($Name in $Principal) {
-                Write-Verbose "Principal name: $Name"
-                $APIResponse = Invoke-DokuApiCall -MethodName 'plugin.acl.addAcl' -MethodParameters @($page,$Name,$Acl) -ErrorAction 'Stop'
-                if ($APIResponse.CompletedSuccessfully -eq $true) {
-                    # Doesn't want to cast (string) '1' to true... so we cast to int to bool
-                    [bool]$ReturnValue = [int](($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").Node.InnerText)
-                    if ($ReturnValue -eq $false) {
-                        Write-Error "Failed to apply Acl: $Acl for user: $Principal to entity: $Fullname"
+                if ($PSCmdlet.ShouldProcess("Give user: $Name a permission level of: $Acl to page: $Page")) {
+                    Write-Verbose "Principal name: $Name"
+                    $APIResponse = Invoke-DokuApiCall -MethodName 'plugin.acl.addAcl' -MethodParameters @($page,$Name,$Acl) -ErrorAction 'Stop'
+                    if ($APIResponse.CompletedSuccessfully -eq $true) {
+                        # Doesn't want to cast (string) '1' to true... so we cast to int to bool
+                        [bool]$ReturnValue = [int](($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").Node.InnerText)
+                        if ($ReturnValue -eq $false) {
+                            Write-Error "Failed to apply Acl: $Acl for user: $Principal to entity: $Fullname"
+                        } else {
+                            Write-Verbose "Successfully applied Acl: $Acl for user: $Principal to entity: $Fullname"
+                        }
+                    } elseif ($null -eq $APIResponse.ExceptionMessage) {
+                        Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
                     } else {
-                        Write-Verbose "Successfully applied Acl: $Acl for user: $Principal to entity: $Fullname"
+                        Write-Error "Exception: $($APIResponse.ExceptionMessage)"
                     }
-                } elseif ($null -eq $APIResponse.ExceptionMessage) {
-                    Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
-                } else {
-                    Write-Error "Exception: $($APIResponse.ExceptionMessage)"
                 }
             } # foreach principal
         } # foreach page
