@@ -38,9 +38,7 @@ Describe 'Get-DokuTitle' {
                     }
                 )
             }
-
             $ResponseObject = Get-DokuTitle
-
             It 'Should return an object with all properties defined' {
                 @('Server','Title') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty
             }
