@@ -44,7 +44,7 @@
 
 	process {
 		foreach ($Page in $fullname) {
-			foreach {$user in $Principal} {
+			foreach ($user in $Principal) {
 				if ($PSCmdlet.ShouldProcess("Remove user: $user from page: $page")) {
 					$APIResponse = Invoke-DokuApiCall -MethodName 'plugin.acl.delAcl' -MethodParameters @($FullName,$Principal)
 					if ($APIResponse.CompletedSuccessfully -eq $true) { 
