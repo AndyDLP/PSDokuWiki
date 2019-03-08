@@ -32,11 +32,13 @@
 #>
 	
 	[CmdletBinding()]
-	[OutputType([boolean], [psobject])]
+	[OutputType([psobject])]
 	param
 	(
 		[Parameter(Mandatory = $true,
 				   Position = 1,
+				   ValueFromPipeline = $true,
+				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The fullname of the target page')]
 		[ValidateNotNullOrEmpty()]
 		[string]$FullName,
@@ -62,20 +64,25 @@
 
 	process {
 		$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.putPage' -MethodParameters @($FullName,$RawWikiText, @{'sum' = $SummaryText; 'minor' = $MinorChange})
+		Write-Verbose $APIResponse
 		if ($APIResponse.CompletedSuccessfully -eq $true) {
-			$ResultBoolean = [boolean]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").node.InnerText
-			if ($ResultBoolean) {
+			$ResultBoolean = [boolean]([int]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").node.InnerText)
+			Write-Verbose $ResultBoolean
+			if ($ResultBoolean -eq $true) {
 				if ($PassThru) {
 					$PageObject = New-Object PSObject -Property @{
 						FullName = $FullName
 						AddedText = $RawWikiText
-						MinorChange = $MinorChange
+						MinorChange = [bool]$MinorChange
 						SummaryText = $SummaryText
 						PageName = ($FullName -split ":")[-1]
 						ParentNamespace = ($FullName -split ":")[-2]
 						RootNamespace = ($FullName -split ":")[0]
 					}
+					Write-Verbose $PageObject
 					$PageObject
+				} else {
+					Write-Verbose "Successfully set page data"
 				}
 			} else {
 				Write-Error "Failed to set page data"
