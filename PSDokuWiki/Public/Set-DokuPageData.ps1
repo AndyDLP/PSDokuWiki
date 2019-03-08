@@ -62,7 +62,7 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-            if ($PSCmdlet.ShouldProcess("Set data: $RawWikiText for page: $page")) {
+            if ($PSCmdlet.ShouldProcess("Set data: $RawWikiText for page: $PageName")) {
 				$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.putPage' -MethodParameters @($PageName,$RawWikiText, @{'sum' = $SummaryText; 'minor' = $MinorChange})
 				Write-Verbose $APIResponse
 				if ($APIResponse.CompletedSuccessfully -eq $true) {

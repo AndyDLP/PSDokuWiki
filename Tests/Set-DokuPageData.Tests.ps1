@@ -10,7 +10,7 @@ Describe 'Set-DokuPageData' {
                     }
                 )
             }
-            Set-DokuPageData -FullName 'rootns:ns:pagename' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary' -PassThru -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
+            Set-DokuPageData -FullName 'rootns:ns:pagename' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary' -Confirm:$False -PassThru -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
             $DokuErrorVariable.exception.message | Should -Be 'Exception: Test Exception'
         }
         It 'Should display the fault code & string' {
@@ -23,7 +23,7 @@ Describe 'Set-DokuPageData' {
                     }
                 )
             }
-            Set-DokuPageData -FullName 'rootns:ns:pagename' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary' -PassThru -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
+            Set-DokuPageData -FullName 'rootns:ns:pagename' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary' -Confirm:$False -PassThru -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
             $DokuErrorVariable.exception.message | Should -Be 'Fault code: 12345 - Fault string: Fault String'
         }
     }
@@ -39,7 +39,7 @@ Describe 'Set-DokuPageData' {
                 )
             }
             It 'Should generate an error' {
-                Set-DokuPageData -FullName 'rootns:ns:pagename' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary' -PassThru -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
+                Set-DokuPageData -FullName 'rootns:ns:pagename' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary' -Confirm:$False -PassThru -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
                 $DokuErrorVariable.exception.message | Should -Be 'Failed to set page data'
             }
         }
@@ -56,10 +56,10 @@ Describe 'Set-DokuPageData' {
                 )
             }
             It 'Should not throw' {
-                { Set-DokuPageData -FullName 'rootns:ns:pagename' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary' } | Should -Not -Throw
+                { Set-DokuPageData -FullName 'rootns:ns:pagename' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary' -Confirm:$False } | Should -Not -Throw
             }
             It 'Should not return anything' {
-                Set-DokuPageData -FullName 'rootns:ns:pagename' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary' | Should -BeNullOrEmpty
+                Set-DokuPageData -FullName 'rootns:ns:pagename' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary' -Confirm:$False | Should -BeNullOrEmpty
             }
         }
     }
@@ -75,7 +75,7 @@ Describe 'Set-DokuPageData' {
                 )
             }
             It 'Should call Invoke-DokuApiCall twice' {
-                Set-DokuPageData -FullName 'rootns:ns:pagename','rootns2:ns2:pagename2' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary'
+                Set-DokuPageData -FullName 'rootns:ns:pagename','rootns2:ns2:pagename2' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary' -Confirm:$False
                 Assert-MockCalled -CommandName Invoke-DokuApiCall -ModuleName PSDokuWiki -Exactly -Times 2
             }
         }
@@ -91,7 +91,7 @@ Describe 'Set-DokuPageData' {
                     }
                 )
             }
-            $ResponseObject = Set-DokuPageData -FullName 'rootns:ns:pagename' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary' -PassThru
+            $ResponseObject = Set-DokuPageData -FullName 'rootns:ns:pagename' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary' -PassThru -Confirm:$False
             It 'Should return an object with all properties defined' {
                 @('FullName','AddedText','MinorChange','SummaryText','PageName','ParentNamespace','RootNamespace') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty
             }
