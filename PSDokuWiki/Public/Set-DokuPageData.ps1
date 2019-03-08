@@ -31,7 +31,7 @@
 		AndyDLP - 2018-05-26
 #>
 	
-	[CmdletBinding()]
+	[CmdletBinding(PositionalBinding = $true, SupportsShouldProcess=$True, ConfirmImpact='High')]
 	[OutputType([psobject])]
 	param
 	(
@@ -58,45 +58,43 @@
 		[switch]$PassThru
 	)
 
-	begin {
-
-	}
+	begin {}
 
 	process {
 		foreach ($PageName in $FullName) {
-			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.putPage' -MethodParameters @($PageName,$RawWikiText, @{'sum' = $SummaryText; 'minor' = $MinorChange})
-			Write-Verbose $APIResponse
-			if ($APIResponse.CompletedSuccessfully -eq $true) {
-				$ResultBoolean = [boolean]([int]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").node.InnerText)
-				Write-Verbose $ResultBoolean
-				if ($ResultBoolean -eq $true) {
-					if ($PassThru) {
-						$PageObject = New-Object PSObject -Property @{
-							FullName = $PageName
-							AddedText = $RawWikiText
-							MinorChange = [bool]$MinorChange
-							SummaryText = $SummaryText
-							PageName = ($PageName -split ":")[-1]
-							ParentNamespace = ($PageName -split ":")[-2]
-							RootNamespace = ($PageName -split ":")[0]
+            if ($PSCmdlet.ShouldProcess("Set data: $RawWikiText for page: $page")) {
+				$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.putPage' -MethodParameters @($PageName,$RawWikiText, @{'sum' = $SummaryText; 'minor' = $MinorChange})
+				Write-Verbose $APIResponse
+				if ($APIResponse.CompletedSuccessfully -eq $true) {
+					$ResultBoolean = [boolean]([int]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").node.InnerText)
+					Write-Verbose $ResultBoolean
+					if ($ResultBoolean -eq $true) {
+						if ($PassThru) {
+							$PageObject = New-Object PSObject -Property @{
+								FullName = $PageName
+								AddedText = $RawWikiText
+								MinorChange = [bool]$MinorChange
+								SummaryText = $SummaryText
+								PageName = ($PageName -split ":")[-1]
+								ParentNamespace = ($PageName -split ":")[-2]
+								RootNamespace = ($PageName -split ":")[0]
+							}
+							Write-Verbose $PageObject
+							$PageObject
+						} else {
+							Write-Verbose "Successfully set page data"
 						}
-						Write-Verbose $PageObject
-						$PageObject
 					} else {
-						Write-Verbose "Successfully set page data"
+						Write-Error "Failed to set page data"
 					}
+				} elseif ($null -eq $APIResponse.ExceptionMessage) {
+					Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 				} else {
-					Write-Error "Failed to set page data"
+					Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 				}
-			} elseif ($null -eq $APIResponse.ExceptionMessage) {
-				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
-			} else {
-				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
-			}
-		}
+			} # should process
+		} #' foreach
 	} # process 
 
-	end {
-
-	}
+	end {}
 }
