@@ -1,4 +1,4 @@
-Describe 'Get-DokuServerTime' {
+Describe 'Get-DokuServerVersion' {
     Set-StrictMode -Version latest
     Context 'When the Invoke-DokuApiCall command fails' {
         It 'Should display the exception message' {
@@ -10,7 +10,7 @@ Describe 'Get-DokuServerTime' {
                     }
                 )
             }
-            Get-DokuServerTime -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
+            Get-DokuServerVersion -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
             $DokuErrorVariable.exception.message | Should -Be 'Exception: Test Exception'
         }
         It 'Should display the fault code & string' {
@@ -23,7 +23,7 @@ Describe 'Get-DokuServerTime' {
                     }
                 )
             }
-            Get-DokuServerTime -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
+            Get-DokuServerVersion -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
             $DokuErrorVariable.exception.message | Should -Be 'Fault code: 12345 - Fault string: Fault String'
         }
     }
@@ -34,23 +34,30 @@ Describe 'Get-DokuServerTime' {
                 return (
                     [PSCustomObject]@{
                         CompletedSuccessfully = $true
-                        XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><value><int>1573430400</int></value></methodResponse>'
+                        XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><params><param><value><string>Release 2018-04-22b "Greebo"</string></value></param></params></methodResponse>'
                     }
                 )
             }
-            $ResponseObject = Get-DokuServerTime
+
+            $ResponseObject = Get-DokuServerVersion
 
             It 'Should return an object with all properties defined' {
-                @('Server','UNIXTimestamp','ServerTime') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty
+                @('Server','Type','ReleaseDate','ReleaseName','RawVersion') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty
             }
             It 'Should return an object with the correct value for Server' {
                 $ResponseObject.Server | Should -Be 'wiki.example.com'
             }
-            It 'Should return an object with the correct value for UNIXTimestamp' {
-                $ResponseObject.UNIXTimestamp | Should -Be 1573430400
+            It 'Should return an object with the correct value for Type' {
+                $ResponseObject.Type | Should -Be 'Release'
             }
-            It 'Should return an object with the correct value for ServerTime' {
-                $ResponseObject.ServerTime | Should -Be (Get-Date '11-11-2019')
+            It 'Should return an object with the correct value for ReleaseDate' {
+                $ResponseObject.ReleaseDate | Should -Be '2018-04-22b'
+            }
+            It 'Should return an object with the correct value for ReleaseName' {
+                $ResponseObject.ReleaseName | Should -Be 'Greebo'
+            }
+            It 'Should return an object with the correct value for RawVersion' {
+                $ResponseObject.RawVersion | Should -Be 'Release 2018-04-22b "Greebo"'
             }
         }
     }

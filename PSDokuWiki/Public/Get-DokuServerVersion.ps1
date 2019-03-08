@@ -35,6 +35,7 @@
 			$VersionObject = New-Object PSObject -Property @{
 				Server = $Script:DokuServer.Server
 				Type = $SplitVersion[0] # Does this ever change?
+				RawVersion = $RawDokuVersion
 				ReleaseDate = $SplitVersion[1] # TODO: Convert to date time - replace letter(s)?
 				ReleaseName = $CodeName
 			}
