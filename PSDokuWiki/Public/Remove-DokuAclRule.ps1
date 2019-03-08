@@ -21,7 +21,7 @@
 	.NOTES
 		AndyDLP - 2018-05-26
 #>
-	[CmdletBinding()]
+	[CmdletBinding(PositionalBinding = $true, SupportsShouldProcess=$True, ConfirmImpact='High')]
 	[OutputType([boolean])]
 	param
 	(
