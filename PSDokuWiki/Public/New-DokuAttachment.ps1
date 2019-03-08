@@ -45,7 +45,7 @@
 		[Parameter(Mandatory = $false,
 				   Position = 4,
 				   HelpMessage = 'Pass the newly created attachment object out')]
-		[switch]$PassThru,
+		[switch]$PassThru
 	)
 
 	if ($PSCmdlet.ShouldProcess("Upload attachment at path: $Path to location: $Fullname")) {
