@@ -62,7 +62,7 @@ Describe 'Unlock-DokuPage' {
                 }
             )
         }
-        It '' {
+        It 'Should only call Invoke-DokuApiCall once' {
             Unlock-DokuPage -FullName 'rootns:ns:pagename','rootns:ns:pagename'
             Assert-MockCalled -CommandName Invoke-DokuApiCall -ModuleName PSDokuWiki -Exactly -Times 1
         }
@@ -76,7 +76,7 @@ Describe 'Unlock-DokuPage' {
                 }
             )
         }
-        It 'Should only call Invoke-DokuApiCall onceShould call Invoke-DokuApiCall twice' {
+        It 'Should call Invoke-DokuApiCall twice' {
             'rootns:ns:pagename','rootns:ns:pagename' | Unlock-DokuPage
             Assert-MockCalled -CommandName Invoke-DokuApiCall -ModuleName PSDokuWiki -Exactly -Times 2
         }
