@@ -63,20 +63,22 @@
 	process {
 		$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.putPage' -MethodParameters @($FullName,$RawWikiText, @{'sum' = $SummaryText; 'minor' = $MinorChange})
 		if ($APIResponse.CompletedSuccessfully -eq $true) {
-			if ($PassThru) {
-				$PageObject = New-Object PSObject -Property @{
-					FullName = $FullName
-					AddedText = $RawWikiText
-					MinorChange = $MinorChange
-					SummaryText = $SummaryText
-					PageName = ($FullName -split ":")[-1]
-					ParentNamespace = ($FullName -split ":")[-2]
-					RootNamespace = ($FullName -split ":")[0]
+			$ResultBoolean = [boolean]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").node.InnerText
+			if ($ResultBoolean) {
+				if ($PassThru) {
+					$PageObject = New-Object PSObject -Property @{
+						FullName = $FullName
+						AddedText = $RawWikiText
+						MinorChange = $MinorChange
+						SummaryText = $SummaryText
+						PageName = ($FullName -split ":")[-1]
+						ParentNamespace = ($FullName -split ":")[-2]
+						RootNamespace = ($FullName -split ":")[0]
+					}
+					$PageObject
 				}
-				$PageObject
 			} else {
-				$ResultBoolean = [boolean]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").node.InnerText
-				$ResultBoolean
+				Write-Error "Failed to set page data"
 			}
 		} elseif ($null -eq $APIResponse.ExceptionMessage) {
 			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
