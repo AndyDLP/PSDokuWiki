@@ -44,9 +44,7 @@ function ConvertTo-XmlRpcMethodCall
             Modified to use DokuWiki compatible type names (case sensitive etc)
     #>
     [CmdletBinding()]
-    [OutputType(
-        [string]
-    )]
+    [OutputType([string])]
     param(
         [Parameter(Mandatory = $true)]
         [String]$Name,
@@ -60,20 +58,13 @@ function ConvertTo-XmlRpcMethodCall
 
     Begin {}
 
-    Process
-    {
+    Process {
         [String]((&{
             "<?xml version=""1.0""?><methodCall><methodName>$($Name)</methodName><params>"
             if($Params)
             {
-                $Params | ForEach-Object {
-                    if ($null -ne $_) {
-                        "<param>$(&{ConvertTo-XmlRpcType $_ -CustomTypes $CustomTypes})</param>"
-                    }
-                }
-            }
-            else
-            {
+                $Params | ForEach-Object { if ($null -ne $_) { "<param>$(&{ConvertTo-XmlRpcType $_ -CustomTypes $CustomTypes})</param>" } }
+            } else {
                 "$(ConvertTo-XmlRpcType $NULL)"
             }
             "</params></methodCall>"

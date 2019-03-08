@@ -41,7 +41,7 @@
 				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The fullname of the target page')]
 		[ValidateNotNullOrEmpty()]
-		[string]$FullName,
+		[string[]]$FullName,
 		[Parameter(Mandatory = $true,
 				   Position = 2,
 				   HelpMessage = 'The raw wiki text that will be set')]
@@ -63,34 +63,36 @@
 	}
 
 	process {
-		$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.putPage' -MethodParameters @($FullName,$RawWikiText, @{'sum' = $SummaryText; 'minor' = $MinorChange})
-		Write-Verbose $APIResponse
-		if ($APIResponse.CompletedSuccessfully -eq $true) {
-			$ResultBoolean = [boolean]([int]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").node.InnerText)
-			Write-Verbose $ResultBoolean
-			if ($ResultBoolean -eq $true) {
-				if ($PassThru) {
-					$PageObject = New-Object PSObject -Property @{
-						FullName = $FullName
-						AddedText = $RawWikiText
-						MinorChange = [bool]$MinorChange
-						SummaryText = $SummaryText
-						PageName = ($FullName -split ":")[-1]
-						ParentNamespace = ($FullName -split ":")[-2]
-						RootNamespace = ($FullName -split ":")[0]
+		foreach ($PageName in $FullName) {
+			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.putPage' -MethodParameters @($PageName,$RawWikiText, @{'sum' = $SummaryText; 'minor' = $MinorChange})
+			Write-Verbose $APIResponse
+			if ($APIResponse.CompletedSuccessfully -eq $true) {
+				$ResultBoolean = [boolean]([int]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").node.InnerText)
+				Write-Verbose $ResultBoolean
+				if ($ResultBoolean -eq $true) {
+					if ($PassThru) {
+						$PageObject = New-Object PSObject -Property @{
+							FullName = $PageName
+							AddedText = $RawWikiText
+							MinorChange = [bool]$MinorChange
+							SummaryText = $SummaryText
+							PageName = ($PageName -split ":")[-1]
+							ParentNamespace = ($PageName -split ":")[-2]
+							RootNamespace = ($PageName -split ":")[0]
+						}
+						Write-Verbose $PageObject
+						$PageObject
+					} else {
+						Write-Verbose "Successfully set page data"
 					}
-					Write-Verbose $PageObject
-					$PageObject
 				} else {
-					Write-Verbose "Successfully set page data"
+					Write-Error "Failed to set page data"
 				}
+			} elseif ($null -eq $APIResponse.ExceptionMessage) {
+				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 			} else {
-				Write-Error "Failed to set page data"
+				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 			}
-		} elseif ($null -eq $APIResponse.ExceptionMessage) {
-			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
-		} else {
-			Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 		}
 	} # process 
 

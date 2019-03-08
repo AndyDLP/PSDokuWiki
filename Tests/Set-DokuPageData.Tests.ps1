@@ -63,6 +63,23 @@ Describe 'Set-DokuPageData' {
             }
         }
     }
+    Context 'When page data is set for two pages' {
+        InModuleScope PSDokuWiki {
+            $Script:DokuServer = [PSCustomObject]@{ Server = 'wiki.example.com' }
+            Mock Invoke-DokuApiCall  {
+                return (
+                    [PSCustomObject]@{
+                        CompletedSuccessfully = $true
+                        XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><params><param><value><boolean>1</boolean></value></param></params></methodResponse>'
+                    }
+                )
+            }
+            It 'Should call Invoke-DokuApiCall twice' {
+                Set-DokuPageData -FullName 'rootns:ns:pagename','rootns2:ns2:pagename2' -RawWikiText 'Test Data' -MinorChange -SummaryText 'Summary'
+                Assert-MockCalled -CommandName Invoke-DokuApiCall -ModuleName PSDokuWiki -Exactly -Times 2
+            }
+        }
+    }
     Context 'When the page data is set successfully & PassThru is used' {
         InModuleScope PSDokuWiki {
             $Script:DokuServer = [PSCustomObject]@{ Server = 'wiki.example.com' }
