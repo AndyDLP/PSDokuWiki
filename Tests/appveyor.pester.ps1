@@ -148,7 +148,7 @@ if(-not $Finalize) {
     $FunctionThreshold = 100
     
     "`n`tStatement coverage: $($CodeCoverage.Statement.Analyzed) analyzed, $($CodeCoverage.Statement.Executed) executed, $($CodeCoverage.Statement.Missed) missed, $($CodeCoverage.Statement.Coverage)%."
-    if ($CodeCoverage.Statement.Coverage -gt $StatementThreshold) {
+    if ($CodeCoverage.Statement.Coverage -ge $StatementThreshold) {
         # passed Statement coverage test
         Write-Host "`tPassed statement coverage threshold of: $StatementThreshold%" -ForegroundColor Green
         Update-AppveyorTest -Name "PesterStatementCoverage" -Outcome Passed
@@ -161,7 +161,7 @@ if(-not $Finalize) {
         #Throw "Build failed"
     }
     "`n`tFunction coverage: $($CodeCoverage.Function.Analyzed) analyzed, $($CodeCoverage.Function.Executed) executed, $($CodeCoverage.Function.Missed) missed, $($CodeCoverage.Function.Coverage)%."
-    if ($CodeCoverage.Function.Coverage -gt $FunctionThreshold) {
+    if ($CodeCoverage.Function.Coverage -ge $FunctionThreshold) {
         # passed Function coverage test
         Write-Host "`tPassed function coverage threshold of: $FunctionThreshold%" -ForegroundColor Green
         Update-AppveyorTest -Name "PesterFunctionCoverage" -Outcome Passed
