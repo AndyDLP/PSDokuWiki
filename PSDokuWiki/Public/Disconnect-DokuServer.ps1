@@ -1,16 +1,13 @@
 function Disconnect-DokuServer {
     <#
 	.SYNOPSIS
-		Disconnect a DokuWiki API endpoint
+		Disconnect any open connections to a DokuWiki API endpoint
 
 	.DESCRIPTION
-		Disconnect a DokuWiki API endpoint
-
-	.PARAMETER ComputerName
-		The server to disconnect can be an IP, FQDN or single label name. e.g. 192.168.0.1 / wiki.example.com / wiki
+		Disconnect any open connections to a DokuWiki API endpoint
 
 	.EXAMPLE
-		PS C:\> Disconnect-DokuServer -Server wiki.example.com
+		PS C:\> Disconnect-DokuServer
 
 	.OUTPUTS
 		Nothing
@@ -22,30 +19,13 @@ function Disconnect-DokuServer {
 		https://github.com/AndyDLP/PSDokuWiki
 #>
 
-    [CmdletBinding(PositionalBinding = $true)]
-    param
-    (
-        [Parameter(Mandatory = $true,
-            Position = 1,
-            ValueFromPipeline = $true,
-			ValueFromPipelineByPropertyName=$true,
-            HelpMessage = 'The server to connect to')]
-        [ValidateNotNullOrEmpty()]
-        [Alias('Server')]
-        [string]$ComputerName
-    )
+    [CmdletBinding()]
+    param()
 
-    begin {
-        
-    } # begin
-
-    process {
-        # Module scoped variables are defined like the below apparently
-        $Script:DokuServer
-
-    } # process
-
-    end {
-
-    } # end
+    if ($null -ne $Script:DokuServer) {
+        Write-Verbose "Disconnecting DokuWiki instance: $($Script:DokuServer.TargetUri)"
+        $Script:DokuServer = $null
+    } else {
+        Write-Verbose "No connections to any DokuWiki instances to disconnect"
+    }
 }

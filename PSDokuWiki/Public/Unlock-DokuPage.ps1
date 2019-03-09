@@ -6,14 +6,11 @@ function Unlock-DokuPage {
 	.DESCRIPTION
 	    Unlocks the page so it can be modified by users again.
 
-	.PARAMETER DokuSession
-		The DokuSession in which to unlock the page
-
 	.PARAMETER FullName
 		The full name of the to-be-unlocked page, including parent namespace(s)
 
 	.EXAMPLE
-		PS C:\> Lock-DokuPage -DokuSession $DokuSession -FullName 'namespace:page'
+		PS C:\> Lock-DokuPage -FullName 'namespace:page'
 
 	.OUTPUTS
 		Nothing
@@ -29,14 +26,9 @@ function Unlock-DokuPage {
     param
     (
         [Parameter(Mandatory = $true,
-            Position = 1,
-            HelpMessage = 'The DokuSession to add the page data to')]
-        [ValidateNotNullOrEmpty()]
-        [DokuWiki.Session.Detail]$DokuSession,
-        [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
 			ValueFromPipelineByPropertyName=$true,
-            Position = 2,
+            Position = 1,
             HelpMessage = 'The full name of the to-be-unlocked page, including parent namespace(s)')]
         [ValidateNotNullOrEmpty()]
         [string[]]$FullName
@@ -48,7 +40,7 @@ function Unlock-DokuPage {
 
     process {
         # long random name in unlock array as its unlikely to be existing (do unlock in other function)
-        $APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.setLocks' -MethodParameters @(@{ 'lock' = @("341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995"); 'unlock' = [array]$FullName })
+        $APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.setLocks' -MethodParameters @(@{ 'lock' = @("341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995"); 'unlock' = [array]$FullName })
         if ($APIResponse.CompletedSuccessfully -eq $true) {
             # do nothing except when locks fail
             # $locked = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array").Node[0].data.value.innertext

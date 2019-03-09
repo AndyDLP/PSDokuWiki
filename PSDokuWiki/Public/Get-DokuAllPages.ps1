@@ -1,22 +1,20 @@
 ﻿function Get-DokuAllPages {
     <#
 	.SYNOPSIS
-		Returns a list of all Wiki pages in the remote DokuSession
+		Returns a list of all Wiki pages
 
 	.DESCRIPTION
-		Returns a list of all Wiki pages in the remote DokuSession
-
-	.PARAMETER DokuSession
-		The DokuSession from which to get the pages
+		Returns a list of all Wiki pages from the DokuWiki API. Includes the current user's ACL status of each page
 
 	.EXAMPLE
-		PS C:\> $AllPages = Get-DokuAllPages -DokuSession $DokuSession
+		PS C:\> $AllPages = Get-DokuAllPages
 
 	.OUTPUTS
 		System.Management.Automation.PSObject[]
 
 	.NOTES
-		AndyDLP - 2018-05-26
+        AndyDLP - 2018-05-26
+        Updated - 2019-02-20
 
 	.LINK
 		https://github.com/AndyDLP/PSDokuWiki
@@ -24,23 +22,14 @@
 
     [CmdletBinding()]
     [OutputType([psobject[]])]
-    param
-    (
-        [Parameter(Mandatory = $true,
-            Position = 1,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true,
-            HelpMessage = 'The DokuSession from which to get the pages')]
-        [ValidateNotNullOrEmpty()]
-        [DokuWiki.Session.Detail]$DokuSession
-    )
+    param()
 
     begin {
 
 	} #begin
 
     process {
-        $APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getAllPages'
+        $APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getAllPages'
         if ($APIResponse.CompletedSuccessfully -eq $true) {
             $MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
             foreach ($node in $MemberNodes) {
@@ -49,10 +38,13 @@
                     Acl          = (($node.member)[1]).value.InnerText
                     Size         = (($node.member)[2]).value.InnerText
                     LastModified = Get-Date -Date ((($node.member)[3]).value.InnerText)
+                    LastModifiedRaw = (($node.member)[3]).value.InnerText
+                    PageName        = (((($node.member)[0]).value.InnerText) -split ":")[-1]
+                    ParentNamespace = (((($node.member)[0]).value.InnerText) -split ":")[-2]
+                    RootNamespace   = (((($node.member)[0]).value.InnerText) -split ":")[0]
                 }
-                [array]$AllPages = $AllPages + $PageObject
+                $PageObject
             }
-            $AllPages
         } elseif ($null -eq $APIResponse.ExceptionMessage) {
             Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
         } else {

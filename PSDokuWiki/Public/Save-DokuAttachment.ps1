@@ -6,9 +6,6 @@
 	.DESCRIPTION
 		Returns the binary data of a media file
 	
-	.PARAMETER DokuSession
-		The DokuSession from which to get the attachment
-	
 	.PARAMETER FullName
 		The full name of the file to get
 	
@@ -19,7 +16,7 @@
 		Force creation of output file, overwriting any existing files with the same name
 	
 	.EXAMPLE
-		PS C:\> Save-DokuAttachment -DokuSession $DokuSession -FullName 'value2' -Path 'value3'
+		PS C:\> Save-DokuAttachment -FullName 'value2' -Path 'value3'
 	
 	.OUTPUTS
 		System.IO.FileInfo
@@ -34,18 +31,13 @@
 	(
 		[Parameter(Mandatory = $true,
 				   Position = 1,
-				   HelpMessage = 'The DokuSession from which to get the attachment')]
-		[ValidateNotNullOrEmpty()]
-		[DokuWiki.Session.Detail]$DokuSession,
-		[Parameter(Mandatory = $true,
-				   Position = 2,
 				   ValueFromPipeline = $true,
 				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The full name of the file to get')]
 		[ValidateNotNullOrEmpty()]
 		[string[]]$FullName,
 		[Parameter(Mandatory = $false,
-				   Position = 3,
+				   Position = 2,
 				   HelpMessage = 'The path to save the attachment to, including filename & extension')]
 		[ValidateScript({ Test-Path -Path $_ -IsValid })]
 		[string]$Path,
@@ -59,7 +51,7 @@
 
 	process {
 		foreach ($AttachmentName in $FullName) {
-			$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getAttachment' -MethodParameters @($AttachmentName)
+			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getAttachment' -MethodParameters @($AttachmentName)
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
 				if ((Test-Path -Path $Path) -and (!$Force)) {
 					Write-Error "File with that name already exists at: $Path"

@@ -9,9 +9,6 @@
 	.PARAMETER FullName
 		The full name of the to-be-edited page, including parent namespace(s)
 
-	.PARAMETER DokuSession
-		The DokuSession to add the page data to
-
 	.PARAMETER RawWikiText
 		The raw wiki text to append to the page
 
@@ -25,7 +22,7 @@
 		A short summary of the change, visible in the revisions list
 
 	.EXAMPLE
-		PS C:\> Add-DokuPageData -DokuSession $DokuSession -FullName 'namespace:page' -RawWikiText 'TEST TEST TEST'
+		PS C:\> Add-DokuPageData -FullName 'namespace:page' -RawWikiText 'TEST TEST TEST'
 
 	.OUTPUTS
 		System.Boolean, System.Management.Automation.PSObject
@@ -37,34 +34,29 @@
 		https://github.com/AndyDLP/PSDokuWiki
 #>
 
-    [CmdletBinding(PositionalBinding = $true)]
+    [CmdletBinding(PositionalBinding = $true, SupportsShouldProcess=$True, ConfirmImpact='Medium')]
     [OutputType([boolean], [psobject])]
     param
     (
         [Parameter(Mandatory = $true,
-            Position = 1,
-            HelpMessage = 'The DokuSession to add the page data to')]
-        [ValidateNotNullOrEmpty()]
-        [DokuWiki.Session.Detail]$DokuSession,
-        [Parameter(Mandatory = $true,
             ValueFromPipeline = $true,
 			ValueFromPipelineByPropertyName=$true,
-            Position = 2,
+            Position = 1,
             HelpMessage = 'The full name of the to-be-edited page, including parent namespace(s)')]
         [ValidateNotNullOrEmpty()]
-        [string]$FullName,
+        [string[]]$FullName,
         [Parameter(Mandatory = $true,
-            Position = 3,
+            Position = 2,
             HelpMessage = 'The raw wiki text to append to the page')]
         [ValidateNotNullOrEmpty()]
         [string]$RawWikiText,
-        [Parameter(Position = 4,
+        [Parameter(Position = 3,
             HelpMessage = 'State if the change was minor or not')]
         [switch]$MinorChange,
-        [Parameter(Position = 5,
+        [Parameter(Position = 4,
             HelpMessage = 'A short summary of the change')]
         [string]$SummaryText,
-        [Parameter(Position = 6,
+        [Parameter(Position = 5,
             HelpMessage = 'Pass the newly created object back out')]
         [switch]$PassThru
     )
@@ -74,26 +66,30 @@
     } # begin
 
     process {
-        $Change = if ($MinorChange) {$true} else {$false}
-        $APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'dokuwiki.appendPage' -MethodParameters @($FullName, $RawWikiText, @{ sum = $SummaryText; minor = [int]$Change })
-        if ($APIResponse.CompletedSuccessfully -eq $true) {
-            if ($PassThru) {
-                $PageObject = New-Object PSObject -Property @{
-                    FullName        = $FullName
-                    AddedText       = $RawWikiText
-                    MinorChange     = $MinorChange
-                    SummaryText     = $SummaryText
-                    PageName        = ($FullName -split ":")[-1]
-                    ParentNamespace = ($FullName -split ":")[-2]
-                    RootNamespace   = ($FullName -split ":")[0]
+        foreach ($Page in $FullName) {
+            If ($PSCmdlet.ShouldProcess("Add data: $RawWikiText to page: $Page")) {
+                $Change = if ($MinorChange) {$true} else {$false}
+                $APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.appendPage' -MethodParameters @($Page, $RawWikiText, @{ sum = $SummaryText; minor = [int]$Change })
+                if ($APIResponse.CompletedSuccessfully -eq $true) {
+                    if ($PassThru) {
+                        $PageObject = New-Object PSObject -Property @{
+                            FullName        = $Page
+                            AddedText       = $RawWikiText
+                            MinorChange     = $MinorChange
+                            SummaryText     = $SummaryText
+                            PageName        = ($Page -split ":")[-1]
+                            ParentNamespace = ($Page -split ":")[-2]
+                            RootNamespace   = ($Page -split ":")[0]
+                        }
+                        $PageObject
+                    }
+                } elseif ($null -eq $APIResponse.ExceptionMessage) {
+                    Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+                } else {
+                    Write-Error "Exception: $($APIResponse.ExceptionMessage)"
                 }
-                $PageObject
-            }
-        } elseif ($null -eq $APIResponse.ExceptionMessage) {
-            Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
-        } else {
-            Write-Error "Exception: $($APIResponse.ExceptionMessage)"
-        }
+            } # should process
+        } # foreach
     } # process
 
     end {

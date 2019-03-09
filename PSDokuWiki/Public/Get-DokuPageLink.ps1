@@ -1,19 +1,16 @@
-﻿function Get-DokuPageBackLinks {
+﻿function Get-DokuPageLink {
 <#
 	.SYNOPSIS
-		Returns a list of backlinks of a Wiki page
+		Returns an array of all links on a page
 
 	.DESCRIPTION
-		Returns a list of backlinks of a Wiki page
-
-	.PARAMETER DokuSession
-		The DokuSession to get the page backlinks from
+		Returns an array of all links on a page
 
 	.PARAMETER FullName
 		The full page name for which to return the data
 
 	.EXAMPLE
-		PS C:\> $PageBackLinks = Get-DokuPageBackLinks -DokuSession $DokuSession -FullName "namespace:namespace:page"
+		PS C:\> $PageLinks = Get-DokuPageLink -FullName "namespace:namespace:page"
 
 	.OUTPUTS
 		System.Management.Automation.PSObject[]
@@ -28,11 +25,6 @@
 	(
 		[Parameter(Mandatory = $true,
 				   Position = 1,
-				   HelpMessage = 'The DokuSession to get the page backlinks from')]
-		[ValidateNotNullOrEmpty()]
-		[DokuWiki.Session.Detail]$DokuSession,
-		[Parameter(Mandatory = $true,
-				   Position = 2,
 				   ValueFromPipeline = $true,
 				   ValueFromPipelineByPropertyName = $true,
 				   HelpMessage = 'The full page name for which to return the data')]
@@ -46,17 +38,18 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$APIResponse = Invoke-DokuApiCall -DokuSession $DokuSession -MethodName 'wiki.getBackLinks' -MethodParameters @($PageName)
+			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.listLinks' -MethodParameters @($PageName)
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
-				$PageArray = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array/data/value").Node.InnerText
-				foreach ($Page in $PageArray) {
+				$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
+				foreach ($node in $MemberNodes) {
 					$PageObject = New-Object PSObject -Property @{
 						FullName = $PageName
-						BacklinkedFullName = $Page
+						Type = (($node.member)[0]).value.string
+						TargetPageName = (($node.member)[1]).value.string
+						URL = (($node.member)[2]).value.string
 					}
-					[array]$PageLinks = $PageLinks + $PageObject
+					$PageObject
 				}
-				$PageLinks
 			} elseif ($null -eq $APIResponse.ExceptionMessage) {
 				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 			} else {
