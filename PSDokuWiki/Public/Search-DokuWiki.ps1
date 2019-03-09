@@ -41,7 +41,7 @@
 			$APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.search' -MethodParameters @($string)
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
 				$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
-				Write-Verbose $APIResponse.XMLPayloadResponse.InnerXml
+				Write-Verbose $APIResponse.XMLPayloadResponse
 				foreach ($node in $MemberNodes) {
 					$PageObject = New-Object PSObject -Property @{
 						FullName = (($node.member)[0]).value.string
