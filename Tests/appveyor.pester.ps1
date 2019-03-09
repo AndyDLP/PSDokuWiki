@@ -158,7 +158,7 @@ if(-not $Finalize) {
         Add-AppveyorMessage -Message "`tFailed function coverage threshold of: $StatementThreshold%`n" -Category Error
         Update-AppveyorTest -Name "PesterStatementCoverage" -Outcome Failed -ErrorMessage "Pester statement coverage did not meet threshold of $StatementThreshold%"
         # Failing the build
-        #Throw "Build failed"
+        Throw "Build failed"
     }
     "`n`tFunction coverage: $($CodeCoverage.Function.Analyzed) analyzed, $($CodeCoverage.Function.Executed) executed, $($CodeCoverage.Function.Missed) missed, $($CodeCoverage.Function.Coverage)%."
     if ($CodeCoverage.Function.Coverage -ge $FunctionThreshold) {
@@ -171,6 +171,6 @@ if(-not $Finalize) {
         Add-AppveyorMessage -Message "`tFailed function coverage threshold of: $FunctionThreshold%`n" -Category Error
         Update-AppveyorTest -Name "PesterFunctionCoverage" -Outcome Failed -ErrorMessage "Pester statement coverage did not meet threshold of $FunctionThreshold%"
         # Failing the build
-        #Throw "Build failed"
+        Throw "Build failed"
     }
 }

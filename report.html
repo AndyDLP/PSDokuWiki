@@ -1,0 +1,2841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="PowerShell Code Health Report">
+    <meta name="author" content="PSCodeHealth">
+
+    <title>PSCodeHealth Report - PSDokuWiki</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet">
+    <style>
+        header > .row {
+            margin-bottom: 22px;
+        }
+        .left-header {
+            margin-top: 9px;
+        }
+        .left-header a,
+        .left-header a:hover,
+        .left-header a:focus {
+            text-decoration: none;
+        }
+        .right-header {
+            margin-top: 47px;
+            text-align: left;
+        }
+        .right-header-data {
+            color: #777;
+        }
+        .logo {
+            margin-right: 32px;
+            width: 80px;
+        }
+        /* Hide for mobile, show later */
+        .sidebar {
+            display: none;
+        }
+        @media (min-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                z-index: 1000;
+                display: block;
+                padding: 158px 2px 2px 7px;
+                overflow-x: hidden;
+                overflow-y: auto; /* Scrollable content */
+            }
+        }
+
+        /* Sidebar navigation */
+        .nav-sidebar {
+            margin-right: -21px;
+            margin-bottom: 20px;
+            margin-left: -20px;
+        }
+        .nav-stacked > li + li {
+            margin-top: 0px
+        }
+        .nav-sidebar > li > a {
+            padding: 13px 1px 13px 27px;
+            font-weight: 600;
+            border-bottom: 1px solid #bce8f1;
+        }
+        .nav-sidebar > li:first-child {
+            border-top: 1px solid #bce8f1;
+        }
+        .nav-sidebar > li > a:hover {
+            background-color: #bce8f1;
+        }
+        .nav-sidebar > li > a:active,
+        .nav-sidebar > li > a:focus {
+            background-color: #d9edf7;
+        }
+        .nav-sidebar > li.active {
+            background-color: #d9edf7;
+        }
+
+        /* Panels */
+        .panelContainer {
+            padding: 0px 13px;
+        }
+        .panel-success .panel-body > h2 {
+            margin: 0px;
+            color: #3c763d;
+        }
+        .panel-info .panel-body > h2 {
+            margin: 0px;
+            color: #31708f;
+        }
+        .panel-warning .panel-body > h2 {
+            margin: 0px;
+            color: #8a6d3b;
+        }
+        .panel-danger .panel-body > h2 {
+            margin: 0px;
+            color: #a94442;
+        }
+
+        /* Tables */
+        tr:last-child {
+            font-weight: bold
+        }
+        .text-success {
+            color: #3c763d;
+        }
+        .text-warning {
+            color: #8a6d3b;
+        }
+        .text-danger {
+            color: #a94442;
+        }
+        .tablePanel {
+            margin-top: 18px;
+        }
+        .tablePanel .panel-title {
+            font-weight: 600;
+            margin: 7px 0px;
+        }
+        .tablePanel thead > tr {
+            border-bottom: 3px solid rgb(221, 221, 221);
+        }
+        .tablePanel tr:last-child {
+            font-weight: normal;
+        }
+        .tablePanel td:first-child {
+            text-align: left;
+            font-weight: 600;
+        }
+        td.info {
+            color: #31708f;
+            background-color: #d9edf7;
+        }
+        td.danger {
+            color: rgb(169, 68, 66);
+            background-color: rgb(242, 222, 222);
+        }
+        td.warning {
+            color: rgb(138, 109, 59);
+            background-color: rgb(252, 248, 227);
+        }
+        td.success {
+            color: rgb(60, 118, 61);
+            background-color: rgb(223, 240, 216);
+        }
+        td > button.btn {
+            margin-bottom: 2px;
+        }
+        td.cell-largeContent {
+            font-weight: normal !important;
+            padding: 9px 0px;
+            border-bottom: 1px solid;
+            border-top: 1px solid;
+            border-collapse: collapse;
+        }
+        td > table {
+            display: block;
+        }
+        th.widecolumn {
+            width: 37%;
+        }
+        th.narrowColum {
+            width: 21%;
+        }
+
+    </style>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div class="container-fluid">
+        <header class="container-fluid">
+            <div class="row">
+                <div class="col-sm-5 col-sm-offset-3 col-md-6 col-md-offset-1 col-lg-6 col-lg-offset-2 left-header">
+                    <h1>
+                        <a href="https://github.com/MathieuBuisson/PSCodeHealth" target="_blank">
+                            <img class="logo" src= "https://github.com/MathieuBuisson/PSCodeHealth/raw/master/PSCodeHealth/Assets/PSCodeHealthLogo.png" alt="PSCodeHealth Logo"/>
+                        </a>
+                        Code Health Report - <small>PSDokuWiki</small>
+                    </h1>
+                </div>
+                <div class="col-sm-4 col-md-5 col-lg-4 right-header">
+                    <h5>
+                        Analyzed path :<span class="right-header-data"> C:\PowerShell\Projects\PSDokuWiki\PSDokuWiki</span><br>
+                        Analysis date :<span class="right-header-data"> 2019-03-09 18:29:55Z</span>
+                    </h5>
+                </div>
+            </div>
+        </header>
+        <div class="tab-content">
+            <div class="row">
+                <div class="col-sm-3 col-md-1 col-lg-2 sidebar" role="navigation">
+                    <ul class="nav nav-sidebar nav-stacked">
+                    <li class="active"><a href="#summary" data-toggle="tab" aria-expanded="true">Summary</a></li>
+                    <li><a href="#bestPractices" data-toggle="tab">Style &amp; Best Practices</a></li>
+                    <li><a href="#maintainability" data-toggle="tab">Maintainability</a></li>
+                    <li><a href="#tests" data-toggle="tab">Tests</a></li>
+                    </ul>
+                </div>
+            </div>
+            <section id="summary" class="tab-pane fade in active">
+                <div class="row col-sm-offset-3 col-md-offset-1 col-lg-offset-2">
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-file-code-o" aria-hidden="true">&nbsp;</i> Number of Files</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>40</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-code" aria-hidden="true">&nbsp;</i> Number of Functions</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>38</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-arrows-v" aria-hidden="true">&nbsp;</i> Lines of Code - Total</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>1935</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-sm-offset-3 col-md-offset-1 col-lg-offset-2">
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-plus-square-o" aria-hidden="true">&nbsp;</i> ScriptAnalyzer Findings</h3>
+                            </div>
+                            <table class="table">
+                                <tr class="text-success"><td>Errors</td><td>0</td></tr>
+                                <tr class="text-success"><td>Warnings</td><td>1</td></tr>
+                                <tr class="text-danger"><td>Information</td><td>59</td></tr>
+                                <tr class="text-warning"><td>Total</td><td>60</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-check-square-o" aria-hidden="true">&nbsp;</i> Tests Pass Rate (%)</h3>
+                            </div>
+                            <div class="panel-body">
+                                <canvas class="testPassRateChart" height="197"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-pie-chart" aria-hidden="true">&nbsp;</i> Test Coverage (%)</h3>
+                            </div>
+                            <div class="panel-body">
+                                <canvas class="testCoverageChart" height="197"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="bestPractices" class="tab-pane fade">
+                <div class="row col-sm-offset-3 col-md-offset-1 col-lg-offset-2">
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-plus-square-o" aria-hidden="true">&nbsp;</i> ScriptAnalyzer Findings - Total</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>60</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-ban" aria-hidden="true">&nbsp;</i> ScriptAnalyzer Errors</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-exclamation-triangle" aria-hidden="true">&nbsp;</i> ScriptAnalyzer Warnings</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>1</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-sm-offset-3 col-md-offset-1 col-lg-offset-2">
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-bar-chart" aria-hidden="true">&nbsp;</i> ScriptAnalyzer Findings - Average</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>1.58</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-info-circle" aria-hidden="true">&nbsp;</i> ScriptAnalyzer Info</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>59</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-question-circle" aria-hidden="true">&nbsp;</i> Functions Without Help</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>0</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-sm-offset-3 col-md-offset-1 col-lg-offset-2 col-sm-6 col-md-8 col-lg-7">
+                    <div class="panel panel-default tablePanel">
+                        <div class="panel-heading">
+                            <h2 class="panel-title"> Per Function Information</h2>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-condensed text-center">
+                                <thead>
+                                    <tr>
+                                        <th class="col-xs-3">Function Name</th>
+                                        <th class="col-xs-2">ScriptAnalyzer Findings</th>
+                                        <th class="col-xs-5">ScriptAnalyzer Findings Details</th>
+                                        <th class="col-xs-2">Contains Help</th>
+                                    </tr>                            
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>ConvertTo-XmlRpcMethodCall</td>
+                                        <td class="success">1</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : ConvertTo-XmlRpcMethodCall.ps1<br>
+Line (in the function) : 42<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ConvertTo-XmlRpcType</td>
+                                        <td class="success">1</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : ConvertTo-XmlRpcType.ps1<br>
+Line (in the function) : 34<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Invoke-DokuApiCall</td>
+                                        <td class="success">1</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Invoke-DokuApiCall.ps1<br>
+Line (in the function) : 115<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Add-DokuAclRule</td>
+                                        <td class="success">2</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Add-DokuAclRule.ps1<br>
+Line (in the function) : 65<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Add-DokuAclRule.ps1<br>
+Line (in the function) : 94<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Add-DokuPageData</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Connect-DokuServer</td>
+                                        <td class="success">5</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Connect-DokuServer.ps1<br>
+Line (in the function) : 55<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Connect-DokuServer.ps1<br>
+Line (in the function) : 62<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Connect-DokuServer.ps1<br>
+Line (in the function) : 68<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Connect-DokuServer.ps1<br>
+Line (in the function) : 74<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Connect-DokuServer.ps1<br>
+Line (in the function) : 174<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Disconnect-DokuServer</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuAllPages</td>
+                                        <td class="success">1</td>
+                                        <td class="warning">
+                                            <button type="button" class="btn btn-warning btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="warning cell-largeContent">ScriptName : Get-DokuAllPages.ps1<br>
+Line (in the function) : 1<br>
+Severity                      : Warning<br>
+RuleName                      : PSUseSingularNouns<br>
+Message                       : The cmdlet 'Get-DokuAllPages' uses a plural noun. A singular noun should be used instead.<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuAttachmentInfo</td>
+                                        <td class="success">2</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Get-DokuAttachmentInfo.ps1<br>
+Line (in the function) : 36<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Get-DokuAttachmentInfo.ps1<br>
+Line (in the function) : 52<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuAttachmentList</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageAcl</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageBackLink</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageData</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageHtml</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageInfo</td>
+                                        <td class="success">1</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Get-DokuPageInfo.ps1<br>
+Line (in the function) : 36<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageLink</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageList</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageVersion</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageVersionData</td>
+                                        <td class="success">1</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Get-DokuPageVersionData.ps1<br>
+Line (in the function) : 61<br>
+Severity                      : Information<br>
+RuleName                      : PSUseOutputTypeCorrectly<br>
+Message                       : The cmdlet 'Get-DokuPageVersionData' returns an object of type 'System.String' but this type is not declared in the OutputType attribute.<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageVersionHtml</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageVersionInfo</td>
+                                        <td class="success">1</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Get-DokuPageVersionInfo.ps1<br>
+Line (in the function) : 46<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuRecentChange</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuRecentMediaChange</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServer</td>
+                                        <td class="success">3</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Get-DokuServer.ps1<br>
+Line (in the function) : 36<br>
+Severity                      : Information<br>
+RuleName                      : PSUseOutputTypeCorrectly<br>
+Message                       : The cmdlet 'Get-DokuServer' returns an object of type 'System.Boolean' but this type is not declared in the OutputType attribute.<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Get-DokuServer.ps1<br>
+Line (in the function) : 44<br>
+Severity                      : Information<br>
+RuleName                      : PSUseOutputTypeCorrectly<br>
+Message                       : The cmdlet 'Get-DokuServer' returns an object of type 'System.Boolean' but this type is not declared in the OutputType attribute.<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Get-DokuServer.ps1<br>
+Line (in the function) : 11<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServerApiVersion</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServerRpcVersionSupported</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServerTime</td>
+                                        <td class="success">1</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Get-DokuServerTime.ps1<br>
+Line (in the function) : 35<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServerVersion</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuTitle</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lock-DokuPage</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>New-DokuAttachment</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Remove-DokuAclRule</td>
+                                        <td class="warning">8</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAclRule.ps1<br>
+Line (in the function) : 5<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAclRule.ps1<br>
+Line (in the function) : 8<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAclRule.ps1<br>
+Line (in the function) : 11<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAclRule.ps1<br>
+Line (in the function) : 14<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAclRule.ps1<br>
+Line (in the function) : 17<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAclRule.ps1<br>
+Line (in the function) : 20<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAclRule.ps1<br>
+Line (in the function) : 42<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAclRule.ps1<br>
+Line (in the function) : 50<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Remove-DokuAttachment</td>
+                                        <td class="success">6</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAttachment.ps1<br>
+Line (in the function) : 5<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAttachment.ps1<br>
+Line (in the function) : 8<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAttachment.ps1<br>
+Line (in the function) : 11<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAttachment.ps1<br>
+Line (in the function) : 14<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAttachment.ps1<br>
+Line (in the function) : 36<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuAttachment.ps1<br>
+Line (in the function) : 44<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Remove-DokuUser</td>
+                                        <td class="success">6</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuUser.ps1<br>
+Line (in the function) : 5<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuUser.ps1<br>
+Line (in the function) : 8<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuUser.ps1<br>
+Line (in the function) : 11<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuUser.ps1<br>
+Line (in the function) : 14<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuUser.ps1<br>
+Line (in the function) : 18<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Remove-DokuUser.ps1<br>
+Line (in the function) : 37<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Save-DokuAttachment</td>
+                                        <td class="warning">9</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Save-DokuAttachment.ps1<br>
+Line (in the function) : 5<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Save-DokuAttachment.ps1<br>
+Line (in the function) : 8<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Save-DokuAttachment.ps1<br>
+Line (in the function) : 11<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Save-DokuAttachment.ps1<br>
+Line (in the function) : 14<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Save-DokuAttachment.ps1<br>
+Line (in the function) : 17<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Save-DokuAttachment.ps1<br>
+Line (in the function) : 20<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Save-DokuAttachment.ps1<br>
+Line (in the function) : 23<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Save-DokuAttachment.ps1<br>
+Line (in the function) : 27<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Save-DokuAttachment.ps1<br>
+Line (in the function) : 51<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Search-DokuWiki</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Set-DokuPageData</td>
+                                        <td class="warning">11</td>
+                                        <td class="info">
+                                            <button type="button" class="btn btn-info btn-sm cell-expand-collapse"> Expand</button>
+                                            <table>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Set-DokuPageData.ps1<br>
+Line (in the function) : 5<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Set-DokuPageData.ps1<br>
+Line (in the function) : 8<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Set-DokuPageData.ps1<br>
+Line (in the function) : 11<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Set-DokuPageData.ps1<br>
+Line (in the function) : 14<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Set-DokuPageData.ps1<br>
+Line (in the function) : 17<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Set-DokuPageData.ps1<br>
+Line (in the function) : 20<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Set-DokuPageData.ps1<br>
+Line (in the function) : 23<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Set-DokuPageData.ps1<br>
+Line (in the function) : 26<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Set-DokuPageData.ps1<br>
+Line (in the function) : 29<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Set-DokuPageData.ps1<br>
+Line (in the function) : 33<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                    <td class="info cell-largeContent">ScriptName : Set-DokuPageData.ps1<br>
+Line (in the function) : 97<br>
+Severity                      : Information<br>
+RuleName                      : PSAvoidTrailingWhitespace<br>
+Message                       : Line has trailing whitespace<br>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                        </td>
+                                        <td class="success">True</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Unlock-DokuPage</td>
+                                        <td class="success">0</td>
+                                        <td class=""></td>
+                                        <td class="success">True</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="maintainability" class="tab-pane fade">
+                <div class="row col-sm-offset-3 col-md-offset-1 col-lg-offset-2">
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-arrows-v" aria-hidden="true">&nbsp;</i> Lines of Code - Total</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>1935</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-arrows-alt" aria-hidden="true">&nbsp;</i> Complexity - Highest</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>22</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-object-group" aria-hidden="true">&nbsp;</i> Nesting Depth - Highest</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>7</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-sm-offset-3 col-md-offset-1 col-lg-offset-2">
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-arrows-v" aria-hidden="true">&nbsp;</i> Lines of Code - Average</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>50.92</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-arrows-alt" aria-hidden="true">&nbsp;</i> Complexity - Average</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>4.47</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-object-group" aria-hidden="true">&nbsp;</i> Nesting Depth - Average</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>4.18</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-sm-offset-3 col-md-offset-1 col-lg-offset-2 col-sm-6">
+                    <div class="panel panel-default tablePanel">
+                        <div class="panel-heading">
+                            <h2 class="panel-title"> Per Function Information</h2>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-condensed text-center">
+                                <thead>
+                                    <tr>
+                                        <th class="wideColumn">Function Name</th>
+                                        <th class="narrowColum">Lines of Code</th>
+                                        <th class="narrowColum">Complexity</th>
+                                        <th class="narrowColum">Maximum Nesting Depth</th>
+                                    </tr>                            
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>ConvertTo-XmlRpcMethodCall</td>
+                                        <td class="warning">32</td>
+                                        <td class="success">3</td>
+                                        <td class="warning">5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ConvertTo-XmlRpcType</td>
+                                        <td class="danger">140</td>
+                                        <td class="warning">22</td>
+                                        <td class="success">3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Invoke-DokuApiCall</td>
+                                        <td class="danger">98</td>
+                                        <td class="success">7</td>
+                                        <td class="success">3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Add-DokuAclRule</td>
+                                        <td class="warning">57</td>
+                                        <td class="success">5</td>
+                                        <td class="warning">6</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Add-DokuPageData</td>
+                                        <td class="danger">64</td>
+                                        <td class="success">6</td>
+                                        <td class="warning">6</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Connect-DokuServer</td>
+                                        <td class="danger">146</td>
+                                        <td class="success">10</td>
+                                        <td class="success">3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Disconnect-DokuServer</td>
+                                        <td class="success">12</td>
+                                        <td class="success">2</td>
+                                        <td class="success">1</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuAllPages</td>
+                                        <td class="warning">38</td>
+                                        <td class="success">3</td>
+                                        <td class="success">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuAttachmentInfo</td>
+                                        <td class="warning">45</td>
+                                        <td class="success">4</td>
+                                        <td class="warning">5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuAttachmentList</td>
+                                        <td class="warning">51</td>
+                                        <td class="success">3</td>
+                                        <td class="warning">5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageAcl</td>
+                                        <td class="warning">43</td>
+                                        <td class="success">3</td>
+                                        <td class="success">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageBackLink</td>
+                                        <td class="warning">45</td>
+                                        <td class="success">3</td>
+                                        <td class="warning">5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageData</td>
+                                        <td class="warning">51</td>
+                                        <td class="success">4</td>
+                                        <td class="success">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageHtml</td>
+                                        <td class="warning">51</td>
+                                        <td class="success">4</td>
+                                        <td class="success">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageInfo</td>
+                                        <td class="warning">46</td>
+                                        <td class="success">3</td>
+                                        <td class="success">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageLink</td>
+                                        <td class="warning">45</td>
+                                        <td class="success">3</td>
+                                        <td class="warning">5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageList</td>
+                                        <td class="warning">38</td>
+                                        <td class="success">3</td>
+                                        <td class="success">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageVersion</td>
+                                        <td class="warning">55</td>
+                                        <td class="success">3</td>
+                                        <td class="warning">5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageVersionData</td>
+                                        <td class="warning">59</td>
+                                        <td class="success">4</td>
+                                        <td class="warning">5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageVersionHtml</td>
+                                        <td class="warning">57</td>
+                                        <td class="success">4</td>
+                                        <td class="success">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageVersionInfo</td>
+                                        <td class="warning">53</td>
+                                        <td class="success">3</td>
+                                        <td class="success">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuRecentChange</td>
+                                        <td class="warning">43</td>
+                                        <td class="success">3</td>
+                                        <td class="success">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuRecentMediaChange</td>
+                                        <td class="warning">45</td>
+                                        <td class="success">3</td>
+                                        <td class="success">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServer</td>
+                                        <td class="success">25</td>
+                                        <td class="success">4</td>
+                                        <td class="success">2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServerApiVersion</td>
+                                        <td class="warning">32</td>
+                                        <td class="success">3</td>
+                                        <td class="success">3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServerRpcVersionSupported</td>
+                                        <td class="warning">32</td>
+                                        <td class="success">3</td>
+                                        <td class="success">3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServerTime</td>
+                                        <td class="warning">31</td>
+                                        <td class="success">3</td>
+                                        <td class="success">3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServerVersion</td>
+                                        <td class="warning">37</td>
+                                        <td class="success">3</td>
+                                        <td class="success">3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuTitle</td>
+                                        <td class="warning">32</td>
+                                        <td class="success">3</td>
+                                        <td class="success">3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lock-DokuPage</td>
+                                        <td class="warning">40</td>
+                                        <td class="success">5</td>
+                                        <td class="warning">5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>New-DokuAttachment</td>
+                                        <td class="danger">61</td>
+                                        <td class="success">6</td>
+                                        <td class="warning">5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Remove-DokuAclRule</td>
+                                        <td class="warning">45</td>
+                                        <td class="success">5</td>
+                                        <td class="warning">6</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Remove-DokuAttachment</td>
+                                        <td class="warning">32</td>
+                                        <td class="success">4</td>
+                                        <td class="success">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Remove-DokuUser</td>
+                                        <td class="warning">37</td>
+                                        <td class="success">5</td>
+                                        <td class="warning">5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Save-DokuAttachment</td>
+                                        <td class="warning">55</td>
+                                        <td class="success">5</td>
+                                        <td class="success">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Search-DokuWiki</td>
+                                        <td class="warning">52</td>
+                                        <td class="success">3</td>
+                                        <td class="warning">5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Set-DokuPageData</td>
+                                        <td class="danger">69</td>
+                                        <td class="success">6</td>
+                                        <td class="warning">7</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Unlock-DokuPage</td>
+                                        <td class="warning">41</td>
+                                        <td class="success">4</td>
+                                        <td class="success">4</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="tests" class="tab-pane fade">
+                <div class="row col-sm-offset-3 col-md-offset-1 col-lg-offset-2">
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-list" aria-hidden="true">&nbsp;</i> Number of Tests</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>137</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-times" aria-hidden="true">&nbsp;</i> Number of Failed Tests</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>134</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-check-square-o" aria-hidden="true">&nbsp;</i> Number of Passed Tests</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>3</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-sm-offset-3 col-md-offset-1 col-lg-offset-2">
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-times" aria-hidden="true">&nbsp;</i> Number of Missed Commands</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h2>1114</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-check-square-o" aria-hidden="true">&nbsp;</i> Tests Pass Rate (%)</h3>
+                            </div>
+                            <div class="panel-body">
+                                <canvas class="testPassRateChart" height="197"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 panelContainer">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-pie-chart" aria-hidden="true">&nbsp;</i> Test Coverage (%)</h3>
+                            </div>
+                            <div class="panel-body">
+                                <canvas class="testCoverageChart" height="197"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-sm-offset-3 col-md-offset-1 col-lg-offset-2 col-sm-7 col-md-9 col-lg-8">
+                    <div class="panel panel-default tablePanel">
+                        <div class="panel-heading">
+                            <h2 class="panel-title"> Failed Tests Details</h2>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="col-xs-2">File</th>
+                                        <th class="col-xs-1">Line</th>
+                                        <th class="col-xs-2">Describe</th>
+                                        <th class="col-xs-3">Test Name</th>
+                                        <th class="col-xs-4">Error Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Add-DokuAclRule</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Add-DokuAclRule</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Add-DokuAclRule</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Add-DokuAclRule</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Add-DokuAclRule</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Add-DokuPageData</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Add-DokuPageData</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Add-DokuPageData</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Connect-DokuServer</td>
+                                        <td>Should return an object with the correct primary type name</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Connect-DokuServer</td>
+                                        <td>Should return an object with all the correct properties</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>ConvertTo-XmlRpcMethodCall</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>ConvertTo-XmlRpcType</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Disconnect-DokuServer</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuAllPages</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuAllPages</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuAllPages</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuAttachmentInfo</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuAttachmentInfo</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuAttachmentInfo</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuAttachmentList</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuAttachmentList</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuAttachmentList</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuAttachmentList</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageAcl</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageAcl</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageAcl</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageBackLink</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageBackLink</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageBackLink</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageBackLink</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageData</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageData</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageData</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageData</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageData</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageHtml</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageHtml</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageInfo</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageInfo</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageInfo</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageInfo</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageLink</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageLink</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageLink</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageLink</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageList</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageList</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageList</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageVersion</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageVersion</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageVersion</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageVersion</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageVersionData</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageVersionData</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageVersionData</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageVersionData</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageVersionData</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageVersionHtml</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageVersionHtml</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageVersionInfo</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuPageVersionInfo</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageVersionInfo</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuPageVersionInfo</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuRecentChange</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuRecentChange</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuRecentChange</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuRecentChange</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuRecentMediaChange</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuRecentMediaChange</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuRecentMediaChange</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuRecentMediaChange</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuServer</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuServerApiVersion</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuServerApiVersion</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuServerApiVersion</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuServerRpcVersionSupported</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuServerRpcVersionSupported</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuServerRpcVersionSupported</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuServerTime</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuServerTime</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuServerTime</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuServerVersion</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuServerVersion</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuServerVersion</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuTitle</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Get-DokuTitle</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Get-DokuTitle</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Invoke-DokuApiCall</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Lock-DokuPage</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Lock-DokuPage</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Lock-DokuPage</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Lock-DokuPage</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Lock-DokuPage</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>New-DokuAttachment</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>New-DokuAttachment</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>New-DokuAttachment</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>New-DokuAttachment</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Remove-DokuAclRule</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Remove-DokuAclRule</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Remove-DokuAclRule</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Remove-DokuAclRule</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Remove-DokuAclRule</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Remove-DokuAttachment</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Remove-DokuAttachment</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Remove-DokuAttachment</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Remove-DokuAttachment</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Remove-DokuAttachment</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Remove-DokuUser</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Remove-DokuUser</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Remove-DokuUser</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Remove-DokuUser</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Remove-DokuUser</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Save-DokuAttachment</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Save-DokuAttachment</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Save-DokuAttachment</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Save-DokuAttachment</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Search-DokuWiki</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Search-DokuWiki</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Search-DokuWiki</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Search-DokuWiki</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Search-DokuWiki</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Search-DokuWiki</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Set-DokuPageData</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Set-DokuPageData</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Set-DokuPageData</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Set-DokuPageData</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Set-DokuPageData</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Set-DokuPageData</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Unlock-DokuPage</td>
+                                        <td>Should display the exception message</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1</td>
+                                        <td>108</td>
+                                        <td>Unlock-DokuPage</td>
+                                        <td>Should display the fault code & string</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Unlock-DokuPage</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Unlock-DokuPage</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Unlock-DokuPage</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>InModuleScope.ps1:108 char:9</td>
+                                        <td></td>
+                                        <td>Unlock-DokuPage</td>
+                                        <td>Error occurred in Context block</td>
+                                        <td>No module named 'PSDokuWiki' is currently loaded.</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-sm-offset-3 col-md-offset-1 col-lg-offset-2 col-sm-6">
+                    <div class="panel panel-default tablePanel">
+                        <div class="panel-heading">
+                            <h2 class="panel-title"> Per Function Information</h2>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-condensed text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Function Name</th>
+                                        <th>Test Coverage  &nbsp;(%)</th>
+                                        <th>Missed Commands</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>ConvertTo-XmlRpcMethodCall</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">16</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ConvertTo-XmlRpcType</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">72</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Invoke-DokuApiCall</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">61</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Add-DokuAclRule</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">21</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Add-DokuPageData</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">29</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Connect-DokuServer</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">70</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Disconnect-DokuServer</td>
+                                        <td class="danger">0</td>
+                                        <td class="success">5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuAllPages</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">45</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuAttachmentInfo</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">28</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuAttachmentList</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">51</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageAcl</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">22</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageBackLink</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">23</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageData</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">26</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageHtml</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">24</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageInfo</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">26</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageLink</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">26</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageList</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">42</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageVersion</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">43</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageVersionData</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">28</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageVersionHtml</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">24</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuPageVersionInfo</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">26</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuRecentChange</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">28</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuRecentMediaChange</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">34</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServer</td>
+                                        <td class="danger">0</td>
+                                        <td class="warning">10</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServerApiVersion</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServerRpcVersionSupported</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServerTime</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">17</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuServerVersion</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">23</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Get-DokuTitle</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lock-DokuPage</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">20</td>
+                                    </tr>
+                                    <tr>
+                                        <td>New-DokuAttachment</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">36</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Remove-DokuAclRule</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">18</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Remove-DokuAttachment</td>
+                                        <td class="danger">0</td>
+                                        <td class="warning">11</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Remove-DokuUser</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">16</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Save-DokuAttachment</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">26</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Search-DokuWiki</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">53</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Set-DokuPageData</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">36</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Unlock-DokuPage</td>
+                                        <td class="danger">0</td>
+                                        <td class="danger">19</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        Chart.pluginService.register({
+            afterUpdate: function (chart) {
+                if (chart.config.options.elements.center) {
+                    var helpers = Chart.helpers;
+                    var centerConfig = chart.config.options.elements.center;
+                    var globalConfig = Chart.defaults.global;
+                    var ctx = chart.chart.ctx;
+
+                    var fontStyle = helpers.getValueOrDefault(centerConfig.fontStyle, globalConfig.defaultFontStyle);
+                    var fontFamily = helpers.getValueOrDefault(centerConfig.fontFamily, globalConfig.defaultFontFamily);
+
+                    // Figure out the best font size, if one is not specified
+                    ctx.save();
+                    var fontSize = helpers.getValueOrDefault(centerConfig.minFontSize, 12);
+                    var maxFontSize = helpers.getValueOrDefault(centerConfig.maxFontSize, 55);
+                    var maxText = helpers.getValueOrDefault(centerConfig.maxText, centerConfig.text);
+
+                    do {
+                        ctx.font = helpers.fontString(fontSize, fontStyle, fontFamily);
+                        var textWidth = ctx.measureText(maxText).width;
+
+                        // Check if it fits, is within configured limits and that we are not simply toggling back and forth
+                        if (textWidth < chart.innerRadius * 2 && fontSize < maxFontSize)
+                            fontSize += 1;
+                        else {
+                            // Reverse last step
+                            fontSize -= 1;
+                            break;
+                        }
+                    } while (true);
+                    ctx.restore();
+
+                    // save properties
+                    chart.center = {
+                        font: helpers.fontString(fontSize, fontStyle, fontFamily),
+                        fillStyle: helpers.getValueOrDefault(centerConfig.fontColor, globalConfig.defaultFontColor)
+                    };
+                }
+            },
+            afterDraw: function (chart) {
+                if (chart.center) {
+                    var centerConfig = chart.config.options.elements.center;
+                    var ctx = chart.chart.ctx;
+
+                    ctx.save();
+                    ctx.font = chart.center.font;
+                    ctx.fillStyle = chart.center.fillStyle;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    var centerX = (chart.chartArea.left + chart.chartArea.right) / 2;
+                    var centerY = (chart.chartArea.top + chart.chartArea.bottom) / 2;
+                    ctx.fillText(centerConfig.text, centerX, centerY);
+                    ctx.restore();
+                }
+            },
+        });
+
+        function createTestPassRateChart(ctx) {
+            var data = {
+                labels: ["Pass","Fail"],
+                datasets: [
+                {
+                    data: [3,134],
+                    backgroundColor: ["#a3d48d","#d59595"],
+                    hoverBackgroundColor: ["#a3d48d","#d59595"]
+                }]
+            };
+            var newTestPassRateChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    cutoutPercentage: 64,
+                    legend: { position: 'top' },
+                    elements: {
+                        center: {
+                            // This evaluates the max length of the text
+                            maxText: '99.99%',
+                            text: '2.19%',
+                            fontColor: '#a3d48d',
+                            fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                            fontStyle: 'normal'
+                        }
+                    }
+                }
+            });
+        }
+        var testPassRateCharts = $(".testPassRateChart");
+        for (var i = 0; i < testPassRateCharts.length; i++) {
+            createTestPassRateChart(testPassRateCharts[i]);
+        }
+
+        function createTestCoverageChart(ctx) {
+            var data = {
+                labels: ["Covered","Missed"],
+                datasets: [
+                {
+                    data: [0,100],
+                    backgroundColor: ["#a3d48d","#d59595"],
+                    hoverBackgroundColor: ["#a3d48d","#d59595"]
+                }]
+            };
+            var newTestCoverageChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    cutoutPercentage: 64,
+                    legend: { position: 'top' },
+                    elements: {
+                        center: {
+                            // This evaluates the max length of the text
+                            maxText: '99.99%',
+                            text: '0%',
+                            fontColor: '#d59595',
+                            fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                            fontStyle: 'normal'
+                        }
+                    }
+                }
+            });
+        }
+        var testCoverageCharts = $(".testCoverageChart");
+        for (var i = 0; i < testCoverageCharts.length; i++) {
+            createTestCoverageChart(testCoverageCharts[i]);
+        }
+
+        $(document).ready(function(){
+            $("td > table").hide();
+            var expandCollapseButtons = $(".cell-expand-collapse");
+
+            if (expandCollapseButtons.length) {
+                expandCollapseButtons.click(function(){
+                    var elementToToggle = $(this).siblings("table");
+                    elementToToggle.slideToggle("fast");
+                    $(this).text($(this).text() == ' Expand' ? ' Collapse' : ' Expand');
+                });
+            }
+        });
+
+    </script>
+</body>
+</html>
