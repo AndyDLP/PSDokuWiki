@@ -9,18 +9,26 @@ PSDokuWiki is a (WIP) PowerShell wrapper for DokuWiki's XML RPC API
 Install-Module -Name PSDokuWiki -Repository -PSGallery -Force
 ````
 
-(Not recommended) You can also clone this repository and copy the .\PSDokuWiki folder to one of the module folders
+(Not recommended) You can also clone this repository and copy the .\PSDokuWiki folder to one of the module folders in your $env:PSModulePath
 
 ## How to use
 
-I am changing this away from using a "DokuSession" object to be more in line with other remote connection type cmdlets (such as VMWares Connect-VIServer / Connect-HVServer). As such I will aim to have it function like the below (still WIP)
-
+Firstly you will need to connect to the API endpoint as per the below. Using these defaults this will attempt to authenticate to: https://wiki.example.com/lib/exe/xmlrpc.php and forcibly overwrite any existing connections
 ```powershell
 # Connect to the API
-Connect-DokuServer -ComputerName 'wiki.example.com' -Credential (Get-Credential) -ErrorAction 'Stop'
+Connect-DokuServer -ComputerName 'wiki.example.com' -Credential (Get-Credential) -Force
+````
 
-# Add text to a page contained in the API / on the server we connected to earlier
-Add-DokuPageData -FullName 'ns:page' -RawWikiText 'Hello World'
+You can also connect to unencrypted endpoints (http) by using the -Unencrypted switch & also specify a different path to the XMLRPC endpoint (for example when using a different virtual host / path on your webserver)
+```powershell
+# Connect to the API
+Connect-DokuServer -ComputerName 'wiki.example.com' -Credential (Get-Credential) -Unencrypted -APIPath '/dokuwiki/lib/exe/xmlrpc.php'
+````
+
+You can then use any of the other commands as normal 
+```powershell
+# Get raw / plain source text of the specified page
+Get-DokuPageData -FullName 'namespace1:namespace2:page' -Raw
 ````
 
 ## Fault codes
