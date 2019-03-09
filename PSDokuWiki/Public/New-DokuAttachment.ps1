@@ -49,14 +49,19 @@
 	)
 
 	if ($PSCmdlet.ShouldProcess("Upload attachment at path: $Path to location: $Fullname")) {
-		# check size before?
+
+		# add a check size before uploading??
+		Write-Verbose "Reading all bytes from file: $Path"
 		$FileBytes = [IO.File]::ReadAllBytes($Path)
+
 		# Moved conversion to Base64 to inside the function0.
-		$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.putAttachment' -MethodParameters @($FullName,$FileBytes,@{'ow' = [bool]$Forced})
+		$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.putAttachment' -MethodParameters @($FullName,$FileBytes,@{'ow' = [bool]$Force})
 		if ($APIResponse.CompletedSuccessfully -eq $true) {
+			Write-Verbose $APIResponse.XMLPayloadResponse
 			$FileItem = (Get-Item -Path $Path)
 			$ResultString = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/string").node.InnerText
 			if ($ResultString -eq $FullName) {
+				Write-Verbose "File uploaded successfully"
 				if ($PassThru) {
 					$attachmentObject = New-Object PSObject -Property @{
 						FullName = $FullName

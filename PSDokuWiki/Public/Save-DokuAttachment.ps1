@@ -41,7 +41,9 @@
 				   HelpMessage = 'The path to save the attachment to, including filename & extension')]
 		[ValidateScript({ Test-Path -Path $_ -IsValid })]
 		[string]$Path,
-		[Parameter(HelpMessage = 'Force creation of output file, overwriting any existing files')]
+		[Parameter(Mandatory = $false,
+				   Position = 3,
+				   HelpMessage = 'Force creation of output file, overwriting any existing files')]
 		[switch]$Force
 	)
 
@@ -53,10 +55,11 @@
 		foreach ($AttachmentName in $FullName) {
 			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getAttachment' -MethodParameters @($AttachmentName)
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
+				Write-Verbose $APIResponse.XMLPayloadResponse
 				if ((Test-Path -Path $Path) -and (!$Force)) {
-					Write-Error "File with that name already exists at: $Path"
+					Throw "File with that name already exists at: $Path"
 				} else {
-					Remove-Item -Path $Path -Force -ErrorAction Stop
+					Remove-Item -Path $Path -Force -ErrorAction SilentlyContinue
 					$RawFileData = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/base64").node.InnerText
 					$RawBytes = [Convert]::FromBase64String($RawFileData)
 					[IO.File]::WriteAllBytes($Path, $RawBytes) | Out-Null
