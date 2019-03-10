@@ -27,13 +27,13 @@ Describe 'Get-DokuPageHtml' {
             $DokuErrorVariable.exception.message | Should -Be 'Fault code: 12345 - Fault string: Fault String'
         }
     }
-<#
+
     Context 'When html for one page is requested' {
         Mock Invoke-DokuApiCall -ModuleName PSDokuWiki {
             return (
                 [PSCustomObject]@{
                     CompletedSuccessfully = $true
-                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><value><string><![CDATA[<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My First Website</title></head><body>Hello World</body></html>]]</string></value></methodResponse>'
+                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><params><param><value><string>&lt;h1 class="sectionedit1" id="title"&gt;Title&lt;/h1&gt;&lt;div class="level1"&gt;&lt;p&gt;Page text&lt;/p&gt;&lt;/div&gt;</string></value></param></params></methodResponse>'
                 }
             )
         }
@@ -46,7 +46,7 @@ Describe 'Get-DokuPageHtml' {
             $ResponseObject.FullName | Should -Be 'rootns:ns:pagename'
         }
         It 'Should return an object with the correct value for RenderedHtml' {
-            $ResponseObject.RenderedHtml | Should -Be '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My First Website</title></head><body>Hello World</body></html>'
+            $ResponseObject.RenderedHtml | Should -Be '<h1 class="sectionedit1" id="title">Title</h1><div class="level1"><p>Page text</p></div>'
         }
         It 'Should return an object with the correct value for PageName' {
             $ResponseObject.PageName | Should -Be 'pagename'
@@ -63,7 +63,7 @@ Describe 'Get-DokuPageHtml' {
             return (
                 [PSCustomObject]@{
                     CompletedSuccessfully = $true
-                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><value><string><![CDATA[<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My First Website</title></head><body>Hello World</body></html>]]</string></value></methodResponse>'
+                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><params><param><value><string>&lt;h1 class="sectionedit1" id="title"&gt;Title&lt;/h1&gt;&lt;div class="level1"&gt;&lt;p&gt;Page text&lt;/p&gt;&lt;/div&gt;</string></value></param></params></methodResponse>'
                 }
             )
         }
@@ -76,7 +76,7 @@ Describe 'Get-DokuPageHtml' {
             $ResponseObject.FullName | Should -Be 'rootns2:ns2:pagename2'
         }
         It 'Should return an object with the correct value for RenderedHtml' {
-            $ResponseObject.RenderedHtml | Should -Be '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My First Website</title></head><body>Hello World</body></html>'
+            $ResponseObject.RenderedHtml | Should -Be '<h1 class="sectionedit1" id="title">Title</h1><div class="level1"><p>Page text</p></div>'
         }
         It 'Should return an object with the correct value for PageName' {
             $ResponseObject.PageName | Should -Be 'pagename2'
@@ -87,13 +87,16 @@ Describe 'Get-DokuPageHtml' {
         It 'Should return an object with the correct value for RootNamespace' {
             $ResponseObject.RootNamespace | Should -Be 'rootns2'
         }
+        It 'Should call Invoke-DokuApiCall twice' {
+            Assert-MockCalled -CommandName Invoke-DokuApiCall -ModuleName PSDokuWiki -Exactly -Times 2
+        }
     }
     Context 'When the Raw switch is used' {
         Mock Invoke-DokuApiCall -ModuleName PSDokuWiki {
             return (
                 [PSCustomObject]@{
                     CompletedSuccessfully = $true
-                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><value><string><![CDATA[<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My First Website</title></head><body>Hello World</body></html>]]</string></value></methodResponse>'
+                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><params><param><value><string>&lt;h1 class="sectionedit1" id="title"&gt;Title&lt;/h1&gt;&lt;div class="level1"&gt;&lt;p&gt;Page text&lt;/p&gt;&lt;/div&gt;</string></value></param></params></methodResponse>'
                 }
             )
         }
@@ -103,8 +106,7 @@ Describe 'Get-DokuPageHtml' {
             $ResponseObject | Should -BeOfType [string]
         }
         It 'Should return the raw page data' {
-            $ResponseObject | Should -Be '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My First Website</title></head><body>Hello World</body></html>'
+            $ResponseObject | Should -Be '<h1 class="sectionedit1" id="title">Title</h1><div class="level1"><p>Page text</p></div>'
         }
     }
-    #>
 }

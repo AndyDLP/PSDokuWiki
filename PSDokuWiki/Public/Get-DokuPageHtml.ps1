@@ -47,6 +47,7 @@
 		foreach ($PageName in $FullName) {
 			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getPageHTML' -MethodParameters @($PageName)
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
+				Write-Verbose $APIResponse.XMLPayloadResponse
 				$PageObject = New-Object PSObject -Property @{
 					FullName = $PageName
 					RenderedHtml = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/string").Node.InnerText

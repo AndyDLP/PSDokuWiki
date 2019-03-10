@@ -51,7 +51,7 @@ function ConvertTo-XmlRpcType
 
     Begin
     {
-        $Objects = @('Object')
+        $Objects = @('Object','PSCustomObject')
         $objects += $CustomTypes
     }
 
@@ -86,19 +86,7 @@ function ConvertTo-XmlRpcType
 
         if ($Type -eq 'string')
         {
-            #if ($InputObject -match '^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$') {
-                # MAYBE Base64 (it's valid at least)
-                # 13-02-2019 check randomness?
-                # 14-02-2019 well defining and checking randomness is a massive rabbit hole...
-                # Base64 encoded string
-                #return "<value><base64>$InputObject</base64></value>"
-            #} else {
-
-                # Normal string: Encode string to HTML
-                return "<value><$Type>$([System.Web.HttpUtility]::HtmlEncode($inputObject))</$Type></value>"
-
-
-            #}
+            return "<value><$Type>$([System.Web.HttpUtility]::HtmlEncode($inputObject))</$Type></value>"
         }
 
         # Int16 must be casted as Int
@@ -121,7 +109,7 @@ function ConvertTo-XmlRpcType
         # Return In64 as Double
         if (('Int64') -contains $Type)
         {
-            return "<value><Double>$inputObject</Double></value>"
+            return "<value><double>$inputObject</double></value>"
         }
 
         # DateTime

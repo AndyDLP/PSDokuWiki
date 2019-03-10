@@ -12,9 +12,6 @@ function Connect-DokuServer {
 	.PARAMETER Credential
 		The credentials used to authenticate to the API endpoint
 
-	.PARAMETER SessionMethod
-		The session method to use for the connection. Options are Cookie or HttpBasic
-
 	.PARAMETER Unencrypted
 		Specify that the APi endpoint is at a http rather than https address. Recommended for development only!!
 
@@ -55,25 +52,18 @@ function Connect-DokuServer {
         
         [Parameter(Mandatory = $false,
             Position = 3,
-            HelpMessage = 'The session method to use')]
-        [ValidateNotNullOrEmpty()]
-        [ValidateSet('Cookie','HttpBasic',IgnoreCase = $true)]
-        [string]$SessionMethod = 'Cookie',
-        
-        [Parameter(Mandatory = $false,
-            Position = 4,
             HelpMessage = 'Connect to an unencrypted endpoint')]
         [ValidateNotNullOrEmpty()]
         [switch]$Unencrypted,
         
         [Parameter(Mandatory = $false,
-            Position = 5,
+            Position = 4,
             HelpMessage = 'The path to the api endpoint')]
         [ValidateNotNullOrEmpty()]
         [string]$APIPath = '/lib/exe/xmlrpc.php',
         
         [Parameter(Mandatory = $false,
-            Position = 6,
+            Position = 5,
             HelpMessage = 'Force a re-connection')]
         [ValidateNotNullOrEmpty()]
         [switch]$Force
@@ -97,43 +87,37 @@ function Connect-DokuServer {
         $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credential.Password)
         $password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
-        if ($SessionMethod -eq "HttpBasic") {
-            $pair = "$($Credential.username):$($password)"
-            $encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($pair))
-            $headers.Add("Authorization", "Basic $encodedCreds")
-        } else {
-            $XMLPayload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)
-            # $Websession var defined here
-            try {
-                $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
-                $XMLContent = [xml]($httpResponse.Content)
-            }
-            catch [System.Management.Automation.PSInvalidCastException] {
-                Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri) but did not receive valid response"
-                $PSCmdlet.ThrowTerminatingError(
-                    [System.Management.Automation.ErrorRecord]::new(
-                        ("XML payload sent to: $TargetUri but received an invalid response"),
-                        'DokuWiki.Session.InvalidResponse',
-                        [System.Management.Automation.ErrorCategory]::InvalidResult,
-                        $TargetUri
-                    )
+        $XMLPayload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)
+        # $Websession var defined here
+        try {
+            $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
+            $XMLContent = [xml]($httpResponse.Content)
+        }
+        catch [System.Management.Automation.PSInvalidCastException] {
+            Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri) but did not receive valid response"
+            $PSCmdlet.ThrowTerminatingError(
+                [System.Management.Automation.ErrorRecord]::new(
+                    ("XML payload sent to: $TargetUri but received an invalid response"),
+                    'DokuWiki.Session.InvalidResponse',
+                    [System.Management.Automation.ErrorCategory]::InvalidResult,
+                    $TargetUri
                 )
-            }
-            catch [System.Net.WebException] {
-                $PSCmdlet.ThrowTerminatingError(
-                    [System.Management.Automation.ErrorRecord]::new(
-                        ("Failed to send POST request to $TargetUri"),
-                        'DokuWiki.Session.InvalidRequest',
-                        [System.Management.Automation.ErrorCategory]::InvalidOperation,
-                        $TargetUri
-                    )
+            )
+        }
+        catch [System.Net.WebException] {
+            $PSCmdlet.ThrowTerminatingError(
+                [System.Management.Automation.ErrorRecord]::new(
+                    ("Failed to send POST request to $TargetUri"),
+                    'DokuWiki.Session.InvalidRequest',
+                    [System.Management.Automation.ErrorCategory]::InvalidOperation,
+                    $TargetUri
                 )
-            }
-            catch {
-                Write-Verbose "Unspecified error caught"
-                throw $_
-                exit
-            }
+            )
+        }
+        catch {
+            Write-Error "Unspecified error caught in Connect-DokuServer"
+            throw $_
+            exit
         }
 
         if ($null -ne ($XMLContent | Select-Xml -XPath "//fault").node) {

@@ -18,8 +18,16 @@ Describe 'ConvertTo-XmlRpcType' {
             It 'Should convert Booleans' {
                 ConvertTo-XmlRpcType -InputObject $true | Should -be '<value><boolean>1</boolean></value>'
             }
+            It 'Should convert Int16' {
+                [int16]$Int16 = 12345
+                ConvertTo-XmlRpcType -InputObject $Int16 | Should -be '<value><int>12345</int></value>'
+            }
             It 'Should convert Int32' {
                 ConvertTo-XmlRpcType -InputObject 8 | Should -be '<value><i4>8</i4></value>'
+            }
+            It 'Should convert Int64' {
+                [int64]$Int64 = 123456789
+                ConvertTo-XmlRpcType -InputObject $Int64 | Should -be '<value><double>123456789</double></value>'
             }
             It 'Should convert DateTime' {
                 [datetime]$Date = '1/1/1980'
@@ -40,6 +48,18 @@ Describe 'ConvertTo-XmlRpcType' {
             }
             It 'Should convert NULL' {
                 ConvertTo-XmlRpcType -InputObject $null | Should -be ''
+            }
+            It 'Should convert PSObjects' {
+                $ObjectVar = [PSObject]@{
+                    Key = 'Value'
+                }
+                ConvertTo-XmlRpcType -InputObject $ObjectVar | Should -be '<value><struct><member><name>Key</name><value><string>Value</string></value></member></struct></value>'
+            }
+            It 'Should convert PSCustomObjects' {
+                $ObjectVar = [PSCustomObject]@{
+                    Key2 = 'Value2'
+                }
+                ConvertTo-XmlRpcType -InputObject $ObjectVar | Should -be '<value><struct><member><name>Key2</name><value><string>Value2</string></value></member></struct></value>'
             }
         }
     }

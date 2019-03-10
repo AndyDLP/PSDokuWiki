@@ -58,6 +58,7 @@
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
 				$PageObject = New-Object PSObject -Property @{
 					FullName = $PageName
+					VersionTimestamp = $VersionTimestamp
 					RenderedHtml = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/string").Node.InnerText
 					PageName = ($PageName -split ":")[-1]
 					ParentNamespace = ($PageName -split ":")[-2]

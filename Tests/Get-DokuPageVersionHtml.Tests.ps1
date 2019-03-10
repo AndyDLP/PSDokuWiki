@@ -27,20 +27,19 @@ Describe 'Get-DokuPageVersionHtml' {
             $DokuErrorVariable.exception.message | Should -Be 'Fault code: 12345 - Fault string: Fault String'
         }
     }
-    <#
     Context 'When data for one page is requested' {
         Mock Invoke-DokuApiCall -ModuleName PSDokuWiki {
             return (
                 [PSCustomObject]@{
                     CompletedSuccessfully = $true
-                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><value><string>### Page Data ###</string></value></methodResponse>'
+                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><params><param><value><string>&lt;h1 class="sectionedit1" id="title"&gt;Title&lt;/h1&gt;&lt;div class="level1"&gt;&lt;p&gt;Page text&lt;/p&gt;&lt;/div&gt;</string></value></param></params></methodResponse>'
                 }
             )
         }
         $ResponseObject = Get-DokuPageVersionHtml -FullName 'rootns:ns:pagename' -VersionTimestamp 123456
 
         It 'Should return an object with all properties defined' {
-            @('FullName','RawText','VersionTimestamp','PageName','RootNamespace','ParentNamespace') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty
+            @('FullName','RenderedHtml','VersionTimestamp','PageName','RootNamespace','ParentNamespace') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty
         }
         It 'Should return an object with the correct value for VersionTimestamp' {
             $ResponseObject.VersionTimestamp | Should -Be 123456
@@ -48,8 +47,8 @@ Describe 'Get-DokuPageVersionHtml' {
         It 'Should return an object with the correct value for FullName' {
             $ResponseObject.FullName | Should -Be 'rootns:ns:pagename'
         }
-        It 'Should return an object with the correct value for RawText' {
-            $ResponseObject.RawText | Should -Be '### Page Data ###'
+        It 'Should return an object with the correct value for RenderedHtml' {
+            $ResponseObject.RenderedHtml | Should -Be '<h1 class="sectionedit1" id="title">Title</h1><div class="level1"><p>Page text</p></div>'
         }
         It 'Should return an object with the correct value for PageName' {
             $ResponseObject.PageName | Should -Be 'pagename'
@@ -69,14 +68,14 @@ Describe 'Get-DokuPageVersionHtml' {
             return (
                 [PSCustomObject]@{
                     CompletedSuccessfully = $true
-                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><value><string>### Page Data ###</string></value></methodResponse>'
+                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><params><param><value><string>&lt;h1 class="sectionedit1" id="title"&gt;Title&lt;/h1&gt;&lt;div class="level1"&gt;&lt;p&gt;Page text&lt;/p&gt;&lt;/div&gt;</string></value></param></params></methodResponse>'
                 }
             )
         }
         $ResponseObject = (Get-DokuPageVersionHtml -FullName 'rootns:ns:pagename','rootns2:ns2:pagename2' -VersionTimestamp 123456)[1]
 
         It 'Should return an object with all properties defined' {
-            @('FullName','RawText','VersionTimestamp','PageName','RootNamespace','ParentNamespace') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty
+            @('FullName','RenderedHtml','VersionTimestamp','PageName','RootNamespace','ParentNamespace') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty
         }
         It 'Should return an object with the correct value for VersionTimestamp' {
             $ResponseObject.VersionTimestamp | Should -Be 123456
@@ -84,8 +83,8 @@ Describe 'Get-DokuPageVersionHtml' {
         It 'Should return an object with the correct value for FullName' {
             $ResponseObject.FullName | Should -Be 'rootns2:ns2:pagename2'
         }
-        It 'Should return an object with the correct value for RawText' {
-            $ResponseObject.RawText | Should -Be '### Page Data ###'
+        It 'Should return an object with the correct value for RenderedHtml' {
+            $ResponseObject.RenderedHtml | Should -Be '<h1 class="sectionedit1" id="title">Title</h1><div class="level1"><p>Page text</p></div>'
         }
         It 'Should return an object with the correct value for PageName' {
             $ResponseObject.PageName | Should -Be 'pagename2'
@@ -105,7 +104,7 @@ Describe 'Get-DokuPageVersionHtml' {
             return (
                 [PSCustomObject]@{
                     CompletedSuccessfully = $true
-                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><value><string>### Page Data ###</string></value></methodResponse>'
+                    XMLPayloadResponse = '<?xml version="1.0"?><methodResponse><params><param><value><string>&lt;h1 class="sectionedit1" id="title"&gt;Title&lt;/h1&gt;&lt;div class="level1"&gt;&lt;p&gt;Page text&lt;/p&gt;&lt;/div&gt;</string></value></param></params></methodResponse>'
                 }
             )
         }
@@ -115,8 +114,7 @@ Describe 'Get-DokuPageVersionHtml' {
             $ResponseObject | Should -BeOfType [string]
         }
         It 'Should return the raw page data' {
-            $ResponseObject | Should -Be '### Page Data ###'
+            $ResponseObject | Should -Be '<h1 class="sectionedit1" id="title">Title</h1><div class="level1"><p>Page text</p></div>'
         }
     }
-    #>
 }

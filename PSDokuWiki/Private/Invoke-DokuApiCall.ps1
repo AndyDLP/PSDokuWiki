@@ -59,17 +59,14 @@ function Invoke-DokuApiCall {
             Headers = $Script:DokuServer.Headers
             Body = $payload
             ErrorAction = 'Stop'
+            WebSession = $Script:DokuServer.WebSession
         }
-        if ($Script:DokuServer.SessionMethod -eq "Cookie") {
-            $params.Add('WebSession',$Script:DokuServer.WebSession)
-        }
-
+        
         $outputObjectParams = @{
             TargetUri = $Script:DokuServer.TargetUri
             Method = $MethodName
             MethodParameters = $MethodParameters
             XMLPayloadSent = $payload
-            SessionMethod = $Script:DokuServer.SessionMethod
         }
 
         try {
