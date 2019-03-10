@@ -39,7 +39,7 @@ function ConvertTo-XmlRpcMethodCall
         .Notes
             Author   : Oliver Lipkau <oliver@lipkau.net>
             2014-06-05 Initial release
-            
+
             Sourced from Oliver Lipkau's XmlRpc module on powershellgallery
             Modified to use DokuWiki compatible type names (case sensitive etc)
     #>

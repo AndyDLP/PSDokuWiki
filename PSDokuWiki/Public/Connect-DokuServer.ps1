@@ -33,7 +33,6 @@ function Connect-DokuServer {
 	.LINK
 		https://github.com/AndyDLP/PSDokuWiki
 #>
-
     [CmdletBinding(PositionalBinding = $true)]
     param
     (
@@ -43,25 +42,21 @@ function Connect-DokuServer {
         [ValidateNotNullOrEmpty()]
         [Alias('Server')]
         [string]$ComputerName,
-
         [Parameter(Mandatory = $true,
             Position = 2,
             HelpMessage = 'The credentials to use to connect')]
         [ValidateNotNullOrEmpty()]
         [pscredential]$Credential,
-        
         [Parameter(Mandatory = $false,
             Position = 3,
             HelpMessage = 'Connect to an unencrypted endpoint')]
         [ValidateNotNullOrEmpty()]
         [switch]$Unencrypted,
-        
         [Parameter(Mandatory = $false,
             Position = 4,
             HelpMessage = 'The path to the api endpoint')]
         [ValidateNotNullOrEmpty()]
         [string]$APIPath = '/lib/exe/xmlrpc.php',
-        
         [Parameter(Mandatory = $false,
             Position = 5,
             HelpMessage = 'Force a re-connection')]
@@ -69,24 +64,18 @@ function Connect-DokuServer {
         [switch]$Force
     )
 
-    begin {
-        # intentionally empty
-    }
+    begin {}
 
     process {
         $headers = @{ "Content-Type" = "text/xml"; }
         $Protocol = if ($Unencrypted) { "http" } else { "https" }
-
         $TargetUri = ($Protocol + "://" + $ComputerName + $APIPath)
-
         # Check if already connected
         if (($null -ne $Script:DokuServer) -and (-not $Force)) {
             throw "Open connection already exists to: $($Script:DokuServer.TargetUri) - Use the -Force parameter to connect anyway"
         }
-
         $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credential.Password)
         $password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-
         $XMLPayload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)
         # $Websession var defined here
         try {
@@ -155,13 +144,10 @@ function Connect-DokuServer {
                 UnencryptedEndpoint = [boolean]$Unencrypted
             }
             $DokuSession.PSTypeNames.Insert(0,'DokuWiki.Session.Detail')
-            
             # Module scoped variables are defined like the below apparently
             $Script:DokuServer = $DokuSession
         }
     } # process
 
-    end {
-        # intentionally empty
-    }
+    end {}
 }

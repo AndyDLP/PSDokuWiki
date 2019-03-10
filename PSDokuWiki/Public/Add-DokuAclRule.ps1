@@ -61,9 +61,7 @@
         [int]$Acl
     )
 
-    begin {
-        
-    } # begin
+    begin {}
 
     process {
         foreach ($page in $FullName) {
@@ -90,7 +88,5 @@
         } # foreach page
     } # process
 
-    end {
-        
-    } # end
+    end {}
 }

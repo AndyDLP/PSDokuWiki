@@ -32,9 +32,7 @@
         [string[]]$FullName
     )
 
-    begin {
-        
-    } # begin
+    begin {}
 
     process {
         foreach ($attachmentName in $FullName) {
@@ -58,7 +56,5 @@
         } # foreach attachment
     } # process
 
-    end {
-
-    } # end
+    end {}
 }

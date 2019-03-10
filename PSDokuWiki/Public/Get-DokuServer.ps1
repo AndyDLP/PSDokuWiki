@@ -8,7 +8,7 @@ function Get-DokuServer {
 
 	.PARAMETER IsConnected
 		Only return TRUE if currently connected and FALSE if not
-        
+
 	.EXAMPLE
 		PS C:\> Get-DokuServer | Format-List -Property *
 
@@ -33,15 +33,15 @@ function Get-DokuServer {
     if ($null -ne $Script:DokuServer) {
         Write-Verbose "Currently connected to DokuWiki server: $($Script:DokuServer.TargetUri)"
         if ($IsConnected) {
-            return $true
+            $true
         } else {
             $Output += $Script:DokuServer
-            return $Output
+            $Output
         }
     } else {
         Write-Verbose "Not currently connected to any DokuWiki servers"
         if ($IsConnected) {
-            return $false
+            $false
         }
     }
 }

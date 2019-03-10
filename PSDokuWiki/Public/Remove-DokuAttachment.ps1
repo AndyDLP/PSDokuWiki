@@ -2,16 +2,16 @@
 <#
 	.SYNOPSIS
 		Deletes an attachment
-	
+
 	.DESCRIPTION
 		Deletes an attachment
-	
+
 	.PARAMETER FullName
 		The full name of the attachment to delete
-	
+
 	.EXAMPLE
 		PS C:\> Remove-DokuAttachment -FullName 'study:test2.jpeg'
-	
+
 	.NOTES
 		AndyDLP - 2018-05-26
 #>

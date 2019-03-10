@@ -21,19 +21,16 @@
 	.NOTES
 		AndyDLP - 2018-05-26
 #>
-
 	[CmdletBinding()]
 	[OutputType([datetime], [int])]
-	param ( )
+	param()
 
-	begin {
-
-	} # begin
+	begin {}
 
 	process {
 		$APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.getTime' -MethodParameters @()
 		if ($APIResponse.CompletedSuccessfully -eq $true) {			
-			[bigint]$RawDokuTime = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/int").Node.InnerText
+			[int]$RawDokuTime = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/int").Node.InnerText
 			$DateObject = New-Object PSObject -Property @{
 				Server = $Script:DokuServer.Server
 				UNIXTimestamp = $RawDokuTime
@@ -47,7 +44,5 @@
 		}
 	} # process
 
-	end {
-
-	} # end
+	end {}
 }

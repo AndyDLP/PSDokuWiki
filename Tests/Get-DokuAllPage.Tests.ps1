@@ -1,4 +1,4 @@
-Describe 'Get-DokuAllPages' {
+Describe 'Get-DokuAllPage' {
     Set-StrictMode -Version latest
     Context 'When the Invoke-DokuApiCall command fails' {
         It 'Should display the exception message' {
@@ -10,7 +10,7 @@ Describe 'Get-DokuAllPages' {
                     }
                 )
             }
-            Get-DokuAllPages -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
+            Get-DokuAllPage -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
             $DokuErrorVariable.exception.message | Should -Be 'Exception: Test Exception'
         }
         It 'Should display the fault code & string' {
@@ -23,7 +23,7 @@ Describe 'Get-DokuAllPages' {
                     }
                 )
             }
-            Get-DokuAllPages -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
+            Get-DokuAllPage -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
             $DokuErrorVariable.exception.message | Should -Be 'Fault code: 12345 - Fault string: Fault String'
         }
     }
@@ -36,7 +36,7 @@ Describe 'Get-DokuAllPages' {
                 }
             )
         }
-        $ResponseObject = Get-DokuAllPages
+        $ResponseObject = Get-DokuAllPage
 
         It 'Should return an object with all properties defined' {
             @('FullName','Acl','Size','LastModified','LastModifiedRaw','Pagename','RootNamespace','ParentNamespace') | Where-Object -FilterScript { (($ResponseObject).PSObject.Properties.Name) -notcontains $PSItem } | Should -BeNullOrEmpty

@@ -61,7 +61,6 @@ function Invoke-DokuApiCall {
             ErrorAction = 'Stop'
             WebSession = $Script:DokuServer.WebSession
         }
-        
         $outputObjectParams = @{
             TargetUri = $Script:DokuServer.TargetUri
             Method = $MethodName
@@ -109,7 +108,6 @@ function Invoke-DokuApiCall {
             $outputObjectParams.Add('CompletedSuccessfully',$false)
             $outputObjectParams.Add('ExceptionMessage',$PSItem.Exception.message)
         }
-        
         $outputObject = [PSCustomObject]$outputObjectParams
         return $outputObject
     } # process

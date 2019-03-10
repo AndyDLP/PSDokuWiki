@@ -42,9 +42,7 @@
 		[int]$VersionTimestamp
 	)
 
-	begin {
-		
-	} # begin
+	begin {}
 
 	process {
 		foreach ($PageName in $FullName) {
@@ -69,7 +67,5 @@
 		}
 	} # process
 
-	end {
-
-	} # end
+	end {}
 }

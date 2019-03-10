@@ -2,22 +2,22 @@
 <#
 	.SYNOPSIS
 		Remove a principal from an ACL
-	
+
 	.DESCRIPTION
 		Allows you to remove a principal from an ACL. Use @groupname instead of user to remove an ACL rule for a group.
-	
+
 	.PARAMETER FullName
 		The full name of the page or namespace to remove the ACL from
-	
+
 	.PARAMETER Principal
 		The username or groupname to remove
-	
+
 	.EXAMPLE
 		PS C:\> Remove-DokuAclRule -FullName 'study' -Principal 'testuser'
-	
+
 	.OUTPUTS
 		Nothing
-	
+
 	.NOTES
 		AndyDLP - 2018-05-26
 #>
@@ -39,7 +39,7 @@
 		[ValidateNotNullOrEmpty()]
 		[string[]]$Principal
 	)
-	
+
 	begin {}
 
 	process {

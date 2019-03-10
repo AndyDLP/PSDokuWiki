@@ -32,9 +32,7 @@
 		[string[]]$FullName
 	)
 
-	begin {
-		
-	} # begin
+	begin {}
 
 	process {
 		foreach ($PageName in $FullName) {
@@ -59,7 +57,5 @@
 		} # foreach
 	} # process
 
-	end {
-
-	} # end
+	end {}
 }
