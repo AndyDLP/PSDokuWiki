@@ -8,7 +8,7 @@ Describe 'Invoke-DokuApiCall' {
             }
             It "Should produce an object with the correct properties when DokuServer is NULL" {
                 $ResponseObject = (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').PSObject.Properties.Name
-                @('Method','CompletedSuccessfully','TargetUri','SessionMethod','MethodParameters','XMLPayloadSent','ExceptionMessage') | Where-Object -FilterScript { $ResponseObject -notcontains $_ } | Should -BeNullOrEmpty
+                @('Method','CompletedSuccessfully','TargetUri','MethodParameters','XMLPayloadSent','ExceptionMessage') | Where-Object -FilterScript { $ResponseObject -notcontains $_ } | Should -BeNullOrEmpty
             }
 
             $Script:DokuServer = [PSCustomObject]@{
@@ -23,7 +23,7 @@ Describe 'Invoke-DokuApiCall' {
             }
             It "Should produce an object with the correct properties when target uri is unreachable" {
                 $ResponseObject = (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').PSObject.Properties.Name
-                @('Method','TargetUri','SessionMethod','MethodParameters','XMLPayloadSent','ExceptionMessage') | Where-Object -FilterScript { $ResponseObject -notcontains $_ } | Should -BeNullOrEmpty
+                @('Method','TargetUri','MethodParameters','XMLPayloadSent','ExceptionMessage') | Where-Object -FilterScript { $ResponseObject -notcontains $_ } | Should -BeNullOrEmpty
             }
             
             $Script:DokuServer.TargetUri = 'www.google.com'
@@ -32,7 +32,7 @@ Describe 'Invoke-DokuApiCall' {
             }
             It "Should produce an object with the correct properties when target uri is reachable but invalid" {
                 $ResponseObject = (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').PSObject.Properties.Name
-                @('Method','TargetUri','SessionMethod','MethodParameters','XMLPayloadSent','ExceptionMessage') | Where-Object -FilterScript { $ResponseObject -notcontains $_ } | Should -BeNullOrEmpty
+                @('Method','TargetUri','MethodParameters','XMLPayloadSent','ExceptionMessage') | Where-Object -FilterScript { $ResponseObject -notcontains $_ } | Should -BeNullOrEmpty
             }
 
             It 'Should correctly identify the fault code' {
