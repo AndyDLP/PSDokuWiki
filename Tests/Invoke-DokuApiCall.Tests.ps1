@@ -14,7 +14,6 @@ Describe 'Invoke-DokuApiCall' {
             $Script:DokuServer = [PSCustomObject]@{
                 Headers = @{ "Content-Type" = "text/xml"; }
                 TargetUri = 'not a real target'
-                SessionMethod = 'Cookie'
                 UnencryptedEndPoint = $true
                 WebSession = (New-Object Microsoft.PowerShell.Commands.WebRequestSession)
             }
