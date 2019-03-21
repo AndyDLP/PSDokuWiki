@@ -29,7 +29,9 @@ function Resolve-Module {
                 }
             } else {
                 Write-Verbose -Message "$($ModuleName) Missing, installing Module"
-                Install-Module -Name $ModuleName -Force | Out-Null
+                Install-Module -Name $ModuleName -Force -Repository PSGallery | Out-Null
+                $Module = Get-Module -Name $ModuleName -ListAvailable
+                $Version = $Module | Measure-Object -Property Version -Maximum | Select-Object -ExpandProperty Maximum
                 Import-Module -Name $ModuleName -Force -RequiredVersion $Version
             }
         } # foreach module
@@ -42,7 +44,7 @@ function Resolve-Module {
 Install-PackageProvider -Name NuGet -Force | Out-Null
 Get-PackageProvider -Name NuGet -ForceBootstrap | Out-Null
 
-Resolve-Module -Name Psake,PSDeploy,Pester,BuildHelpers,PsScriptAnalyzer -Verbose
+Resolve-Module -Name Psake,PSDeploy,Pester,BuildHelpers,PsScriptAnalyzer
 
 Set-BuildEnvironment
 
