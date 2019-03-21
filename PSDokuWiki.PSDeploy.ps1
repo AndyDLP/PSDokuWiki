@@ -35,7 +35,7 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
             FromSource $env:BHProjectName
             To 'https://github.com/AndyDLP/PSDokuWiki.git'
             WithOptions @{
-                CommitMessage 'Build success - Updating version - [skip ci]'
+                CommitMessage ='Build success - Updating version - [skip ci]'
             }
         }
     } @Verbose
