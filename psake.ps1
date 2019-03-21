@@ -53,7 +53,6 @@ Task Test -Depends Init {
     }
 
     $Results = @( Get-ChildItem -Path "$ProjectRoot\PesterResults*.xml" | Import-Clixml )
-
     $FailedCount = $Results | Select-Object -ExpandProperty FailedCount | Measure-Object -Sum | Select-Object -ExpandProperty Sum
 
     if ($FailedCount -gt 0) {
