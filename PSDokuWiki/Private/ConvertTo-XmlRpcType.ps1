@@ -86,7 +86,7 @@ function ConvertTo-XmlRpcType
 
         if ($Type -eq 'string')
         {
-            return "<fuck><$Type>$([System.Web.HttpUtility]::HtmlEncode($inputObject))</$Type></value>"
+            return "<value><$Type>$([System.Web.HttpUtility]::HtmlEncode($inputObject))</$Type></value>"
         }
 
         # Int16 must be casted as Int
