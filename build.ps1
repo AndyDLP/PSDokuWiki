@@ -21,7 +21,7 @@ function Resolve-Module {
                 if ($Version -lt $GalleryVersion) {
                     if ((Get-PSRepository -Name PSGallery).InstallationPolicy -ne 'Trusted') { Set-PSRepository -Name PSGallery -InstallationPolicy Trusted }
                     Write-Verbose -Message "$($ModuleName) Installed Version [$($Version.tostring())] is outdated. Installing Gallery Version [$($GalleryVersion.tostring())]"
-                    Install-Module -Name $ModuleName -Force
+                    Install-Module -Name $ModuleName -Force | Out-Null
                     Import-Module -Name $ModuleName -Force -RequiredVersion $GalleryVersion
                 } else {
                     Write-Verbose -Message "Module Installed, Importing $($ModuleName)"
@@ -29,7 +29,7 @@ function Resolve-Module {
                 }
             } else {
                 Write-Verbose -Message "$($ModuleName) Missing, installing Module"
-                Install-Module -Name $ModuleName -Force
+                Install-Module -Name $ModuleName -Force | Out-Null
                 Import-Module -Name $ModuleName -Force -RequiredVersion $Version
             }
         } # foreach module
@@ -39,9 +39,10 @@ function Resolve-Module {
 } # function
 
 # Grab nuget bits, install modules, set build variables, start build.
+Install-PackageProvider -Name NuGet -Force | Out-Null
 Get-PackageProvider -Name NuGet -ForceBootstrap | Out-Null
 
-Resolve-Module -Name Psake,PSDeploy,Pester,BuildHelpers,PsScriptAnalyzer
+Resolve-Module -Name Psake,PSDeploy,Pester,BuildHelpers,PsScriptAnalyzer -Verbose
 
 Set-BuildEnvironment
 
