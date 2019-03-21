@@ -30,24 +30,13 @@ Task Init {
 }
 
 Task Test -Depends Init {
-
-<#
-    # FROM APPVEYOR.YML
-    # Test with native PS version
-    - ps: . .\Tests\appveyor.pester.ps1
-    # Finalize pass - collect and upload results
-    - ps: . .\Tests\appveyor.pester.ps1 -Finalize
-#>
-
-
     $lines
     "`n`tSTATUS: Testing with PowerShell $PSVersion"
 
-    Import-Module (Resolve-Path 'C:\Program Files\WindowsPowerShell\Modules\Pester\*\Pester.psd1')
-    Import-Module (Join-Path -Path $ProjectRoot -ChildPath 'PSDokuWiki') -Force
+    Import-Module (Join-Path -Path $ProjectRoot -ChildPath 'PSDokuWiki') -Force @Verbose
 
     # Gather test results. Store them in a variable and file
-    $TestResults = Invoke-Pester -Path "$ProjectRoot\Tests" -OutputFormat NUnitXml -OutputFile "$ProjectRoot\$TestFile" -PassThru -CodeCoverage "$ProjectRoot\PSDokuWiki\*\*.ps1"
+    $TestResults = Invoke-Pester -Path "$ProjectRoot\Tests" -OutputFormat NUnitXml -OutputFile "$ProjectRoot\$TestFile" -PassThru -CodeCoverage "$ProjectRoot\PSDokuWiki\*\*.ps1" @Verbose
     $TestResults | Export-Clixml -Path "$ProjectRoot\PesterResults$PSVersion.xml"
 
     $AllFiles = Get-ChildItem -Path $ProjectRoot\*Results*.xml | Select-Object -ExpandProperty FullName
@@ -94,7 +83,7 @@ Task Test -Depends Init {
         Add-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Running
     }
 
-    $CodeResults = Invoke-ScriptAnalyzer -Path $ProjectRoot\PSDokuWiki -Recurse -Severity Error -ErrorAction SilentlyContinue
+    $CodeResults = Invoke-ScriptAnalyzer -Path $ProjectRoot\PSDokuWiki -Recurse -Severity Error -ErrorAction SilentlyContinue @Verbose
     If ($CodeResults) {
         $ResultString = $CodeResults | Out-String
         Write-Warning $ResultString
@@ -216,8 +205,10 @@ Task Test -Depends Init {
 
 Task Build -Depends Test {
     $lines
-    Set-ModuleFunctions
-    Update-Metadata -Path $env:BHPSModuleManifest
+    Write-Host "`nUpdating exported module members"
+    Set-ModuleFunctions @Verbose
+    Write-Host "`nIncrementing build number"
+    Update-Metadata -Path $env:BHPSModuleManifest @Verbose
     "`n"
 }
 
