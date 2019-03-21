@@ -76,33 +76,6 @@ Task Test -Depends Init {
     Get-ChildItem -Path "$ProjectRoot\PesterResults*.xml" | Remove-Item -Force -ErrorAction SilentlyContinue
     Remove-Item "$ProjectRoot\$TestFile" -Force -ErrorAction SilentlyContinue
 
-    # ScriptAnalyzer
-    "`nSCRIPTANALYZER: CHECKING..."
-
-    if ($ENV:BHBuildSystem -eq 'AppVeyor') {
-        Add-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Running
-    }
-
-    $CodeResults = Invoke-ScriptAnalyzer -Path $ProjectRoot\PSDokuWiki -Recurse -Severity Error -ErrorAction SilentlyContinue @Verbose
-    If ($CodeResults) {
-        $ResultString = $CodeResults | Out-String
-        Write-Warning $ResultString
-
-        if ($ENV:BHBuildSystem -eq 'AppVeyor') {
-            Add-AppveyorMessage -Message "PSScriptAnalyzer output contained one or more result(s) with 'Error' severity. Check the 'Tests' tab of this build for more details." -Category Error
-            Update-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Failed -ErrorMessage $ResultString
-        }
-
-        # Failing the build
-        Throw "Build failed - PSScriptAnalyzer"
-    } else {
-        "`tNO ERRORS`n"
-        if ($ENV:BHBuildSystem -eq 'AppVeyor') {
-            Update-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Passed
-        }
-    }
-    "`n"
-
     # CODE COVERAGE
 
     "`nCODE COVERAGE:"
@@ -199,6 +172,33 @@ Task Test -Depends Init {
         }
         # Failing the build
         Throw "Build failed"
+    }
+    "`n"
+
+    # ScriptAnalyzer
+    "`nSCRIPTANALYZER: CHECKING..."
+
+    if ($ENV:BHBuildSystem -eq 'AppVeyor') {
+        Add-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Running
+    }
+
+    $CodeResults = Invoke-ScriptAnalyzer -Path $ProjectRoot\PSDokuWiki -Recurse -Severity Error -ErrorAction SilentlyContinue @Verbose
+    If ($CodeResults) {
+        $ResultString = $CodeResults | Out-String
+        Write-Warning $ResultString
+
+        if ($ENV:BHBuildSystem -eq 'AppVeyor') {
+            Add-AppveyorMessage -Message "PSScriptAnalyzer output contained one or more result(s) with 'Error' severity. Check the 'Tests' tab of this build for more details." -Category Error
+            Update-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Failed -ErrorMessage $ResultString
+        }
+
+        # Failing the build
+        Throw "Build failed - PSScriptAnalyzer"
+    } else {
+        "`tNO ERRORS`n"
+        if ($ENV:BHBuildSystem -eq 'AppVeyor') {
+            Update-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Passed
+        }
     }
     "`n"
 }
