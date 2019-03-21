@@ -25,7 +25,7 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
                 ApiKey = $ENV:NugetApiKey
             }
         }
-    }
+    } @Verbose
     #>
 } else {
     "Skipping deployment: To deploy, ensure that...`n" +
@@ -45,5 +45,5 @@ if ($env:BHProjectName -and $ENV:BHProjectName.Count -eq 1 -and $env:BHBuildSyst
                 Version = $env:APPVEYOR_BUILD_VERSION
             }
         }
-    }
+    } @Verbose
 }
