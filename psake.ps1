@@ -211,18 +211,14 @@ Task Test -Depends Init {
         # Failing the build
         Throw "Build failed"
     }
-
-    $lines
-    $lines
-    $lines
-
-    throw "FAILING ON PURPOSE"
+    "`n"
 }
 
 Task Build -Depends Test {
     $lines
     Set-ModuleFunctions
     Update-Metadata -Path $env:BHPSModuleManifest
+    "`n"
 }
 
 Task Deploy -Depends Build {
@@ -233,5 +229,4 @@ Task Deploy -Depends Build {
         Recurse = $false # We keep psdeploy artifacts, avoid deploying those : )
     }
     Invoke-PSDeploy @Verbose @Params
-
 }
