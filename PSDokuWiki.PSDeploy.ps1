@@ -39,6 +39,7 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
 
 # Publish to AppVeyor if we're in AppVeyor
 if ($env:BHProjectName -and $ENV:BHProjectName.Count -eq 1 -and $env:BHBuildSystem -eq 'AppVeyor' ) {
+    Write-Host "`n"
     Deploy DeveloperBuild {
         By AppVeyorModule {
             FromSource $ENV:BHProjectName
