@@ -1,5 +1,4 @@
-function ConvertTo-XmlRpcType
-{
+function ConvertTo-XmlRpcType {
     <#
         .SYNOPSIS
             Convert Data into XML declared datatype string

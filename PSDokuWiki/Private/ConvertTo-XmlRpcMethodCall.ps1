@@ -1,5 +1,4 @@
-function ConvertTo-XmlRpcMethodCall
-{
+function ConvertTo-XmlRpcMethodCall {
     <#
         .SYNOPSIS
             Create a XML RPC Method Call string
