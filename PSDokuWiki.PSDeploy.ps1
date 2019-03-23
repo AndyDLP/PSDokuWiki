@@ -35,14 +35,14 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
 
     # Prepare git 2
     Set-Location -Path $env:BHProjectPath
-    #Write-Host "checking out"
-    #git checkout master | Out-Null
+    Write-Host "checking out"
+    Invoke-Expression "git checkout master" | Out-Null
     Write-Host "Adding"
-    git add *
+    Invoke-Expression "git add *"
     Write-Host "committing"
-    git commit -m "Build successful - [skip ci]"
+    Invoke-Expression "git commit -m 'Build successful - [skip ci]'"
     Write-Host "Pushing back to GitHub"
-    git push origin master
+    Invoke-Expression "git push origin master"
 
 } else {
     "Skipping deployment: To deploy, ensure that...`n" + "`t* You are in a known build system (Current: $ENV:BHBuildSystem)`n" + "`t* You are committing to the master branch (Current: $ENV:BHBranchName) `n" + "`t* Your commit message includes !deploy (Current: $ENV:BHCommitMessage)" | Write-Host
