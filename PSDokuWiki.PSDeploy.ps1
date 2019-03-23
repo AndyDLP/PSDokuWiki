@@ -33,7 +33,7 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
     } @Verbose
     #>
 
-    # Prepare git
+    # Prepare git 2
     git config --global credential.helper store
     Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
     git config --global user.email "andydlp93@gmail.com"
