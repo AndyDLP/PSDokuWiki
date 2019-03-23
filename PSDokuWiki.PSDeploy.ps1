@@ -34,16 +34,13 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
     #>
 
     # Prepare git 2
-    Deploy GitHub {
-        By Git {
-            FromSource $env:BHProjectName
-            To 'master'
-            WithOptions @{
-                CommitMessage ='Build success - Updating version - [skip ci]'
-            }
-        }
-    } @Verbose
-    
+    Write-Host "Pushing back to GitHub"
+    Set-Location -Path $env:BHProjectPath
+    git checkout master
+    git add *
+    git commit -m "Build successful - [skip ci]"
+    git push origin master
+
 } else {
     "Skipping deployment: To deploy, ensure that...`n" + "`t* You are in a known build system (Current: $ENV:BHBuildSystem)`n" + "`t* You are committing to the master branch (Current: $ENV:BHBranchName) `n" + "`t* Your commit message includes !deploy (Current: $ENV:BHCommitMessage)" | Write-Host
 }
