@@ -35,8 +35,8 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
 
     # Prepare git 2
     Set-Location -Path $env:BHProjectPath
-    Write-Host "checking out"
-    git checkout master | Out-Null
+    #Write-Host "checking out"
+    #git checkout master | Out-Null
     Write-Host "Adding"
     git add *
     Write-Host "committing"
