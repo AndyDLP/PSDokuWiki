@@ -32,7 +32,14 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
         }
     } @Verbose
     #>
-    
+
+    # Prepare git
+    git config --global credential.helper store
+    Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
+    git config --global user.email "andydlp93@gmail.com"
+    git config --global user.name "AndyDLP-AV"
+    git remote add origin https://github.com/AndyDLP/PSDokuWiki.git
+
     Deploy GitHub {
         By Git {
             FromSource $env:BHProjectName
