@@ -26,11 +26,6 @@ Returns an array of all links on a page
 $PageLinks = Get-DokuPageLink -FullName "namespace:namespace:page"
 ```
 
-### EXAMPLE 2
-```
-$PageLinks = Get-DokuPageLink -FullName "page"
-```
-
 ## PARAMETERS
 
 ### -FullName

@@ -225,10 +225,10 @@ Task Build -Depends Coverage {
     Write-Host "Generating"
     Set-Location $ProjectRoot
     Import-Module '.\PSDokuWiki' -Force -Global
-    Update-MarkdownHelpModule -Path ".\docs" -AlphabeticParamsOrder -Force -RefreshModulePage | Out-Null
-    New-Item -Path '.\PSDokuWiki\en-US' -ItemType Directory -ErrorAction SilentlyContinue | Out-Null
+    Update-MarkdownHelpModule -Path ".\docs" -AlphabeticParamsOrder -Force -RefreshModulePage @Verbose | Out-Null
+    New-Item -Path '.\PSDokuWiki\en-US' -ItemType Directory -ErrorAction SilentlyContinue @Verbose | Out-Null
     try {
-        New-ExternalHelp -Path ".\docs" -OutputPath ".\PSDokuWiki\en-US" -Force -ErrorAction Stop | Out-Null
+        New-ExternalHelp -Path ".\docs" -OutputPath ".\PSDokuWiki\en-US" -Force -ErrorAction Stop @Verbose | Out-Null
     }
     catch {
         throw "Build failed - Failed to generate help files"
