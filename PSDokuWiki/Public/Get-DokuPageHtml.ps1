@@ -1,27 +1,4 @@
 ﻿function Get-DokuPageHtml {
-<#
-	.SYNOPSIS
-		Returns the rendered XHTML body of a Wiki page
-
-	.DESCRIPTION
-		Returns the rendered XHTML body of a Wiki page
-
-	.PARAMETER FullName
-		The full page name for which to return the data
-
-	.PARAMETER Raw
-		Return just the raw HTML instead of an object
-
-	.EXAMPLE
-		PS C:\> $PageHtml = Get-DokuPageHtml -FullName "namespace:namespace:page" -Raw
-
-	.OUTPUTS
-		System.Management.Automation.PSObject
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding(PositionalBinding = $true)]
 	[OutputType([psobject])]
 	param

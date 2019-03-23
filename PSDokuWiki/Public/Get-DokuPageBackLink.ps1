@@ -1,24 +1,4 @@
 ﻿function Get-DokuPageBackLink {
-<#
-	.SYNOPSIS
-		Returns a list of backlinks of a Wiki page
-
-	.DESCRIPTION
-		Returns a list of backlinks of a Wiki page
-
-	.PARAMETER FullName
-		The full page name for which to return the data
-
-	.EXAMPLE
-		PS C:\> $PageBackLink = Get-DokuPageBackLink -FullName "namespace:namespace:page"
-
-	.OUTPUTS
-		System.Management.Automation.PSObject[]
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding()]
 	[OutputType([psobject[]])]
 	param

@@ -1,20 +1,4 @@
 ﻿function Remove-DokuUser {
-<#
-	.SYNOPSIS
-		Allows you to delete a user
-
-	.DESCRIPTION
-		Allows you to delete a user. Useful to implement GDPR right to be forgotten tools
-
-	.PARAMETER Username
-		The username(s) you want to remove
-
-	.EXAMPLE
-		PS C:\> Remove-DokuUser -Username 'value2'
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
 	[CmdletBinding(PositionalBinding = $true, SupportsShouldProcess=$True, ConfirmImpact='High')]
 	[OutputType()]
 	param

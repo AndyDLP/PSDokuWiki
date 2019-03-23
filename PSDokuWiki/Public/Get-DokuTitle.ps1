@@ -1,21 +1,4 @@
 ﻿function Get-DokuTitle {
-<#
-	.SYNOPSIS
-		Returns the title of the wiki
-
-	.DESCRIPTION
-		Returns the title of the wiki
-
-	.EXAMPLE
-		PS C:\> $DokuTitleObj = Get-DokuTitle
-
-	.OUTPUTS
-		System.Management.Automation.PSObject
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding(PositionalBinding = $true)]
 	[OutputType([psobject])]
 	param

@@ -1,38 +1,4 @@
 function Connect-DokuServer {
-    <#
-	.SYNOPSIS
-		Connect to a DokuWiki API endpoint
-
-	.DESCRIPTION
-		Connect to a DokuWiki API endpoint to enable subsequent DokuWiki commands from the same PowerShell session
-
-	.PARAMETER ComputerName
-		The computer name (single label or FQDN) / IP to connect to
-
-	.PARAMETER Credential
-		The credentials used to authenticate to the API endpoint
-
-	.PARAMETER Unencrypted
-		Specify that the APi endpoint is at a http rather than https address. Recommended for development only!!
-
-	.PARAMETER ApiPath
-		The web path that the api executable is at. DokuWiki default is /lib/exe/xmlrpc.php
-
-    .PARAMETER Force
-        Force a connection even if one is already established to the same endpoint
-
-	.EXAMPLE
-		PS C:\> Connect-DokuServer -ComputerName wiki.example.com -Credential (Get-Credential)
-
-	.OUTPUTS
-		Nothing
-
-	.NOTES
-		AndyDLP - 2019
-
-	.LINK
-		https://github.com/AndyDLP/PSDokuWiki
-#>
     [CmdletBinding(PositionalBinding = $true)]
     param
     (

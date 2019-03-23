@@ -1,30 +1,4 @@
 ﻿function Get-DokuPageVersionData {
-<#
-	.SYNOPSIS
-		Returns the raw Wiki text for a specific version of a page
-
-	.DESCRIPTION
-		Returns the raw Wiki text for a specific version of a page
-
-	.PARAMETER FullName
-		The full page name for which to return the data, including any namespaces
-
-	.PARAMETER VersionTimestamp
-		The timestamp for which version to get the info from
-
-	.PARAMETER Raw
-		Return only the raw data, rather than an object
-
-	.EXAMPLE
-		PS C:\> $PageData = Get-DokuPageVersionData -FullName "namespace:namespace:page" -VersionTimestamp 1497464418
-
-	.OUTPUTS
-		System.Management.Automation.PSObject
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding()]
 	[OutputType([psobject])]
 	param

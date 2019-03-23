@@ -1,24 +1,4 @@
 ﻿function Search-DokuWiki {
-<#
-	.SYNOPSIS
-		Search DokuWiki instance for matching pages
-
-	.DESCRIPTION
-		Returns an array of matching pages similar to what is returned by Get-DokuPageList, snippets are provided for the first 15 results
-
-	.PARAMETER SearchString
-		The search string to match pages against, see 'https://www.dokuwiki.org/search' for syntax details
-
-	.EXAMPLE
-		PS C:\> $MatchingPages = Search-DokuWiki -SearchString "VSS Admin"
-
-	.OUTPUTS
-		System.Management.Automation.PSObject[]
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding()]
 	[OutputType([psobject[]])]
 	param

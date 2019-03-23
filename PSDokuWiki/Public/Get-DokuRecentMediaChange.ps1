@@ -1,24 +1,4 @@
 ﻿function Get-DokuRecentMediaChange {
-<#
-	.SYNOPSIS
-		Returns a list of recently changed media since given timestamp
-
-	.DESCRIPTION
-		Returns a list of recently changed media since given timestamp
-
-	.PARAMETER VersionTimestamp
-		Get all media / attachment changes since this timestamp
-
-	.EXAMPLE
-		PS C:\> Get-DokuRecentMediaChange -VersionTimestamp $VersionTimestamp
-
-	.OUTPUTS
-		System.Management.Automation.PSObject[]
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding(PositionalBinding = $true)]
 	[OutputType([psobject[]])]
 	param

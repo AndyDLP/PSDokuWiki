@@ -1,21 +1,4 @@
 ﻿function Get-DokuServerVersion {
-<#
-	.SYNOPSIS
-		Returns the DokuWiki version of the remote Wiki server
-
-	.DESCRIPTION
-		Returns the DokuWiki version of the remote Wiki server
-
-	.EXAMPLE
-		PS C:\> $Version = Get-DokuServerVersion
-
-	.OUTPUTS
-		System.Management.Automation.PSObject
-
-	.NOTES
-		AndyDLP - 2018-05-28
-#>
-
 	[CmdletBinding()]
 	[OutputType([psobject])]
 	param

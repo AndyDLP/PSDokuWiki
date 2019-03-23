@@ -1,39 +1,4 @@
 ﻿function Add-DokuPageData {
-    <#
-	.SYNOPSIS
-		Appends wiki text to the end of a page.
-
-	.DESCRIPTION
-		Appends wiki text to the end of a page. Can create new page or namespace by referencing a (currnely non-existant) page / namespace
-
-	.PARAMETER FullName
-		The full name of the to-be-edited page, including parent namespace(s)
-
-	.PARAMETER RawWikiText
-		The raw wiki text to append to the page
-
-	.PARAMETER PassThru
-		Pass the newly created page object back out
-
-	.PARAMETER MinorChange
-		State if the change was minor or not
-
-	.PARAMETER SummaryText
-		A short summary of the change, visible in the revisions list
-
-	.EXAMPLE
-		PS C:\> Add-DokuPageData -FullName 'namespace:page' -RawWikiText 'TEST TEST TEST'
-
-	.OUTPUTS
-		System.Boolean, System.Management.Automation.PSObject
-
-	.NOTES
-		AndyDLP - 2018-05-26
-
-	.LINK
-		https://github.com/AndyDLP/PSDokuWiki
-#>
-
     [CmdletBinding(PositionalBinding = $true, SupportsShouldProcess=$True, ConfirmImpact='Medium')]
     [OutputType([boolean], [psobject])]
     param

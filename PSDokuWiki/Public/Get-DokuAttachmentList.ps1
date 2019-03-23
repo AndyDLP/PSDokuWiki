@@ -1,24 +1,4 @@
 ﻿function Get-DokuAttachmentList {
-<#
-	.SYNOPSIS
-		Returns a list of media files in a given namespace
-
-	.DESCRIPTION
-		Returns a list of media files in a given namespace
-
-	.PARAMETER Namespace
-		The namespace to search for attachments
-
-	.EXAMPLE
-		PS C:\> Get-DokuAttachmentList -Namespace 'namespace'
-
-	.OUTPUTS
-		System.Management.Automation.PSObject[]
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding()]
 	[OutputType([psobject[]])]
 	param

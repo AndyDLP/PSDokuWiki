@@ -1,24 +1,4 @@
 ﻿function Get-DokuPageAcl {
-<#
-	.SYNOPSIS
-		Returns the permission of the given wikipage
-
-	.DESCRIPTION
-		Returns the permission of the given wikipage
-
-	.PARAMETER FullName
-		The full page name for which to return the ACL
-
-	.EXAMPLE
-		PS C:\> $PageACL = Get-DokuPageAcl -FullName "namespace:namespace:page"
-
-	.OUTPUTS
-		System.Management.Automation.PSObject
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding()]
 	[OutputType([psobject])]
 	param

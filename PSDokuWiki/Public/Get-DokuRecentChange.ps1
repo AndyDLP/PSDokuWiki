@@ -1,25 +1,4 @@
 ﻿function Get-DokuRecentChange {
-<#
-	.SYNOPSIS
-		Returns a list of recent changes since given timestamp
-
-	.DESCRIPTION
-		Returns a list of recent changes since given timestamp.
-		As stated in recent_changes: Only the most recent change for each page is listed, regardless of how many times that page was changed
-
-	.PARAMETER VersionTimestamp
-		Get all pages since this timestamp
-
-	.EXAMPLE
-		PS C:\> Get-DokuRecentChanges -VersionTimestamp $VersionTimestamp
-
-	.OUTPUTS
-		System.Management.Automation.PSObject[]
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding(PositionalBinding = $true)]
 	[OutputType([psobject[]])]
 	param

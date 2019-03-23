@@ -1,27 +1,4 @@
 ﻿function Get-DokuPageVersionInfo {
-<#
-	.SYNOPSIS
-		Returns information about a specific version of a Wiki page
-
-	.DESCRIPTION
-		Returns information about a specific version of a Wiki page
-
-	.PARAMETER FullName
-		The full page name for which to return the data
-
-	.PARAMETER VersionTimestamp
-		The timestamp for which version to get the info from
-
-	.EXAMPLE
-		PS C:\> $PageInfo = Get-DokuPageVersionInfo -FullName "namespace:namespace:page" -VersionTimestamp 1497464418
-
-	.OUTPUTS
-		System.Management.Automation.PSObject
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding()]
 	[OutputType([psobject])]
 	param

@@ -1,24 +1,4 @@
 ﻿function Get-DokuPageInfo {
-<#
-	.SYNOPSIS
-		Returns information about a Wiki page
-
-	.DESCRIPTION
-		Returns information about a Wiki page
-
-	.PARAMETER FullName
-		The full page name for which to return the data, including namespaces
-
-	.EXAMPLE
-		PS C:\> $PageInfo = Get-DokuPageInfo -FullName "namespace:namespace:page"
-
-	.OUTPUTS
-		System.Management.Automation.PSObject
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding()]
 	[OutputType([psobject])]
 	param

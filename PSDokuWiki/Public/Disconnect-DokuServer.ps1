@@ -1,24 +1,4 @@
 function Disconnect-DokuServer {
-    <#
-	.SYNOPSIS
-		Disconnect any open connections to a DokuWiki API endpoint
-
-	.DESCRIPTION
-		Disconnect any open connections to a DokuWiki API endpoint
-
-	.EXAMPLE
-		PS C:\> Disconnect-DokuServer
-
-	.OUTPUTS
-		Nothing
-
-	.NOTES
-		AndyDLP - 2019
-
-	.LINK
-		https://github.com/AndyDLP/PSDokuWiki
-#>
-
     [CmdletBinding()]
     param()
 

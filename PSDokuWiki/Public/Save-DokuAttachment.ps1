@@ -1,30 +1,4 @@
 ﻿function Save-DokuAttachment {
-<#
-	.SYNOPSIS
-		Returns the binary data of a media file
-
-	.DESCRIPTION
-		Returns the binary data of a media file
-
-	.PARAMETER FullName
-		The full name of the file to get
-
-	.PARAMETER Path
-		The path to save the attachment to, including filename & extension
-
-	.PARAMETER Force
-		Force creation of output file, overwriting any existing files with the same name
-
-	.EXAMPLE
-		PS C:\> Save-DokuAttachment -FullName 'value2' -Path 'value3'
-
-	.OUTPUTS
-		System.IO.FileInfo
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding(PositionalBinding = $true)]
 	[OutputType([System.IO.FileInfo])]
 	param

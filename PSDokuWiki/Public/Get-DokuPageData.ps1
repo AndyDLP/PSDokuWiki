@@ -1,27 +1,4 @@
 ﻿function Get-DokuPageData {
-<#
-	.SYNOPSIS
-		Returns the editor Wiki text for a page
-
-	.DESCRIPTION
-		Returns the editor Wiki text for a page
-
-	.PARAMETER FullName
-		The full page name for which to return the data, including any namespaces
-
-	.PARAMETER Raw
-		Return only the raw wiki text, intead of an object
-
-	.EXAMPLE
-		PS C:\> $PageData = Get-DokuPageData -FullName "namespace:namespace:page"
-
-	.OUTPUTS
-		System.Management.Automation.PSObject
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding()]
 	[OutputType([psobject])]
 	param

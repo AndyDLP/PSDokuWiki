@@ -1,29 +1,4 @@
 ﻿function New-DokuAttachment {
-<#
-	.SYNOPSIS
-		Uploads a file as an attachment
-
-	.DESCRIPTION
-		Uploads a file as an attachment
-
-	.PARAMETER FullName
-		The FullName of the to-be-uploaded file, including namespace(s). Defaults to the root namespace
-
-	.PARAMETER Path
-		The file path of the attachment to upload
-
-	.PARAMETER Force
-		Force upload of attachment, overwriting any existing files with the same name
-
-	.EXAMPLE
-		PS C:\> New-DokuAttachment -FullName 'value2' -FilePath 'value3'
-
-	.OUTPUTS
-		System.Management.Automation.PSObject
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
 	[CmdletBinding(PositionalBinding = $true, SupportsShouldProcess=$True, ConfirmImpact='Medium')]
 	[OutputType([psobject])]
 	param

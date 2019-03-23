@@ -1,25 +1,4 @@
 ﻿function Get-DokuAllPage {
-    <#
-	.SYNOPSIS
-		Returns a list of all Wiki pages
-
-	.DESCRIPTION
-		Returns a list of all Wiki pages from the DokuWiki API. Includes the current user's ACL status of each page
-
-	.EXAMPLE
-		PS C:\> $AllPages = Get-DokuAllPage
-
-	.OUTPUTS
-		System.Management.Automation.PSObject[]
-
-	.NOTES
-        AndyDLP - 2018-05-26
-        Updated - 2019-02-20
-
-	.LINK
-		https://github.com/AndyDLP/PSDokuWiki
-#>
-
     [CmdletBinding()]
     [OutputType([psobject[]])]
     param()

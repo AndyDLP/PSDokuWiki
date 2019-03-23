@@ -1,27 +1,4 @@
 function Lock-DokuPage {
-    <#
-	.SYNOPSIS
-		Locks a DokuWiki page for 15 min
-
-	.DESCRIPTION
-		Locks the page so it cannot be modified by users for 15 min. Also works for non-existent pages (block create name)
-
-	.PARAMETER FullName
-		The full name of the to-be-locked page, including parent namespace(s)
-
-	.EXAMPLE
-		PS C:\> Lock-DokuPage -FullName 'namespace:page'
-
-	.OUTPUTS
-		Nothing
-
-	.NOTES
-		AndyDLP - 2019-01-27
-
-	.LINK
-		https://github.com/AndyDLP/PSDokuWiki
-#>
-
     [CmdletBinding(PositionalBinding = $true, SupportsShouldProcess=$True, ConfirmImpact='Medium')]
     param
     (

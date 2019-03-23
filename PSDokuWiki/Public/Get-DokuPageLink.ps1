@@ -1,24 +1,4 @@
 ﻿function Get-DokuPageLink {
-<#
-	.SYNOPSIS
-		Returns an array of all links on a page
-
-	.DESCRIPTION
-		Returns an array of all links on a page
-
-	.PARAMETER FullName
-		The full page name for which to return the data
-
-	.EXAMPLE
-		PS C:\> $PageLinks = Get-DokuPageLink -FullName "namespace:namespace:page"
-
-	.OUTPUTS
-		System.Management.Automation.PSObject[]
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding()]
 	[OutputType([psobject[]])]
 	param

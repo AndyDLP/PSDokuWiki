@@ -1,35 +1,4 @@
 ﻿function Set-DokuPageData {
-<#
-	.SYNOPSIS
-		Sets the raw wiki text of a page, will overwrite any existing page
-
-	.DESCRIPTION
-		Sets the raw wiki text of a page, will overwrite any existing page
-
-	.PARAMETER FullName
-		The fullname of the target page
-
-	.PARAMETER RawWikiText
-		The raw wiki text to apply to the target page
-
-	.PARAMETER MinorChange
-		State if the change was minor or not
-
-	.PARAMETER SummaryText
-		A short summary of the change, visible in the revisions list
-
-	.PARAMETER PassThru
-		Pass the new page object back through
-
-	.EXAMPLE
-		PS C:\> Set-DokuPageData -FullName 'value2' -RawWikiText 'value3'
-
-	.OUTPUTS
-		System.Boolean, System.Management.Automation.PSObject
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
 	[CmdletBinding(PositionalBinding = $true, SupportsShouldProcess=$True, ConfirmImpact='High')]
 	[OutputType([psobject])]
 	param

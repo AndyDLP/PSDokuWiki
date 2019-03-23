@@ -1,24 +1,4 @@
 ﻿function Get-DokuAttachmentInfo {
-    <#
-	.SYNOPSIS
-		Returns information about a media file
-
-	.DESCRIPTION
-		Returns information about an attached file
-
-	.PARAMETER FullName
-		The full name of the file to get information from
-
-	.EXAMPLE
-		PS C:\> Get-DokuAttachmentInfo -FullName 'namespace:filename.ext'
-
-	.OUTPUTS
-		System.Management.Automation.PSObject
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
     [CmdletBinding()]
     [OutputType([psobject])]
     param

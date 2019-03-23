@@ -1,21 +1,4 @@
 ﻿function Get-DokuPageList {
-<#
-	.SYNOPSIS
-		Gets an array of all pages from an instance of DokuWiki.
-
-	.DESCRIPTION
-		Gets an array of all pages from an instance of DokuWiki.
-
-	.EXAMPLE
-		PS C:\> $AllPages = Get-DokuPageList
-
-	.OUTPUTS
-		System.Management.Automation.PSObject[]
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding()]
 	[OutputType([psobject[]])]
 	param ()

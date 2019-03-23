@@ -1,30 +1,4 @@
 ﻿function Get-DokuPageVersionHtml {
-<#
-	.SYNOPSIS
-		Returns the rendered HTML for a specific version of a Wiki page
-
-	.DESCRIPTION
-		Returns the rendered HTML for a specific version of a Wiki page
-
-	.PARAMETER FullName
-		The full page name for which to return the data
-
-	.PARAMETER VersionTimestamp
-		The timestamp for which version to get the info from
-
-	.PARAMETER Raw
-		Return only the raw HTML, rather than an object
-
-	.EXAMPLE
-		PS C:\> $RawPageHtml = Get-DokuPageVersionHtml -FullName "namespace:namespace:page" -VersionTimestamp 1497464418 -Raw
-
-	.OUTPUTS
-		System.Management.Automation.PSObject
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
-
 	[CmdletBinding()]
 	[OutputType([psobject])]
 	param

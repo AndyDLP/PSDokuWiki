@@ -1,27 +1,4 @@
 function Unlock-DokuPage {
-    <#
-	.SYNOPSIS
-		Unlocks a DokuWiki page
-
-	.DESCRIPTION
-	    Unlocks the page so it can be modified by users again.
-
-	.PARAMETER FullName
-		The full name of the to-be-unlocked page, including parent namespace(s)
-
-	.EXAMPLE
-		PS C:\> Lock-DokuPage -FullName 'namespace:page'
-
-	.OUTPUTS
-		Nothing
-
-	.NOTES
-		AndyDLP - 2019-01-27
-
-	.LINK
-		https://github.com/AndyDLP/PSDokuWiki
-#>
-
     [CmdletBinding(PositionalBinding = $true)]
     param
     (

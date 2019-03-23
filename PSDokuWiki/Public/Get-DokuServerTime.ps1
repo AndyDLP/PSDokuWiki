@@ -1,26 +1,4 @@
 ﻿function Get-DokuServerTime {
-<#
-	.SYNOPSIS
-		Returns the current time from the remote wiki server as Unix timestamp
-
-	.DESCRIPTION
-		Returns the current time from the remote wiki server as Unix timestamp
-
-	.PARAMETER Raw
-		Output the raw response from the server in UNIX time rather than a DateTime
-
-	.EXAMPLE
-		PS C:\> $serverTime = Get-DokuServerTime
-
-	.EXAMPLE
-		PS C:\> $UnixserverTime = Get-DokuServerTime -Raw
-
-	.OUTPUTS
-		System.DateTime, System.Int32
-
-	.NOTES
-		AndyDLP - 2018-05-26
-#>
 	[CmdletBinding()]
 	[OutputType([datetime], [int])]
 	param()
