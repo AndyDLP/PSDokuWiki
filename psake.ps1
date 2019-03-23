@@ -208,6 +208,7 @@ Task Build -Depends Test {
     Set-ModuleFunctions @Verbose
     Write-Host "`nIncrementing build number"
     Update-Metadata -Path $env:BHPSModuleManifest @Verbose
+    # TODO generate MAML help
     "`n"
 }
 
