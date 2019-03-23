@@ -47,9 +47,7 @@ Same as above, but with an array of usernames (strings) for the parameter 'Princ
 ## PARAMETERS
 
 ### -Acl
-The permission level to apply to the user or @group
-Pages / Namespaces: 0 = None, 1 = Read, 2 = Edit
-Namespaces only:    4 = Create, 8 = Upload, 16 = Delete
+The permission level to apply to the user or @group Pages / Namespaces: 0 = None, 1 = Read, 2 = Edit Namespaces only:    4 = Create, 8 = Upload, 16 = Delete
 
 ```yaml
 Type: Int32
@@ -103,7 +101,7 @@ Aliases: cf
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -119,7 +117,7 @@ Aliases: wi
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -134,9 +132,6 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ### None
 ## NOTES
-AndyDLP - 2019-03-23
+AndyDLP - 2018-05-26
 
 ## RELATED LINKS
-
-[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
-

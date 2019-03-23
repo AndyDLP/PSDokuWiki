@@ -115,7 +115,7 @@ Aliases: cf
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -131,7 +131,7 @@ Aliases: wi
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -149,6 +149,3 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 AndyDLP - 2018-05-26
 
 ## RELATED LINKS
-
-[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
-

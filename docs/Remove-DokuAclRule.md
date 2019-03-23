@@ -5,32 +5,32 @@ online version: https://github.com/AndyDLP/PSDokuWiki
 schema: 2.0.0
 ---
 
-# Lock-DokuPage
+# Remove-DokuAclRule
 
 ## SYNOPSIS
-Locks a DokuWiki page for 15 min
+Remove a principal from an ACL
 
 ## SYNTAX
 
 ```
-Lock-DokuPage [-FullName] <String[]> [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-DokuAclRule [-FullName] <String[]> [-Principal] <String[]> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Locks the page so it cannot be modified by users for 15 min.
-Also works for non-existent pages (block create name)
+Allows you to remove a principal from an ACL.
+Use @groupname instead of user to remove an ACL rule for a group.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
-Lock-DokuPage -FullName 'namespace:page'
+Remove-DokuAclRule -FullName 'study' -Principal 'testuser'
 ```
 
 ## PARAMETERS
 
 ### -FullName
-The full name of the to-be-locked page, including parent namespace(s)
+The full name of the page or namespace to remove the ACL from
 
 ```yaml
 Type: String[]
@@ -44,6 +44,21 @@ Accept pipeline input: True (ByPropertyName, ByValue)
 Accept wildcard characters: False
 ```
 
+### -Principal
+The username or groupname to remove
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 3
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -Confirm
 Prompts you for confirmation before running the cmdlet.
 
@@ -54,7 +69,7 @@ Aliases: cf
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -70,13 +85,14 @@ Aliases: wi
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
+For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
@@ -84,9 +100,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### Nothing
 ## NOTES
-AndyDLP - 2019-01-27
+AndyDLP - 2018-05-26
 
 ## RELATED LINKS
-
-[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
-

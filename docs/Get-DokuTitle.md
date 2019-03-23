@@ -41,5 +41,3 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 AndyDLP - 2018-05-26
 
 ## RELATED LINKS
-
-www.google.com

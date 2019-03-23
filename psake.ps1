@@ -222,16 +222,18 @@ Task Build -Depends Coverage {
     Update-Metadata -Path $env:BHPSModuleManifest @Verbose
 
     # Generate help for the module
-    Write-Host "Generating"
     Set-Location $ProjectRoot
     Import-Module '.\PSDokuWiki' -Force -Global
+    Write-Host "Generating markdown help"
     Update-MarkdownHelpModule -Path ".\docs" -AlphabeticParamsOrder -Force -RefreshModulePage @Verbose | Out-Null
     New-Item -Path '.\PSDokuWiki\en-US' -ItemType Directory -ErrorAction SilentlyContinue @Verbose | Out-Null
     try {
+        Write-Host "Generating MAML help"
         New-ExternalHelp -Path ".\docs" -OutputPath ".\PSDokuWiki\en-US" -Force -ErrorAction Stop @Verbose | Out-Null
     }
     catch {
         throw "Build failed - Failed to generate help files"
+        $_
     }
     "`n"
 }

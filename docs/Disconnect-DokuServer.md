@@ -41,6 +41,3 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 AndyDLP - 2019
 
 ## RELATED LINKS
-
-[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
-

@@ -39,10 +39,6 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ### System.Management.Automation.PSObject[]
 ## NOTES
-AndyDLP - 2018-05-26
-Updated - 2019-02-20
+AndyDLP - 2018-05-26 Updated - 2019-02-20
 
 ## RELATED LINKS
-
-[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
-
