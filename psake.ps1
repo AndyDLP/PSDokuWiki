@@ -29,15 +29,45 @@ Task Init {
     "`n"
 }
 
-Task Test -Depends Init {
+Task Analyze -depends Init {
+    $lines
+    # ScriptAnalyzer
+    "`nSCRIPTANALYZER: CHECKING..."
+
+    if ($ENV:BHBuildSystem -eq 'AppVeyor') {
+        Add-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Running
+    }
+
+    $CodeResults = Invoke-ScriptAnalyzer -Path $ProjectRoot\PSDokuWiki -Recurse -Severity Error -ErrorAction SilentlyContinue @Verbose
+    If ($CodeResults) {
+        $ResultString = $CodeResults | Out-String
+        Write-Warning $ResultString
+
+        if ($ENV:BHBuildSystem -eq 'AppVeyor') {
+            Add-AppveyorMessage -Message "PSScriptAnalyzer output contained one or more result(s) with 'Error' severity. Check the 'Tests' tab of this build for more details." -Category Error
+            Update-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Failed -ErrorMessage $ResultString
+        }
+
+        # Failing the build
+        Throw "Build failed - PSScriptAnalyzer"
+    } else {
+        "`tNO ERRORS`n"
+        if ($ENV:BHBuildSystem -eq 'AppVeyor') {
+            Update-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Passed
+        }
+    }
+    "`n"
+}
+
+Task Test -Depends Analyze {
     $lines
     "`n`tSTATUS: Testing with PowerShell $PSVersion"
 
     Import-Module (Join-Path -Path $ProjectRoot -ChildPath 'PSDokuWiki') -Force @Verbose
 
     # Gather test results. Store them in a variable and file
-    $TestResults = Invoke-Pester -Path "$ProjectRoot\Tests" -OutputFormat NUnitXml -OutputFile "$ProjectRoot\$TestFile" -PassThru -CodeCoverage "$ProjectRoot\PSDokuWiki\*\*.ps1" @Verbose
-    $TestResults | Export-Clixml -Path "$ProjectRoot\PesterResults$PSVersion.xml"
+    $Script:TestResults = Invoke-Pester -Path "$ProjectRoot\Tests" -OutputFormat NUnitXml -OutputFile "$ProjectRoot\$TestFile" -PassThru -CodeCoverage "$ProjectRoot\PSDokuWiki\*\*.ps1" @Verbose
+    $Script:TestResults | Export-Clixml -Path "$ProjectRoot\PesterResults$PSVersion.xml"
 
     $AllFiles = Get-ChildItem -Path $ProjectRoot\*Results*.xml | Select-Object -ExpandProperty FullName
     "COLLATING FILES:`n$($AllFiles | Out-String)"
@@ -74,7 +104,9 @@ Task Test -Depends Init {
 
     Get-ChildItem -Path "$ProjectRoot\PesterResults*.xml" | Remove-Item -Force -ErrorAction SilentlyContinue
     Remove-Item "$ProjectRoot\$TestFile" -Force -ErrorAction SilentlyContinue
+}
 
+Task Coverage -Depends Test {
     # CODE COVERAGE
 
     "`nCODE COVERAGE:"
@@ -85,16 +117,16 @@ Task Test -Depends Init {
     $CodeCoverage = @{
         Functions = @{}
         Statement = @{
-            Analyzed = $TestResults.CodeCoverage.NumberOfCommandsAnalyzed
-            Executed = $TestResults.CodeCoverage.NumberOfCommandsExecuted
-            Missed   = $TestResults.CodeCoverage.NumberOfCommandsMissed
+            Analyzed = $Script:TestResults.CodeCoverage.NumberOfCommandsAnalyzed
+            Executed = $Script:TestResults.CodeCoverage.NumberOfCommandsExecuted
+            Missed   = $Script:TestResults.CodeCoverage.NumberOfCommandsMissed
             Coverage = 0
         }
         Function = @{}
     }
     $CodeCoverage.Statement.Coverage = [math]::Round($CodeCoverage.Statement.Executed / $CodeCoverage.Statement.Analyzed * 100, 2)
 
-    $TestResults.CodeCoverage.HitCommands | Group-Object -Property Function | ForEach-Object {
+    $Script:TestResults.CodeCoverage.HitCommands | Group-Object -Property Function | ForEach-Object {
         if (-Not $CodeCoverage.Functions.ContainsKey($_.Name)) {
             $CodeCoverage.Functions.Add($_.Name, @{
                 Name     = $_.Name
@@ -108,7 +140,7 @@ Task Test -Depends Init {
         $CodeCoverage.Functions[$_.Name].Analyzed += $_.Count
         $CodeCoverage.Functions[$_.Name].Executed += $_.Count
     }
-    $TestResults.CodeCoverage.MissedCommands | Group-Object -Property Function | ForEach-Object {
+    $Script:TestResults.CodeCoverage.MissedCommands | Group-Object -Property Function | ForEach-Object {
         if (-Not $CodeCoverage.Functions.ContainsKey($_.Name)) {
             $CodeCoverage.Functions.Add($_.Name, @{
                 Name     = $_.Name
@@ -173,42 +205,26 @@ Task Test -Depends Init {
         Throw "Build failed"
     }
     "`n"
-
-    # ScriptAnalyzer
-    "`nSCRIPTANALYZER: CHECKING..."
-
-    if ($ENV:BHBuildSystem -eq 'AppVeyor') {
-        Add-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Running
-    }
-
-    $CodeResults = Invoke-ScriptAnalyzer -Path $ProjectRoot\PSDokuWiki -Recurse -Severity Error -ErrorAction SilentlyContinue @Verbose
-    If ($CodeResults) {
-        $ResultString = $CodeResults | Out-String
-        Write-Warning $ResultString
-
-        if ($ENV:BHBuildSystem -eq 'AppVeyor') {
-            Add-AppveyorMessage -Message "PSScriptAnalyzer output contained one or more result(s) with 'Error' severity. Check the 'Tests' tab of this build for more details." -Category Error
-            Update-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Failed -ErrorMessage $ResultString
-        }
-
-        # Failing the build
-        Throw "Build failed - PSScriptAnalyzer"
-    } else {
-        "`tNO ERRORS`n"
-        if ($ENV:BHBuildSystem -eq 'AppVeyor') {
-            Update-AppveyorTest -Name "PsScriptAnalyzer" -Outcome Passed
-        }
-    }
-    "`n"
 }
 
-Task Build -Depends Test {
+Task Build -Depends Coverage {
     $lines
     Write-Host "`nUpdating exported module members"
     Set-ModuleFunctions @Verbose
     Write-Host "`nIncrementing build number"
     Update-Metadata -Path $env:BHPSModuleManifest @Verbose
-    # TODO generate MAML help
+
+    # Generate help for the module
+    Set-Location $ProjectRoot
+    Import-Module '.\PSDokuWiki' -Force
+    Update-MarkdownHelpModule -Path ".\docs" -Encoding 'UTF8' -AlphabeticParamsOrder -Force -RefreshModulePage
+    New-Item -Path '.\PSDokuWiki\en-US' -ItemType Directory -ErrorAction SilentlyContinue | Out-Null
+    try {
+        New-ExternalHelp -Path ".\docs" -OutputPath ".\PSDokuWiki\en-US" -Force -ErrorAction Stop
+    }
+    catch {
+        throw "Build failed - Failed to generate help files"
+    }
     "`n"
 }
 
