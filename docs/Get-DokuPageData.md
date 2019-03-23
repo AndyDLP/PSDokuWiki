@@ -26,6 +26,11 @@ Returns the editor Wiki text for a page
 $PageData = Get-DokuPageData -FullName "namespace:namespace:page"
 ```
 
+### EXAMPLE 2
+```
+$PageData = Get-DokuPageData -FullName "namespace:namespace:page" -Raw
+```
+
 ## PARAMETERS
 
 ### -FullName

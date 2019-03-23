@@ -217,7 +217,7 @@ Task Build -Depends Coverage {
     # Generate help for the module
     Set-Location $ProjectRoot
     Import-Module '.\PSDokuWiki' -Force
-    Update-MarkdownHelpModule -Path ".\docs" -Encoding 'UTF8' -AlphabeticParamsOrder -Force -RefreshModulePage
+    Update-MarkdownHelpModule -Path ".\docs" -AlphabeticParamsOrder -Force -RefreshModulePage
     New-Item -Path '.\PSDokuWiki\en-US' -ItemType Directory -ErrorAction SilentlyContinue | Out-Null
     try {
         New-ExternalHelp -Path ".\docs" -OutputPath ".\PSDokuWiki\en-US" -Force -ErrorAction Stop
