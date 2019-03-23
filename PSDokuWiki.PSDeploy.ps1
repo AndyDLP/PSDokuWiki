@@ -34,11 +34,14 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
     #>
 
     # Prepare git 2
-    Write-Host "Pushing back to GitHub"
     Set-Location -Path $env:BHProjectPath
+    Write-Host "checking out"
     git checkout master
+    Write-Host "Adding"
     git add *
+    Write-Host "committing"
     git commit -m "Build successful - [skip ci]"
+    Write-Host "Pushing back to GitHub"
     git push origin master
 
 } else {
