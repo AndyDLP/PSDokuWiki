@@ -221,12 +221,13 @@ Task Build -Depends Coverage {
     Update-Metadata -Path $env:BHPSModuleManifest @Verbose
 
     # Generate help for the module
+    Write-Host "Generating"
     Set-Location $ProjectRoot
     Import-Module '.\PSDokuWiki' -Force -Global
-    Update-MarkdownHelpModule -Path ".\docs" -AlphabeticParamsOrder -Force -RefreshModulePage
+    Update-MarkdownHelpModule -Path ".\docs" -AlphabeticParamsOrder -Force -RefreshModulePage | Out-Null
     New-Item -Path '.\PSDokuWiki\en-US' -ItemType Directory -ErrorAction SilentlyContinue | Out-Null
     try {
-        New-ExternalHelp -Path ".\docs" -OutputPath ".\PSDokuWiki\en-US" -Force -ErrorAction Stop
+        New-ExternalHelp -Path ".\docs" -OutputPath ".\PSDokuWiki\en-US" -Force -ErrorAction Stop | Out-Null
     }
     catch {
         throw "Build failed - Failed to generate help files"
