@@ -31,6 +31,7 @@ Task Init {
     Add-Content "$HOME\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
     git config --global user.email "andydlp93@gmail.com"
     git config --global user.name "AndyDLP"
+    git config --global core.autocrlf false
 
     "`n"
 }
