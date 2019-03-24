@@ -30,33 +30,20 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
                 ApiKey = $ENV:NugetApiKey
             }
         }
-    } @Verbose
+    } @Verbose -ErrorAction Stop
 
-
-<#
-
-    # Prepare git 2
-    Set-Location -Path $env:BHProjectPath
-    Write-Host "checking out"
-    $Output = Invoke-Expression "git checkout -B master" -ErrorAction SilentlyContinue
-    Write-Host "Adding"
-    $Output = Invoke-Expression "git add *" -ErrorAction SilentlyContinue
-    Write-Host "committing"
-    $Output = Invoke-Expression "git commit -m 'Build successful - [skip ci]'" -ErrorAction SilentlyContinue
-    Write-Host "Pushing back to GitHub"
-    $Output = Invoke-Expression "git push origin master" -ErrorAction SilentlyContinue
-#>
+Write-Host "`n"
 Write-Host "checking out"
-Invoke-git "checkout -B master" -ErrorAction SilentlyContinue
+$Output = Invoke-git "checkout -B master" -ErrorAction SilentlyContinue
 
 Write-Host "Adding files to git"
-Invoke-Git "add *" -ErrorAction SilentlyContinue
+$Output = Invoke-Git "add *" -ErrorAction SilentlyContinue
 
 Write-Host "Committing changes"
-Invoke-Git 'commit -m "Build successful - [skip ci]"' -ErrorAction SilentlyContinue
+$Output = Invoke-Git 'commit -m "Build successful - [skip ci]"' -ErrorAction SilentlyContinue
 
 Write-Host "Pushing back to GitHub"
-Invoke-git "push origin master" -ErrorAction SilentlyContinue
+$Output = Invoke-git "push origin master" -ErrorAction SilentlyContinue
 
 
 } else {
