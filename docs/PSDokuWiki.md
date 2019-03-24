@@ -11,6 +11,39 @@ Locale: {{ Update Locale }}
 {{Manually Enter Description Here}}
 
 ## PSDokuWiki Cmdlets
+### [Add-DokuAclRule](Add-DokuAclRule.md)
+{{Fill in the Synopsis}}
+
+### [Add-DokuPageData](Add-DokuPageData.md)
+{{Fill in the Synopsis}}
+
+### [Connect-DokuServer](Connect-DokuServer.md)
+{{Fill in the Synopsis}}
+
+### [Disconnect-DokuServer](Disconnect-DokuServer.md)
+{{Fill in the Synopsis}}
+
+### [Get-DokuAllPage](Get-DokuAllPage.md)
+{{Fill in the Synopsis}}
+
+### [Get-DokuAttachmentInfo](Get-DokuAttachmentInfo.md)
+{{Fill in the Synopsis}}
+
+### [Get-DokuAttachmentList](Get-DokuAttachmentList.md)
+{{Fill in the Synopsis}}
+
+### [Get-DokuPageAcl](Get-DokuPageAcl.md)
+{{Fill in the Synopsis}}
+
+### [Get-DokuPageBackLink](Get-DokuPageBackLink.md)
+{{Fill in the Synopsis}}
+
+### [Get-DokuPageData](Get-DokuPageData.md)
+{{Fill in the Synopsis}}
+
+### [Get-DokuPageHtml](Get-DokuPageHtml.md)
+{{Fill in the Synopsis}}
+
 ### [Get-DokuPageInfo](Get-DokuPageInfo.md)
 Returns information about a Wiki page
 

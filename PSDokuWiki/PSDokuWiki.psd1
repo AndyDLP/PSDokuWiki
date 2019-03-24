@@ -12,7 +12,7 @@
 RootModule = 'PSDokuWiki.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.2.10'
+ModuleVersion = '2.2.11'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
