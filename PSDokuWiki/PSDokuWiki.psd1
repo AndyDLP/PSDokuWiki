@@ -33,7 +33,7 @@ Copyright = 'Andy DLP'
 Description = 'Consume the XMLRPC API of a DokuWiki instance via PowerShell'
 
 # Minimum version of the Windows PowerShell engine required by this module
-# PowerShellVersion = ''
+PowerShellVersion = '3.0'
 
 # Name of the Windows PowerShell host required by this module
 # PowerShellHostName = ''
