@@ -1,14 +1,14 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version: https://github.com/AndyDLP/PSDokuWiki
+online version:
 schema: 2.0.0
 ---
 
 # Get-DokuAllPage
 
 ## SYNOPSIS
-Returns a list of all Wiki pages
+{{Fill in the Synopsis}}
 
 ## SYNTAX
 
@@ -17,15 +17,16 @@ Get-DokuAllPage [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Returns a list of all Wiki pages from the DokuWiki API.
-Includes the current user's ACL status of each page
+{{Fill in the Description}}
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
+```powershell
+PS C:\> {{ Add example code here }}
 ```
-$AllPages = Get-DokuAllPage
-```
+
+{{ Add example description here }}
 
 ## PARAMETERS
 
@@ -35,10 +36,12 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## INPUTS
 
+### None
+
 ## OUTPUTS
 
 ### System.Management.Automation.PSObject[]
+
 ## NOTES
-AndyDLP - 2018-05-26 Updated - 2019-02-20
 
 ## RELATED LINKS

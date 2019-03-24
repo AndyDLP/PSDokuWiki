@@ -1,14 +1,14 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version: https://github.com/AndyDLP/PSDokuWiki
+online version:
 schema: 2.0.0
 ---
 
 # Get-DokuPageHtml
 
 ## SYNOPSIS
-Returns the rendered XHTML body of a Wiki page
+{{Fill in the Synopsis}}
 
 ## SYNTAX
 
@@ -17,14 +17,16 @@ Get-DokuPageHtml [-FullName] <String[]> [-Raw] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Returns the rendered XHTML body of a Wiki page
+{{Fill in the Description}}
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
+```powershell
+PS C:\> {{ Add example code here }}
 ```
-$PageHtml = Get-DokuPageHtml -FullName "namespace:namespace:page" -Raw
-```
+
+{{ Add example description here }}
 
 ## PARAMETERS
 
@@ -37,7 +39,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 2
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName, ByValue)
 Accept wildcard characters: False
@@ -52,8 +54,8 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
-Default value: False
+Position: 2
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -64,10 +66,12 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## INPUTS
 
+### System.String[]
+
 ## OUTPUTS
 
 ### System.Management.Automation.PSObject
+
 ## NOTES
-AndyDLP - 2018-05-26
 
 ## RELATED LINKS
