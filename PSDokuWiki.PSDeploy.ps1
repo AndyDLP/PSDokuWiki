@@ -33,6 +33,9 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
     } @Verbose
     #>
 
+
+<#
+
     # Prepare git 2
     Set-Location -Path $env:BHProjectPath
     Write-Host "checking out"
@@ -43,6 +46,17 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
     $Output = Invoke-Expression "git commit -m 'Build successful - [skip ci]'" -ErrorAction SilentlyContinue
     Write-Host "Pushing back to GitHub"
     $Output = Invoke-Expression "git push origin master" -ErrorAction SilentlyContinue
+#>
+
+Write-Host "Adding files to git"
+Invoke-Git "add *"
+
+Write-Host "Committing changes"
+Invoke-Git 'commit -m "Build successful - [skip ci]"'
+
+Write-Host "Pushing back to GitHub"
+Invoke-git "push origin master"
+
 
 } else {
     "Skipping deployment: To deploy, ensure that...`n" + "`t* You are in a known build system (Current: $ENV:BHBuildSystem)`n" + "`t* You are committing to the master branch (Current: $ENV:BHBranchName) `n" + "`t* Your commit message includes !deploy (Current: $ENV:BHCommitMessage)" | Write-Host
