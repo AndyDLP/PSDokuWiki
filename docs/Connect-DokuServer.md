@@ -1,14 +1,14 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version: https://github.com/AndyDLP/PSDokuWiki
+online version:
 schema: 2.0.0
 ---
 
 # Connect-DokuServer
 
 ## SYNOPSIS
-Connect to a DokuWiki API endpoint
+{{Fill in the Synopsis}}
 
 ## SYNTAX
 
@@ -18,20 +18,21 @@ Connect-DokuServer [-ComputerName] <String> [-Credential] <PSCredential> [-Unenc
 ```
 
 ## DESCRIPTION
-Connect to a DokuWiki API endpoint to enable subsequent DokuWiki commands from the same PowerShell session
+{{Fill in the Description}}
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
+```powershell
+PS C:\> {{ Add example code here }}
 ```
-Connect-DokuServer -ComputerName wiki.example.com -Credential (Get-Credential)
-```
+
+{{ Add example description here }}
 
 ## PARAMETERS
 
 ### -APIPath
-The web path that the api executable is at.
-DokuWiki default is /lib/exe/xmlrpc.php
+The path to the api endpoint
 
 ```yaml
 Type: String
@@ -39,19 +40,34 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
-Default value: /lib/exe/xmlrpc.php
+Position: 4
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -ComputerName
-The computer name (single label or FQDN) / IP to connect to
+The server to connect to
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases: Server
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Credential
+The credentials to use to connect
+
+```yaml
+Type: PSCredential
+Parameter Sets: (All)
+Aliases:
 
 Required: True
 Position: 2
@@ -60,39 +76,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Credential
-The credentials used to authenticate to the API endpoint
+### -Force
+Force a re-connection
 
 ```yaml
-Type: PSCredential
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
-Required: True
-Position: 3
+Required: False
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Force
-Force a connection even if one is already established to the same endpoint
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 6
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Unencrypted
-Specify that the APi endpoint is at a http rather than https address.
-Recommended for development only!!
+Connect to an unencrypted endpoint
 
 ```yaml
 Type: SwitchParameter
@@ -100,8 +100,8 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
-Default value: False
+Position: 3
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -112,10 +112,11 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## INPUTS
 
+### None
+
 ## OUTPUTS
 
-### Nothing
+### System.Object
 ## NOTES
-AndyDLP - 2019
 
 ## RELATED LINKS

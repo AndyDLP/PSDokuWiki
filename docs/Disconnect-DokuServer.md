@@ -1,14 +1,14 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version: https://github.com/AndyDLP/PSDokuWiki
+online version:
 schema: 2.0.0
 ---
 
 # Disconnect-DokuServer
 
 ## SYNOPSIS
-Disconnect any open connections to a DokuWiki API endpoint
+{{Fill in the Synopsis}}
 
 ## SYNTAX
 
@@ -17,14 +17,16 @@ Disconnect-DokuServer [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Disconnect any open connections to a DokuWiki API endpoint
+{{Fill in the Description}}
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
+```powershell
+PS C:\> {{ Add example code here }}
 ```
-Disconnect-DokuServer
-```
+
+{{ Add example description here }}
 
 ## PARAMETERS
 
@@ -34,10 +36,11 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## INPUTS
 
+### None
+
 ## OUTPUTS
 
-### Nothing
+### System.Object
 ## NOTES
-AndyDLP - 2019
 
 ## RELATED LINKS

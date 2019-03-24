@@ -1,14 +1,14 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version: https://github.com/AndyDLP/PSDokuWiki
+online version:
 schema: 2.0.0
 ---
 
 # Add-DokuPageData
 
 ## SYNOPSIS
-Appends wiki text to the end of a page.
+{{Fill in the Synopsis}}
 
 ## SYNTAX
 
@@ -18,15 +18,16 @@ Add-DokuPageData [-FullName] <String[]> [-RawWikiText] <String> [-MinorChange] [
 ```
 
 ## DESCRIPTION
-Appends wiki text to the end of a page.
-Can create new page or namespace by referencing a (currnely non-existant) page / namespace
+{{Fill in the Description}}
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Example 1
+```powershell
+PS C:\> {{ Add example code here }}
 ```
-Add-DokuPageData -FullName 'namespace:page' -RawWikiText 'TEST TEST TEST'
-```
+
+{{ Add example description here }}
 
 ## PARAMETERS
 
@@ -39,7 +40,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 2
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName, ByValue)
 Accept wildcard characters: False
@@ -54,14 +55,14 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
-Default value: False
+Position: 3
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -PassThru
-Pass the newly created page object back out
+Pass the newly created object back out
 
 ```yaml
 Type: SwitchParameter
@@ -69,8 +70,8 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
-Default value: False
+Position: 5
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -84,14 +85,14 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 3
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -SummaryText
-A short summary of the change, visible in the revisions list
+A short summary of the change
 
 ```yaml
 Type: String
@@ -99,7 +100,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -115,7 +116,7 @@ Aliases: cf
 
 Required: False
 Position: Named
-Default value: False
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -131,7 +132,7 @@ Aliases: wi
 
 Required: False
 Position: Named
-Default value: False
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -142,10 +143,14 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## INPUTS
 
+### System.String[]
+
 ## OUTPUTS
 
-### System.Boolean, System.Management.Automation.PSObject
+### System.Boolean
+
+### System.Management.Automation.PSObject
+
 ## NOTES
-AndyDLP - 2018-05-26
 
 ## RELATED LINKS
