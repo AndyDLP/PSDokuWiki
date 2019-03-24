@@ -21,6 +21,7 @@
 
 # Publish to gallery with a few restrictions
 if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSystem -ne 'Unknown' -and $env:BHBranchName -eq "master" -and $env:BHCommitMessage -match '!deploy') {
+    Write-Host "Deploying to PSGallery..."
     Deploy Module {
         By PSGalleryModule {
             FromSource $ENV:BHProjectName
@@ -45,15 +46,17 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
     Write-Host "Pushing back to GitHub"
     $Output = Invoke-Expression "git push origin master" -ErrorAction SilentlyContinue
 #>
+Write-Host "checking out"
+Invoke-git "checkout -B master" -ErrorAction SilentlyContinue
 
 Write-Host "Adding files to git"
-Invoke-Git "add *"
+Invoke-Git "add *" -ErrorAction SilentlyContinue
 
 Write-Host "Committing changes"
-Invoke-Git 'commit -m "Build successful - [skip ci]"'
+Invoke-Git 'commit -m "Build successful - [skip ci]"' -ErrorAction SilentlyContinue
 
 Write-Host "Pushing back to GitHub"
-Invoke-git "push origin master"
+Invoke-git "push origin master" -ErrorAction SilentlyContinue
 
 
 } else {
