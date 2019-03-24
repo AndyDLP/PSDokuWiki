@@ -38,6 +38,7 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
     #Write-Host "checking out"
     #Invoke-Expression "git checkout master" -ErrorAction SilentlyContinue
     Write-Host "Adding"
+    New-Item -Path '.\' -Name 'testfile.txt' -ItemType 'File' -Value 'Test File'
     Invoke-Expression "git add *" -ErrorAction SilentlyContinue
     Write-Host "committing"
     Invoke-Expression "git commit -m 'Build successful - [skip ci]'" -ErrorAction SilentlyContinue
