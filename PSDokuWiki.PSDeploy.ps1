@@ -35,8 +35,8 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
 
     # Prepare git 2
     Set-Location -Path $env:BHProjectPath
-    #Write-Host "checking out"
-    #Invoke-Expression "git checkout master" -ErrorAction SilentlyContinue
+    Write-Host "checking out"
+    Invoke-Expression "git checkout -B master" -ErrorAction SilentlyContinue
     Write-Host "Adding"
     New-Item -Path '.\' -Name 'testfile.txt' -ItemType 'File' -Value 'Test File'
     Invoke-Expression "git add *" -ErrorAction SilentlyContinue
