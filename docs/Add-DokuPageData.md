@@ -1,14 +1,14 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version:
+online version: https://www.github.com/AndyDLP/PSDokuWiki/docs/Add-DokuPageData.md
 schema: 2.0.0
 ---
 
 # Add-DokuPageData
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Append data (raw wiki text) to a page
 
 ## SYNTAX
 
@@ -18,16 +18,24 @@ Add-DokuPageData [-FullName] <String[]> [-RawWikiText] <String> [-MinorChange] [
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+Append data (raw wiki text) to a page, will create the page if it does not exist
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Add-DokuPageData -FullName 'ns:pagename' -RawWikiText 'Hello World'
 ```
 
-{{ Add example description here }}
+Appends Hello World to the bottom of the page called pagename in the namespace called ns
+
+### Example 2
+```powershell
+PS C:\> $Page = Add-DokuPageData -FullName 'ns:pagename' -RawWikiText 'Hello People' -MinorCHange -SummaryText 'HW' -PassThru
+```
+
+Appends Hello World to the bottom of the page called pagename in the namespace called ns. Marks the change as minor and adds the summary as 'HW'.
+Also passes the page object back out which allows it to be captured into the variable $Page
 
 ## PARAMETERS
 
@@ -145,8 +153,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ### System.String[]
 
 ## OUTPUTS
-
-### System.Boolean
 
 ### System.Management.Automation.PSObject
 

@@ -1,14 +1,14 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version:
+online version: https://www.github.com/AndyDLP/PSDokuWiki/docs/Get-DokuAllPage.md
 schema: 2.0.0
 ---
 
 # Get-DokuAllPage
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Get all pages
 
 ## SYNTAX
 
@@ -17,16 +17,16 @@ Get-DokuAllPage [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+Get all pages from the currently connected API endpoint
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-DokuAllPage | Format-Table -AutoSize
 ```
 
-{{ Add example description here }}
+Gets all pages and displays them in a table
 
 ## PARAMETERS
 

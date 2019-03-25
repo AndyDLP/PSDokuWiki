@@ -1,14 +1,14 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version:
+online version: https://www.github.com/AndyDLP/PSDokuWiki/docs/Disconnect-DokuServer.md
 schema: 2.0.0
 ---
 
 # Disconnect-DokuServer
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Disconnect from any currently connected DokuWiki API endpoints
 
 ## SYNTAX
 
@@ -17,16 +17,16 @@ Disconnect-DokuServer [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+Disconnect from any currently connected DokuWiki API endpoints
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Disconnect-DokuServer -Verbose
 ```
 
-{{ Add example description here }}
+Disconnect from any currently connected DokuWiki API endpoints and show any status / verbose messages
 
 ## PARAMETERS
 
@@ -39,7 +39,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### System.Object
+### None
+
 ## NOTES
 
 ## RELATED LINKS

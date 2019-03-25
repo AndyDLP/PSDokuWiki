@@ -1,14 +1,14 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version:
+online version: https://www.github.com/AndyDLP/PSDokuWiki/docs/Connect-DokuServer.md
 schema: 2.0.0
 ---
 
 # Connect-DokuServer
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Connect to the API of a DokuWiki server
 
 ## SYNTAX
 
@@ -18,16 +18,23 @@ Connect-DokuServer [-ComputerName] <String> [-Credential] <PSCredential> [-Unenc
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+Connect to the API of a DokuWiki server and allow authentication of subsequent API requests
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Connect-DokuServer -ComputerName 'wiki.example.com' -Credential (Get-Credential)
 ```
 
-{{ Add example description here }}
+Prompt for user credentials then connect to the default API endpoint: https://wiki.example.com/lib/exe/xmlrpc.php
+
+### Example 2
+```powershell
+PS C:\> Connect-DokuServer -ComputerName 'wiki.example.com' -Credential (Get-Credential) -APIPath '/dokuwiki/lib/exe/xmlrpc.php' -Force
+```
+
+Prompt for user credentials then forcibly connects (cancels any open session if necessary) to the custom API endpoint: https://wiki.example.com/dokuwiki/lib/exe/xmlrpc.php 
 
 ## PARAMETERS
 

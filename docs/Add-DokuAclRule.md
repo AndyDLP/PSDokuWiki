@@ -1,14 +1,14 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version:
+online version: https://www.github.com/AndyDLP/PSDokuWiki/docs/Add-DokuAclRule.md
 schema: 2.0.0
 ---
 
 # Add-DokuAclRule
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Add an ACL rule to a page or namespace
 
 ## SYNTAX
 
@@ -18,16 +18,16 @@ Add-DokuAclRule [-FullName] <String[]> [-Principal] <String[]> [-Acl] <Int32> [-
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+Add an ACL rule to a page or namespace. 1,2,4,8,16
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> AddDokuAclRule -FullName 'ns:pagename' -Principal 'User1' -Acl 8
 ```
 
-{{ Add example description here }}
+Give User1 delete permissions on the page: 'pagename' in the namespace 'ns'
 
 ## PARAMETERS
 
@@ -117,6 +117,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS

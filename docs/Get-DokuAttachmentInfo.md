@@ -1,14 +1,14 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version:
+online version: https://www.github.com/AndyDLP/PSDokuWiki/docs/Get-DokuAttachmentInfo.md
 schema: 2.0.0
 ---
 
 # Get-DokuAttachmentInfo
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Get information about an attached file
 
 ## SYNTAX
 
@@ -17,16 +17,16 @@ Get-DokuAttachmentInfo [-FullName] <String[]> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+Get information about an attached file such as size, author and date modified
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-DokuAttachmentInfo -FullName 'ns:file.jpg'
 ```
 
-{{ Add example description here }}
+Gets information about the attachment called 'file.jpg' in the namespace 'ns'
 
 ## PARAMETERS
 
