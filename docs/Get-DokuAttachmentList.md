@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-DokuAttachmentList
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Get all attachments in a namespace
 
 ## SYNTAX
 
@@ -17,16 +17,16 @@ Get-DokuAttachmentList [-Namespace] <String[]> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+Get all attachments in a given namespace
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-DokuAttachmentList -Namespace 'rootns:ns'
 ```
 
-{{ Add example description here }}
+Gets all attachments in the namespace 'rootns:ns'
 
 ## PARAMETERS
 

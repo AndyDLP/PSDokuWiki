@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-DokuPageAcl
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Gets the ACL for a given page
 
 ## SYNTAX
 
@@ -17,16 +17,16 @@ Get-DokuPageAcl [-FullName] <String[]> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+Gets the ACL as an integer for a given page for the currently connected user
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-DokuPageAcl -Fullname 'rootns:ns:pagename'
 ```
 
-{{ Add example description here }}
+Will return the page object with ACL attribute
 
 ## PARAMETERS
 

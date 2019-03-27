@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-DokuPageData
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Get the unrendered data from a page
 
 ## SYNTAX
 
@@ -17,7 +17,7 @@ Get-DokuPageData [-FullName] <String[]> [-Raw] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+Get the unrendered data from a given page.
 
 ## EXAMPLES
 

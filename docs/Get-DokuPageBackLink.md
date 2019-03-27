@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-DokuPageBackLink
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Get all pages linking to this page?
 
 ## SYNTAX
 
