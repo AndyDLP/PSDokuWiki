@@ -32,7 +32,7 @@
 					$RawText = [string]($APIResponse.XMLPayloadResponse  | Select-Xml -XPath "//value/string").Node.InnerText
 					$RawText
 				} else {
-					$PageObject = New-Object PSObject -Property @{
+					$PageObject = [PSCustomObject]@{
 						FullName = $PageName
 						VersionTimestamp = $VersionTimestamp
 						RawText = [string]($APIResponse.XMLPayloadResponse  | Select-Xml -XPath "//value/string").Node.InnerText
@@ -40,6 +40,9 @@
 						ParentNamespace = ($PageName -split ":")[-2]
 						RootNamespace = ($PageName -split ":")[0]
 					}
+					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
+					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Version")
+					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Version.Data")
 					$PageObject
 				}
 			} elseif ($null -eq $APIResponse.ExceptionMessage) {

@@ -27,6 +27,7 @@
 					Author = (($node.member)[2]).value.innertext
 					VersionTimestamp = (($node.member)[3]).value.innertext
 				}
+				$ChangeObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
 				$ChangeObject
 			}
 		} elseif ($null -eq $APIResponse.ExceptionMessage) {

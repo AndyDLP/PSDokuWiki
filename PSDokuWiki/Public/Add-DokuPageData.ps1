@@ -37,7 +37,7 @@
                 $APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.appendPage' -MethodParameters @($Page, $RawWikiText, @{ sum = $SummaryText; minor = [int]$Change })
                 if ($APIResponse.CompletedSuccessfully -eq $true) {
                     if ($PassThru) {
-                        $PageObject = New-Object PSObject -Property @{
+                        $PageObject = [PSCustomObject]@{
                             FullName        = $Page
                             AddedText       = $RawWikiText
                             MinorChange     = $MinorChange
@@ -46,6 +46,7 @@
                             ParentNamespace = ($Page -split ":")[-2]
                             RootNamespace   = ($Page -split ":")[0]
                         }
+                        $PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
                         $PageObject
                     }
                 } elseif ($null -eq $APIResponse.ExceptionMessage) {

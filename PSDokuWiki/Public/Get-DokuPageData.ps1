@@ -23,7 +23,7 @@
 		foreach ($PageName in $FullName) {
 			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getPage' -MethodParameters @($PageName)
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
-				$PageObject = New-Object PSObject -Property @{
+				$PageObject = [PSCustomObject]@{
 					FullName = $PageName
 					RawText = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/string").Node.InnerText
 					TimeChecked = (Get-Date)
@@ -31,6 +31,8 @@
 					ParentNamespace = ($PageName -split ":")[-2]
 					RootNamespace = ($PageName -split ":")[0]
 				}
+                $PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
+                $PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Data")
 				if ($Raw) {
 					$PageObject.RawText
 				} else {

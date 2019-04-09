@@ -29,6 +29,7 @@
 					Permissions = (($node.member)[4]).value.innertext
 					Size = (($node.member)[5]).value.innertext
 				}
+				$ChangeObject.PSObject.TypeNames.Insert(0, "DokuWiki.Attachment")
 				$ChangeObject
 			}
 		} elseif ($null -eq $APIResponse.ExceptionMessage) {

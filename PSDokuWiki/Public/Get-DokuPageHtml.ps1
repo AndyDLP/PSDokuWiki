@@ -25,13 +25,15 @@
 			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getPageHTML' -MethodParameters @($PageName)
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
 				Write-Verbose $APIResponse.XMLPayloadResponse
-				$PageObject = New-Object PSObject -Property @{
+				$PageObject = [PSCustomObject]@{
 					FullName = $PageName
 					RenderedHtml = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/string").Node.InnerText
 					PageName = ($PageName -split ":")[-1]
 					ParentNamespace = ($PageName -split ":")[-2]
 					RootNamespace = ($PageName -split ":")[0]
 				}
+                $PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
+                $PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Html")
 				if ($Raw) {
 					$PageObject.RenderedHtml
 				} else {

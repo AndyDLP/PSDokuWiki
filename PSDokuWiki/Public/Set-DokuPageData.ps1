@@ -38,7 +38,7 @@
 					Write-Verbose $ResultBoolean
 					if ($ResultBoolean -eq $true) {
 						if ($PassThru) {
-							$PageObject = New-Object PSObject -Property @{
+							$PageObject = [PSCustomObject]@{
 								FullName = $PageName
 								AddedText = $RawWikiText
 								MinorChange = [bool]$MinorChange
@@ -47,6 +47,7 @@
 								ParentNamespace = ($PageName -split ":")[-2]
 								RootNamespace = ($PageName -split ":")[0]
 							}
+							$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
 							Write-Verbose $PageObject
 							$PageObject
 						} else {

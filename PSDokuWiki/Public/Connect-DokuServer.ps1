@@ -100,7 +100,7 @@ function Connect-DokuServer {
         } else {
             # success
             Write-Verbose "Successfully connected to API server: $ComputerName"
-            $DokuSession = New-Object PSObject -Property @{
+            $DokuSession = [PSCustomObject]@{
                 Server = $ComputerName
                 TargetUri = $TargetUri
                 SessionMethod = $SessionMethod

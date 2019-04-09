@@ -26,7 +26,7 @@
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
 				$MemberNodes = ($APIResponse.XMLPayloadResponse  | Select-Xml -XPath "//struct").Node
 				foreach ($node in $MemberNodes) {
-					$PageObject = New-Object PSObject -Property @{
+					$PageObject = [PSCustomObject]@{
 						FullName = $PageName
 						User = (($node.member)[0]).value.string
 						IpAddress = (($node.member)[1]).value.string
@@ -38,6 +38,8 @@
 						ParentNamespace = ($PageName -split ":")[-2]
 						RootNamespace = ($PageName -split ":")[0]
 					}
+					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
+					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Version")
 					$PageObject
 				}
 			} elseif ($null -eq $APIResponse.ExceptionMessage) {

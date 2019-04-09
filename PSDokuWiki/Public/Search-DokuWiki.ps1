@@ -23,7 +23,7 @@
 				$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
 				Write-Verbose $APIResponse.XMLPayloadResponse
 				foreach ($node in $MemberNodes) {
-					$PageObject = New-Object PSObject -Property @{
+					$PageObject = [PSCustomObject]@{
 						FullName = (($node.member)[0]).value.string
 						Score = (($node.member)[1]).value.int
 						Revision = (($node.member)[2]).value.int
@@ -35,6 +35,7 @@
 						ParentNamespace = (((($node.member)[0]).value.string) -split ":")[-2]
 						RootNamespace = (((($node.member)[0]).value.string) -split ":")[0]
 					}
+					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
 					$PageObject
 				}
 			} elseif ($null -eq $APIResponse.ExceptionMessage) {

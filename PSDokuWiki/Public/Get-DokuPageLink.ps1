@@ -22,12 +22,14 @@
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
 				$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
 				foreach ($node in $MemberNodes) {
-					$PageObject = New-Object PSObject -Property @{
+					$PageObject = [PSCustomObject]@{
 						FullName = $PageName
 						Type = (($node.member)[0]).value.string
 						TargetPageName = (($node.member)[1]).value.string
 						URL = (($node.member)[2]).value.string
 					}
+					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
+					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Link")
 					$PageObject
 				}
 			} elseif ($null -eq $APIResponse.ExceptionMessage) {

@@ -15,13 +15,14 @@
 			$RawDokuVersion = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/string").node.InnerText
 			$CodeName = $RawDokuVersion | ForEach-Object -Process { [regex]::match($_, '(?<=")(.+)(?=")') } | Select-Object -ExpandProperty value
 			$SplitVersion = $RawDokuVersion -split " "
-			$VersionObject = New-Object PSObject -Property @{
+			$VersionObject = [PSCustomObject]@{
 				Server = $Script:DokuServer.Server
 				Type = $SplitVersion[0] # Does this ever change?
 				RawVersion = $RawDokuVersion
 				ReleaseDate = $SplitVersion[1] # TODO: Convert to date time - replace letter(s)?
 				ReleaseName = $CodeName
 			}
+			$VersionObject.PSObject.TypeNames.Insert(0, "DokuWiki.Server.Version")
 			$VersionObject
 		} elseif ($null -eq $APIResponse.ExceptionMessage) {
 			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"

@@ -12,7 +12,7 @@
 		if ($APIResponse.CompletedSuccessfully -eq $true) {
 			$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
 			foreach ($node in $MemberNodes) {
-				$PageObject = New-Object PSObject -Property @{
+				$PageObject = [PSCustomObject]@{
 					FullName = (($node.member)[0]).value.string
 					Revision = (($node.member)[1]).value.int
 					LastModified = (($node.member)[2]).value.int
@@ -21,9 +21,9 @@
 					ParentNamespace = (((($node.member)[0]).value.string) -split ":")[-2]
 					RootNamespace = (((($node.member)[0]).value.string) -split ":")[0]
 				}
-				[array]$AllDokuwikiPages = $AllDokuwikiPages + $PageObject
+                $PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
+				$PageObject
 			}
-			$AllDokuwikiPages
 		} elseif ($null -eq $APIResponse.ExceptionMessage) {
 			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 		} else {

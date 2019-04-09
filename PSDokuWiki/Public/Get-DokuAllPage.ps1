@@ -12,7 +12,7 @@
         if ($APIResponse.CompletedSuccessfully -eq $true) {
             $MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
             foreach ($node in $MemberNodes) {
-                $PageObject = New-Object PSObject -Property @{
+                $PageObject = [PSCustomObject]@{
                     FullName     = (($node.member)[0]).value.InnerText
                     Acl          = (($node.member)[1]).value.InnerText
                     Size         = (($node.member)[2]).value.InnerText
@@ -22,6 +22,7 @@
                     ParentNamespace = (((($node.member)[0]).value.InnerText) -split ":")[-2]
                     RootNamespace   = (((($node.member)[0]).value.InnerText) -split ":")[0]
                 }
+                $PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
                 $PageObject
             }
         } elseif ($null -eq $APIResponse.ExceptionMessage) {

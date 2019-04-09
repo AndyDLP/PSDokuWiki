@@ -14,6 +14,7 @@
 				UNIXTimestamp = $RawDokuTime
 				ServerTime = ([datetime]'1970-01-01 00:00:00').AddSeconds($RawDokuTime)
 			}
+			$DateObject.PSObject.TypeNames.Insert(0, "DokuWiki.Server.Time")
 			$DateObject
 		} elseif ($null -eq $APIResponse.ExceptionMessage) {
 			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"

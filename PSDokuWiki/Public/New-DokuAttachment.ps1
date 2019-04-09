@@ -38,7 +38,7 @@
 			if ($ResultString -eq $FullName) {
 				Write-Verbose "File uploaded successfully"
 				if ($PassThru) {
-					$attachmentObject = New-Object PSObject -Property @{
+					$attachmentObject = [PSCustomObject]@{
 						FullName = $FullName
 						SourceFilePath = $Path
 						Size = $FileItem.Length
@@ -47,6 +47,7 @@
 						ParentNamespace = ($FullName -split ":")[-2]
 						RootNamespace = ($FullName -split ":")[0]
 					}
+					$attachmentObject.PSObject.TypeNames.Insert(0, "DokuWiki.Attachment")
 					$attachmentObject
 				}
 			} else {

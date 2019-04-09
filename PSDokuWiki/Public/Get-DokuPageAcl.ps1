@@ -20,13 +20,15 @@
 		foreach ($PageName in $FullName) {
 			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.aclCheck' -MethodParameters @($PageName)
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
-				$PageObject = New-Object PSObject -Property @{
+				$PageObject = [PSCustomObject]@{
 					FullName = $PageName
 					Acl = [int]($APIResponse.XMLPayloadResponse  | Select-Xml -XPath "//value/int").Node.InnerText
 					PageName = ($PageName -split ":")[-1]
 					ParentNamespace = ($PageName -split ":")[-2]
 					RootNamespace = ($PageName -split ":")[0]
 				}
+				$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
+                $PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Acl")
 				$PageObject
 			} elseif ($null -eq $APIResponse.ExceptionMessage) {
 				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"

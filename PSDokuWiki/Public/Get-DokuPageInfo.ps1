@@ -19,7 +19,7 @@
 			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getPageInfo' -MethodParameters @($PageName)
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
 				$ArrayValues = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node.Member.Value.Innertext
-				$PageObject = New-Object PSObject -Property @{
+				$PageObject = [PSCustomObject]@{
 					FullName = $PageName
 					LastModified = Get-Date -Date ($ArrayValues[1])
 					Author = $ArrayValues[2]
@@ -28,6 +28,8 @@
 					ParentNamespace = ($PageName -split ":")[-2]
 					RootNamespace = ($PageName -split ":")[0]
 				}
+                $PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
+                $PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Info")
 				$PageObject
 			} elseif ($null -eq $APIResponse.ExceptionMessage) {
 				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"

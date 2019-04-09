@@ -22,12 +22,14 @@
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
 				$PageArray = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//array/data/value").Node.InnerText
 				foreach ($Page in $PageArray) {
-					$PageObject = New-Object PSObject -Property @{
+					$PageObject = [PSCustomObject]@{
 						FullName = $Page
 						PageName = ($Page -split ":")[-1]
 						ParentNamespace = ($Page -split ":")[-2]
 						RootNamespace = ($Page -split ":")[0]
 					}
+					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
+					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Backlink")
 					$PageObject
 				}
 			} elseif ($null -eq $APIResponse.ExceptionMessage) {
