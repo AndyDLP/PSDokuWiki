@@ -1,14 +1,14 @@
 ---
 Module Name: PSDokuWiki
-Module Guid: {{ Update Module Guid }}
+Module Guid: 8e86c290-3848-47a6-93ec-ad472b06dcc2
 Download Help Link: {{ Update Download Link }}
 Help Version: {{ Update Help Version }}
-Locale: {{ Update Locale }}
+Locale: en-US
 ---
 
 # PSDokuWiki Module
 ## Description
-{{Manually Enter Description Here}}
+Consume the XMLRPC API of a DokuWiki instance via PowerShell
 
 ## PSDokuWiki Cmdlets
 ### [Add-DokuAclRule](Add-DokuAclRule.md)

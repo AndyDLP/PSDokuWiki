@@ -1,7 +1,7 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version: https://www.github.com/AndyDLP/PSDokuWiki/docs/Get-DokuAttachmentInfo.md
+online version: https://github.com/AndyDLP/PSDokuWiki/blob/master/docs/Get-DokuAttachmentInfo.md
 schema: 2.0.0
 ---
 
