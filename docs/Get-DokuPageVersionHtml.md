@@ -22,7 +22,7 @@ Returns the rendered HTML for a specific version of a Wiki page
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 $RawPageHtml = Get-DokuPageVersionHtml -FullName "namespace:namespace:page" -VersionTimestamp 1497464418 -Raw
 ```
 

@@ -17,14 +17,23 @@ Save-DokuAttachment [-FullName] <String[]> [[-Path] <String>] [-Force] [<CommonP
 ```
 
 ## DESCRIPTION
-Returns the binary data of a media file
+Returns the binary data of a media file and save to a file
 
 ## EXAMPLES
 
 ### EXAMPLE 1
+```powershell
+Save-DokuAttachment -FullName 'study:picture.jpg' -Path 'C:\picture.jpg'
 ```
-Save-DokuAttachment -FullName 'value2' -Path 'value3'
+
+Downloads the file picture.jpg from the study namespace and saves to the root of the C drive with the given name
+
+### EXAMPLE 2
+```powershell
+Save-DokuAttachment -FullName 'study:picture.jpg' -Path 'C:\picture.jpg' -Force
 ```
+
+As above, but overwrites any exisitng files with the same name
 
 ## PARAMETERS
 
@@ -85,3 +94,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 AndyDLP - 2018-05-26
 
 ## RELATED LINKS
+
+[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
+

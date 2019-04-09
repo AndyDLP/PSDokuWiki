@@ -22,7 +22,7 @@ Returns the raw Wiki text for a specific version of a page
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 $PageData = Get-DokuPageVersionData -FullName "namespace:namespace:page" -VersionTimestamp 1497464418
 ```
 

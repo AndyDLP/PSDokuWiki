@@ -22,7 +22,7 @@ Returns information about a specific version of a Wiki page
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 $PageInfo = Get-DokuPageVersionInfo -FullName "namespace:namespace:page" -VersionTimestamp 1497464418
 ```
 

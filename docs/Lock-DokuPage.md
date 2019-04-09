@@ -23,7 +23,7 @@ Also works for non-existent pages (block create name)
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 Lock-DokuPage -FullName 'namespace:page'
 ```
 

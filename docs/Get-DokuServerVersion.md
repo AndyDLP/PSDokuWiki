@@ -22,7 +22,7 @@ Returns the DokuWiki version of the remote Wiki server
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 $Version = Get-DokuServerVersion
 ```
 
@@ -40,3 +40,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 AndyDLP - 2018-05-28
 
 ## RELATED LINKS
+
+[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
+

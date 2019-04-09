@@ -23,10 +23,17 @@ Get the unrendered data from a given page.
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-DokuPageData -FullName 'rootns:ns:pagename'
 ```
 
-{{ Add example description here }}
+Return a page object with the unrendered page data as a property
+
+### Example 2
+```powershell
+PS C:\> Get-DokuPageData -FullName 'rootns:ns:pagename' -Raw
+```
+
+Returns the raw page data as a string
 
 ## PARAMETERS
 

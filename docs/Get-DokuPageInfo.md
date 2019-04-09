@@ -22,7 +22,7 @@ Returns information about a Wiki page
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 $PageInfo = Get-DokuPageInfo -FullName "namespace:namespace:page"
 ```
 

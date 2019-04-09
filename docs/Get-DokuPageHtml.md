@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-DokuPageHtml
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Get the rendered HTML for a given page
 
 ## SYNTAX
 
@@ -17,16 +17,23 @@ Get-DokuPageHtml [-FullName] <String[]> [-Raw] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+Get the rendered HTML for a given page or pages
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-DokuPageHtml -FullName 'rootns:ns:pagename'
 ```
 
-{{ Add example description here }}
+Returns a page object with the rendered HTML as a property
+
+### Example 2
+```powershell
+PS C:\> Get-DokuPageHtml -FullName 'rootns:ns:pagename' -Raw
+```
+
+Returns the rendered HTML as a string
 
 ## PARAMETERS
 

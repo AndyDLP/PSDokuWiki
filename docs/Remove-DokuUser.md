@@ -23,9 +23,11 @@ Useful to implement GDPR right to be forgotten tools
 ## EXAMPLES
 
 ### EXAMPLE 1
+```powershell
+Remove-DokuUser -Username 'user1'
 ```
-Remove-DokuUser -Username 'value2'
-```
+
+Deletes user 'user1'
 
 ## PARAMETERS
 
@@ -86,3 +88,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 AndyDLP - 2018-05-26
 
 ## RELATED LINKS
+
+[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
+

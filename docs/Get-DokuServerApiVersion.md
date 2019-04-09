@@ -22,7 +22,7 @@ Returns the DokuWiki version of the remote Wiki server
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 $Version = Get-DokuServerApiVersion
 ```
 

@@ -22,9 +22,11 @@ Unlocks the page so it can be modified by users again.
 ## EXAMPLES
 
 ### EXAMPLE 1
+```powershell
+Unlock-DokuPage -FullName 'namespace:page'
 ```
-Lock-DokuPage -FullName 'namespace:page'
-```
+
+Unlocks the page for normal use again
 
 ## PARAMETERS
 

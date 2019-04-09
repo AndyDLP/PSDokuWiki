@@ -22,9 +22,11 @@ Deletes an attachment
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 Remove-DokuAttachment -FullName 'study:test2.jpeg'
 ```
+
+Deletes the file test2.jpg from the 'study' namespace
 
 ## PARAMETERS
 
@@ -85,3 +87,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 AndyDLP - 2018-05-26
 
 ## RELATED LINKS
+
+[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
+

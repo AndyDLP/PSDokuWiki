@@ -22,13 +22,13 @@ Invokes a DokuWiki API method using the currently connected (By Connect-DokuServ
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
-$Response = Invoke-DokuApiCall -MethodName wiki.getAllPages
+```powershell
+$Response = Invoke-DokuApiCall -MethodName 'wiki.getAllPages'
 ```
 
 ### EXAMPLE 2
-```
-$Response = Invoke-DokuApiCall -MethodName wiki.getPagaData -MethodParameters @('namespace:pagename')
+```powershell
+$Response = Invoke-DokuApiCall -MethodName 'wiki.getPagaData' -MethodParameters @('namespace:pagename')
 ```
 
 ## PARAMETERS
@@ -75,3 +75,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 AndyDLP - 2019
 
 ## RELATED LINKS
+
+[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
+

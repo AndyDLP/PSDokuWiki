@@ -27,7 +27,7 @@ $serverTime = Get-DokuServerTime
 ```
 
 ### EXAMPLE 2
-```
+```powershell
 $UnixserverTime = Get-DokuServerTime -Raw
 ```
 
@@ -45,3 +45,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 AndyDLP - 2018-05-26
 
 ## RELATED LINKS
+
+[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
+

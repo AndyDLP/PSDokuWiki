@@ -23,9 +23,18 @@ Uploads a file as an attachment
 ## EXAMPLES
 
 ### EXAMPLE 1
+```powershell
+New-DokuAttachment -FullName 'ns:file.jpg' -FilePath 'C:\file.jpg'
 ```
-New-DokuAttachment -FullName 'value2' -FilePath 'value3'
+
+Upload the file located at C:\filejpg to the namespace called 'ns'. Will not overwrite an existing file
+
+### EXAMPLE 2
+```powershell
+New-DokuAttachment -FullName 'ns:file.jpg' -FilePath 'C:\file.jpg' -Force
 ```
+
+Upload the file located at C:\filejpg to the namespace called 'ns', overwriting any existing file with the same name (in that namespace)
 
 ## PARAMETERS
 
@@ -133,3 +142,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 AndyDLP - 2018-05-26
 
 ## RELATED LINKS
+
+[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
+

@@ -23,7 +23,7 @@ Use @groupname instead of user to remove an ACL rule for a group.
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 Remove-DokuAclRule -FullName 'study' -Principal 'testuser'
 ```
 
@@ -102,3 +102,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 AndyDLP - 2018-05-26
 
 ## RELATED LINKS
+
+[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
+

@@ -22,7 +22,7 @@ Returns a list of recently changed media since given timestamp
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 Get-DokuRecentMediaChange -VersionTimestamp $VersionTimestamp
 ```
 

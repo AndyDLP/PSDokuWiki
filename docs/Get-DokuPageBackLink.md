@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-DokuPageBackLink
 
 ## SYNOPSIS
-Get all pages linking to this page?
+Get all pages linking to this page
 
 ## SYNTAX
 
@@ -17,16 +17,16 @@ Get-DokuPageBackLink [-FullName] <String[]> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+Get all pages linking to this page
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-DokuPageBackLink -FullName 'rootns:ns:pagename'
 ```
 
-{{ Add example description here }}
+Get all backlinks for the given page
 
 ## PARAMETERS
 

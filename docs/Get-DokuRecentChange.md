@@ -23,7 +23,7 @@ As stated in recent_changes: Only the most recent change for each page is listed
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 Get-DokuRecentChanges -VersionTimestamp $VersionTimestamp
 ```
 

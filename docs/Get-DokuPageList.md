@@ -22,7 +22,7 @@ Gets an array of all pages from an instance of DokuWiki.
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 $AllPages = Get-DokuPageList
 ```
 

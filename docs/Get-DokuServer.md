@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-DokuServer
 
 ## SYNOPSIS
-Gets any current connection to a DokuWiki API
+Gets the current connection to a DokuWiki API
 
 ## SYNTAX
 
@@ -17,14 +17,23 @@ Get-DokuServer [-IsConnected] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Gets any current connection to a DokuWiki API
+Gets the current connection to a DokuWiki API
 
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 Get-DokuServer | Format-List -Property *
 ```
+
+Get all properties from the currently conneted DokuServer
+
+### EXAMPLE 2
+```powershell
+Get-DokuServer -IsConnected
+```
+
+Will return TRUE if connected or FALSE if not
 
 ## PARAMETERS
 

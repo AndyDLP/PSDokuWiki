@@ -23,9 +23,18 @@ Sets the raw wiki text of a page, will overwrite any existing page
 ## EXAMPLES
 
 ### EXAMPLE 1
+```powershell
+Set-DokuPageData -FullName 'namespace:pagename' -RawWikiText 'This will be the only text on the page'
 ```
-Set-DokuPageData -FullName 'value2' -RawWikiText 'value3'
+
+Sets the page to contain only the given text for the given page
+
+### EXAMPLE 2
+```powershell
+$Page = Set-DokuPageData -FullName 'namespace:pagename' -RawWikiText 'This will be the only text on the page' -MinorChange -SummaryText 'Overwritten page' -PassThru
 ```
+
+Sets the page to contain only the given text for the given page, marks the change as minor, setting the summary text and passing the page object back out
 
 ## PARAMETERS
 
@@ -147,3 +156,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 AndyDLP - 2018-05-26
 
 ## RELATED LINKS
+
+[https://github.com/AndyDLP/PSDokuWiki](https://github.com/AndyDLP/PSDokuWiki)
+

@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-DokuPageLink
 
 ## SYNOPSIS
-Returns an array of all links on a page
+Returns all links on a page
 
 ## SYNTAX
 
@@ -17,19 +17,19 @@ Get-DokuPageLink [-FullName] <String[]> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Returns an array of all links on a page
+Returns all links on a given page
 
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 $PageLinks = Get-DokuPageLink -FullName "namespace:namespace:page"
 ```
 
 ## PARAMETERS
 
 ### -FullName
-The full page name for which to return the data
+The full page name for which to return the links
 
 ```yaml
 Type: String[]

@@ -24,7 +24,7 @@ The offset can be used to list earlier versions in the history
 ## EXAMPLES
 
 ### EXAMPLE 1
-```
+```powershell
 $PageVersions = Get-DokuPageVersion -FullName "namespace:namespace:page"
 ```
 
