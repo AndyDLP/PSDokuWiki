@@ -29,7 +29,14 @@
 			if ($APIResponse.CompletedSuccessfully -eq $true) {
 				Write-Verbose $APIResponse.XMLPayloadResponse
 				if ((Test-Path -Path $Path) -and (!$Force)) {
-					Throw "File with that name already exists at: $Path"
+					$PSCmdlet.ThrowTerminatingError(
+						[System.Management.Automation.ErrorRecord]::new(
+							("File with that name already exists at: $Path"),
+							'DokuWiki.Attachment.DownloadError',
+							[System.Management.Automation.ErrorCategory]::WriteError,
+							$Path
+						)
+					)
 				} else {
 					Remove-Item -Path $Path -Force -ErrorAction SilentlyContinue
 					$RawFileData = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/base64").node.InnerText
