@@ -6,11 +6,11 @@
       <command:verb>Add</command:verb>
       <command:noun>DokuAclRule</command:noun>
       <maml:description>
-        <maml:para>{{Fill in the Synopsis}}</maml:para>
+        <maml:para>Add an ACL rule to a page or namespace</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{Fill in the Description}}</maml:para>
+      <maml:para>Add an ACL rule to a page or namespace. 1,2,4,8,16</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -165,13 +165,18 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; AddDokuAclRule -FullName 'ns:pagename' -Principal 'User1' -Acl 8</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Give User1 delete permissions on the page: 'pagename' in the namespace 'ns'</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://www.github.com/AndyDLP/PSDokuWiki/docs/Add-DokuAclRule.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -179,11 +184,11 @@
       <command:verb>Add</command:verb>
       <command:noun>DokuPageData</command:noun>
       <maml:description>
-        <maml:para>{{Fill in the Synopsis}}</maml:para>
+        <maml:para>Append data (raw wiki text) to a page</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{Fill in the Description}}</maml:para>
+      <maml:para>Append data (raw wiki text) to a page, will create the page if it does not exist</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -369,14 +374,6 @@
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>System.Boolean</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
-      <command:returnValue>
-        <dev:type>
           <maml:name>System.Management.Automation.PSObject</maml:name>
         </dev:type>
         <maml:description>
@@ -392,13 +389,25 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Add-DokuPageData -FullName 'ns:pagename' -RawWikiText 'Hello World'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Appends Hello World to the bottom of the page called pagename in the namespace called ns</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; $Page = Add-DokuPageData -FullName 'ns:pagename' -RawWikiText 'Hello People' -MinorCHange -SummaryText 'HW' -PassThru</dev:code>
+        <dev:remarks>
+          <maml:para>Appends Hello World to the bottom of the page called pagename in the namespace called ns. Marks the change as minor and adds the summary as 'HW'. Also passes the page object back out which allows it to be captured into the variable $Page</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://www.github.com/AndyDLP/PSDokuWiki/docs/Add-DokuPageData.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -406,11 +415,11 @@
       <command:verb>Connect</command:verb>
       <command:noun>DokuServer</command:noun>
       <maml:description>
-        <maml:para>{{Fill in the Synopsis}}</maml:para>
+        <maml:para>Connect to the API of a DokuWiki server</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{Fill in the Description}}</maml:para>
+      <maml:para>Connect to the API of a DokuWiki server and allow authentication of subsequent API requests</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -565,13 +574,25 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Connect-DokuServer -ComputerName 'wiki.example.com' -Credential (Get-Credential)</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Prompt for user credentials then connect to the default API endpoint: https://wiki.example.com/lib/exe/xmlrpc.php</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Connect-DokuServer -ComputerName 'wiki.example.com' -Credential (Get-Credential) -APIPath '/dokuwiki/lib/exe/xmlrpc.php' -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Prompt for user credentials then forcibly connects (cancels any open session if necessary) to the custom API endpoint: https://wiki.example.com/dokuwiki/lib/exe/xmlrpc.php</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://www.github.com/AndyDLP/PSDokuWiki/docs/Connect-DokuServer.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -579,11 +600,11 @@
       <command:verb>Disconnect</command:verb>
       <command:noun>DokuServer</command:noun>
       <maml:description>
-        <maml:para>{{Fill in the Synopsis}}</maml:para>
+        <maml:para>Disconnect from any currently connected DokuWiki API endpoints</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{Fill in the Description}}</maml:para>
+      <maml:para>Disconnect from any currently connected DokuWiki API endpoints</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -604,7 +625,7 @@
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>System.Object</maml:name>
+          <maml:name>None</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -619,13 +640,18 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Disconnect-DokuServer -Verbose</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Disconnect from any currently connected DokuWiki API endpoints and show any status / verbose messages</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://www.github.com/AndyDLP/PSDokuWiki/docs/Disconnect-DokuServer.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -633,11 +659,11 @@
       <command:verb>Get</command:verb>
       <command:noun>DokuAllPage</command:noun>
       <maml:description>
-        <maml:para>{{Fill in the Synopsis}}</maml:para>
+        <maml:para>Get all pages</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{Fill in the Description}}</maml:para>
+      <maml:para>Get all pages from the currently connected API endpoint</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -673,13 +699,18 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-DokuAllPage | Format-Table -AutoSize</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Gets all pages and displays them in a table</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://www.github.com/AndyDLP/PSDokuWiki/docs/Get-DokuAllPage.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -687,11 +718,11 @@
       <command:verb>Get</command:verb>
       <command:noun>DokuAttachmentInfo</command:noun>
       <maml:description>
-        <maml:para>{{Fill in the Synopsis}}</maml:para>
+        <maml:para>Get information about an attached file</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{Fill in the Description}}</maml:para>
+      <maml:para>Get information about an attached file such as size, author and date modified</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -752,13 +783,18 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-DokuAttachmentInfo -FullName 'ns:file.jpg'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Gets information about the attachment called 'file.jpg' in the namespace 'ns'</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://www.github.com/AndyDLP/PSDokuWiki/docs/Get-DokuAttachmentInfo.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -766,11 +802,11 @@
       <command:verb>Get</command:verb>
       <command:noun>DokuAttachmentList</command:noun>
       <maml:description>
-        <maml:para>{{Fill in the Synopsis}}</maml:para>
+        <maml:para>Get all attachments in a namespace</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{Fill in the Description}}</maml:para>
+      <maml:para>Get all attachments in a given namespace</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -831,9 +867,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-DokuAttachmentList -Namespace 'rootns:ns'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Gets all attachments in the namespace 'rootns:ns'</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -845,11 +881,11 @@
       <command:verb>Get</command:verb>
       <command:noun>DokuPageAcl</command:noun>
       <maml:description>
-        <maml:para>{{Fill in the Synopsis}}</maml:para>
+        <maml:para>Gets the ACL for a given page</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{Fill in the Description}}</maml:para>
+      <maml:para>Gets the ACL as an integer for a given page for the currently connected user</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -910,9 +946,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-DokuPageAcl -Fullname 'rootns:ns:pagename'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Will return the page object with ACL attribute</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -924,11 +960,11 @@
       <command:verb>Get</command:verb>
       <command:noun>DokuPageBackLink</command:noun>
       <maml:description>
-        <maml:para>{{Fill in the Synopsis}}</maml:para>
+        <maml:para>Get all pages linking to this page</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{Fill in the Description}}</maml:para>
+      <maml:para>Get all pages linking to this page</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -989,9 +1025,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-DokuPageBackLink -FullName 'rootns:ns:pagename'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Get all backlinks for the given page</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1003,11 +1039,11 @@
       <command:verb>Get</command:verb>
       <command:noun>DokuPageData</command:noun>
       <maml:description>
-        <maml:para>{{Fill in the Synopsis}}</maml:para>
+        <maml:para>Get the unrendered data from a page</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{Fill in the Description}}</maml:para>
+      <maml:para>Get the unrendered data from a given page.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1091,9 +1127,16 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-DokuPageData -FullName 'rootns:ns:pagename'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Return a page object with the unrendered page data as a property</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-DokuPageData -FullName 'rootns:ns:pagename' -Raw</dev:code>
+        <dev:remarks>
+          <maml:para>Returns the raw page data as a string</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1105,11 +1148,11 @@
       <command:verb>Get</command:verb>
       <command:noun>DokuPageHtml</command:noun>
       <maml:description>
-        <maml:para>{{Fill in the Synopsis}}</maml:para>
+        <maml:para>Get the rendered HTML for a given page</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{Fill in the Description}}</maml:para>
+      <maml:para>Get the rendered HTML for a given page or pages</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1193,9 +1236,16 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-DokuPageHtml -FullName 'rootns:ns:pagename'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Returns a page object with the rendered HTML as a property</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-DokuPageHtml -FullName 'rootns:ns:pagename' -Raw</dev:code>
+        <dev:remarks>
+          <maml:para>Returns the rendered HTML as a string</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1282,11 +1332,11 @@
       <command:verb>Get</command:verb>
       <command:noun>DokuPageLink</command:noun>
       <maml:description>
-        <maml:para>Returns an array of all links on a page</maml:para>
+        <maml:para>Returns all links on a page</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Returns an array of all links on a page</maml:para>
+      <maml:para>Returns all links on a given page</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1294,7 +1344,7 @@
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="1" aliases="none">
           <maml:name>FullName</maml:name>
           <maml:Description>
-            <maml:para>The full page name for which to return the data</maml:para>
+            <maml:para>The full page name for which to return the links</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
@@ -1309,7 +1359,7 @@
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="1" aliases="none">
         <maml:name>FullName</maml:name>
         <maml:Description>
-          <maml:para>The full page name for which to return the data</maml:para>
+          <maml:para>The full page name for which to return the links</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
@@ -1999,11 +2049,11 @@
       <command:verb>Get</command:verb>
       <command:noun>DokuServer</command:noun>
       <maml:description>
-        <maml:para>Gets any current connection to a DokuWiki API</maml:para>
+        <maml:para>Gets the current connection to a DokuWiki API</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Gets any current connection to a DokuWiki API</maml:para>
+      <maml:para>Gets the current connection to a DokuWiki API</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -2056,7 +2106,14 @@
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
         <dev:code>Get-DokuServer | Format-List -Property *</dev:code>
         <dev:remarks>
-          <maml:para></maml:para>
+          <maml:para>Get all properties from the currently conneted DokuServer</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>Get-DokuServer -IsConnected</dev:code>
+        <dev:remarks>
+          <maml:para>Will return TRUE if connected or FALSE if not</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -2162,7 +2219,7 @@
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Online Version:</maml:linkText>
+        <maml:linkText>https://github.com/AndyDLP/PSDokuWiki</maml:linkText>
         <maml:uri>https://github.com/AndyDLP/PSDokuWiki</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -2219,7 +2276,7 @@
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Online Version:</maml:linkText>
+        <maml:linkText>https://github.com/AndyDLP/PSDokuWiki</maml:linkText>
         <maml:uri>https://github.com/AndyDLP/PSDokuWiki</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -2269,7 +2326,7 @@
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Online Version:</maml:linkText>
+        <maml:linkText>https://github.com/AndyDLP/PSDokuWiki</maml:linkText>
         <maml:uri>https://github.com/AndyDLP/PSDokuWiki</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -2319,7 +2376,7 @@
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Online Version:</maml:linkText>
+        <maml:linkText>https://github.com/AndyDLP/PSDokuWiki</maml:linkText>
         <maml:uri>https://github.com/AndyDLP/PSDokuWiki</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -2410,14 +2467,14 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>$Response = Invoke-DokuApiCall -MethodName wiki.getAllPages</dev:code>
+        <dev:code>$Response = Invoke-DokuApiCall -MethodName 'wiki.getAllPages'</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
-        <dev:code>$Response = Invoke-DokuApiCall -MethodName wiki.getPagaData -MethodParameters @('namespace:pagename')</dev:code>
+        <dev:code>$Response = Invoke-DokuApiCall -MethodName 'wiki.getPagaData' -MethodParameters @('namespace:pagename')</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>
@@ -2425,7 +2482,7 @@
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Online Version:</maml:linkText>
+        <maml:linkText>https://github.com/AndyDLP/PSDokuWiki</maml:linkText>
         <maml:uri>https://github.com/AndyDLP/PSDokuWiki</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -2729,15 +2786,22 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>New-DokuAttachment -FullName 'value2' -FilePath 'value3'</dev:code>
+        <dev:code>New-DokuAttachment -FullName 'ns:file.jpg' -FilePath 'C:\file.jpg'</dev:code>
         <dev:remarks>
-          <maml:para></maml:para>
+          <maml:para>Upload the file located at C:\filejpg to the namespace called 'ns'. Will not overwrite an existing file</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>New-DokuAttachment -FullName 'ns:file.jpg' -FilePath 'C:\file.jpg' -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Upload the file located at C:\filejpg to the namespace called 'ns', overwriting any existing file with the same name (in that namespace)</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Online Version:</maml:linkText>
+        <maml:linkText>https://github.com/AndyDLP/PSDokuWiki</maml:linkText>
         <maml:uri>https://github.com/AndyDLP/PSDokuWiki</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -2882,7 +2946,7 @@
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Online Version:</maml:linkText>
+        <maml:linkText>https://github.com/AndyDLP/PSDokuWiki</maml:linkText>
         <maml:uri>https://github.com/AndyDLP/PSDokuWiki</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -2988,13 +3052,13 @@
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
         <dev:code>Remove-DokuAttachment -FullName 'study:test2.jpeg'</dev:code>
         <dev:remarks>
-          <maml:para></maml:para>
+          <maml:para>Deletes the file test2.jpg from the 'study' namespace</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Online Version:</maml:linkText>
+        <maml:linkText>https://github.com/AndyDLP/PSDokuWiki</maml:linkText>
         <maml:uri>https://github.com/AndyDLP/PSDokuWiki</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -3098,15 +3162,15 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Remove-DokuUser -Username 'value2'</dev:code>
+        <dev:code>Remove-DokuUser -Username 'user1'</dev:code>
         <dev:remarks>
-          <maml:para></maml:para>
+          <maml:para>Deletes user 'user1'</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Online Version:</maml:linkText>
+        <maml:linkText>https://github.com/AndyDLP/PSDokuWiki</maml:linkText>
         <maml:uri>https://github.com/AndyDLP/PSDokuWiki</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -3121,7 +3185,7 @@
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Returns the binary data of a media file</maml:para>
+      <maml:para>Returns the binary data of a media file and save to a file</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -3220,15 +3284,22 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Save-DokuAttachment -FullName 'value2' -Path 'value3'</dev:code>
+        <dev:code>Save-DokuAttachment -FullName 'study:picture.jpg' -Path 'C:\picture.jpg'</dev:code>
         <dev:remarks>
-          <maml:para></maml:para>
+          <maml:para>Downloads the file picture.jpg from the study namespace and saves to the root of the C drive with the given name</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>Save-DokuAttachment -FullName 'study:picture.jpg' -Path 'C:\picture.jpg' -Force</dev:code>
+        <dev:remarks>
+          <maml:para>As above, but overwrites any exisitng files with the same name</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Online Version:</maml:linkText>
+        <maml:linkText>https://github.com/AndyDLP/PSDokuWiki</maml:linkText>
         <maml:uri>https://github.com/AndyDLP/PSDokuWiki</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -3297,13 +3368,13 @@
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
         <dev:code>$MatchingPages = Search-DokuWiki -SearchString "VSS Admin"</dev:code>
         <dev:remarks>
-          <maml:para></maml:para>
+          <maml:para>Search all pages for mentions of the words "VSS" and "Admin".</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Online Version:</maml:linkText>
+        <maml:linkText>https://github.com/AndyDLP/PSDokuWiki</maml:linkText>
         <maml:uri>https://github.com/AndyDLP/PSDokuWiki</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -3510,15 +3581,22 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Set-DokuPageData -FullName 'value2' -RawWikiText 'value3'</dev:code>
+        <dev:code>Set-DokuPageData -FullName 'namespace:pagename' -RawWikiText 'This will be the only text on the page'</dev:code>
         <dev:remarks>
-          <maml:para></maml:para>
+          <maml:para>Sets the page to contain only the given text for the given page</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>$Page = Set-DokuPageData -FullName 'namespace:pagename' -RawWikiText 'This will be the only text on the page' -MinorChange -SummaryText 'Overwritten page' -PassThru</dev:code>
+        <dev:remarks>
+          <maml:para>Sets the page to contain only the given text for the given page, marks the change as minor, setting the summary text and passing the page object back out</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Online Version:</maml:linkText>
+        <maml:linkText>https://github.com/AndyDLP/PSDokuWiki</maml:linkText>
         <maml:uri>https://github.com/AndyDLP/PSDokuWiki</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -3585,9 +3663,9 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Lock-DokuPage -FullName 'namespace:page'</dev:code>
+        <dev:code>Unlock-DokuPage -FullName 'namespace:page'</dev:code>
         <dev:remarks>
-          <maml:para></maml:para>
+          <maml:para>Unlocks the page for normal use again</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

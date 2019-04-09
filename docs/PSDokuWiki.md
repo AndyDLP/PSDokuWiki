@@ -12,43 +12,43 @@ Locale: {{ Update Locale }}
 
 ## PSDokuWiki Cmdlets
 ### [Add-DokuAclRule](Add-DokuAclRule.md)
-{{Fill in the Synopsis}}
+Add an ACL rule to a page or namespace
 
 ### [Add-DokuPageData](Add-DokuPageData.md)
-{{Fill in the Synopsis}}
+Append data (raw wiki text) to a page
 
 ### [Connect-DokuServer](Connect-DokuServer.md)
-{{Fill in the Synopsis}}
+Connect to the API of a DokuWiki server
 
 ### [Disconnect-DokuServer](Disconnect-DokuServer.md)
-{{Fill in the Synopsis}}
+Disconnect from any currently connected DokuWiki API endpoints
 
 ### [Get-DokuAllPage](Get-DokuAllPage.md)
-{{Fill in the Synopsis}}
+Get all pages
 
 ### [Get-DokuAttachmentInfo](Get-DokuAttachmentInfo.md)
-{{Fill in the Synopsis}}
+Get information about an attached file
 
 ### [Get-DokuAttachmentList](Get-DokuAttachmentList.md)
-{{Fill in the Synopsis}}
+Get all attachments in a namespace
 
 ### [Get-DokuPageAcl](Get-DokuPageAcl.md)
-{{Fill in the Synopsis}}
+Gets the ACL for a given page
 
 ### [Get-DokuPageBackLink](Get-DokuPageBackLink.md)
-{{Fill in the Synopsis}}
+Get all pages linking to this page
 
 ### [Get-DokuPageData](Get-DokuPageData.md)
-{{Fill in the Synopsis}}
+Get the unrendered data from a page
 
 ### [Get-DokuPageHtml](Get-DokuPageHtml.md)
-{{Fill in the Synopsis}}
+Get the rendered HTML for a given page
 
 ### [Get-DokuPageInfo](Get-DokuPageInfo.md)
 Returns information about a Wiki page
 
 ### [Get-DokuPageLink](Get-DokuPageLink.md)
-Returns an array of all links on a page
+Returns all links on a page
 
 ### [Get-DokuPageList](Get-DokuPageList.md)
 Gets an array of all pages from an instance of DokuWiki.
@@ -72,7 +72,7 @@ Returns a list of recent changes since given timestamp
 Returns a list of recently changed media since given timestamp
 
 ### [Get-DokuServer](Get-DokuServer.md)
-Gets any current connection to a DokuWiki API
+Gets the current connection to a DokuWiki API
 
 ### [Get-DokuServerApiVersion](Get-DokuServerApiVersion.md)
 Returns the DokuWiki version of the remote Wiki server
