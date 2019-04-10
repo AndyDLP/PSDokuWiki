@@ -1,5 +1,5 @@
 ﻿function Save-DokuAttachment {
-	[CmdletBinding(PositionalBinding = $true)]
+	[CmdletBinding(PositionalBinding = $true, SupportsShouldProcess=$True, ConfirmImpact='Low')]
 	[OutputType([System.IO.FileInfo])]
 	param
 	(
@@ -25,31 +25,33 @@
 
 	process {
 		foreach ($AttachmentName in $FullName) {
-			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getAttachment' -MethodParameters @($AttachmentName)
-			if ($APIResponse.CompletedSuccessfully -eq $true) {
-				Write-Verbose $APIResponse.XMLPayloadResponse
-				if ((Test-Path -Path $Path) -and (!$Force)) {
-					$PSCmdlet.ThrowTerminatingError(
-						[System.Management.Automation.ErrorRecord]::new(
-							("File with that name already exists at: $Path"),
-							'DokuWiki.Attachment.DownloadError',
-							[System.Management.Automation.ErrorCategory]::WriteError,
-							$Path
+			if ($PSCmdlet.ShouldProcess("Save attachment: $AttachmentName to path: $Path")) {
+				$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getAttachment' -MethodParameters @($AttachmentName)
+				if ($APIResponse.CompletedSuccessfully -eq $true) {
+					Write-Verbose $APIResponse.XMLPayloadResponse
+					if ((Test-Path -Path $Path) -and (!$Force)) {
+						$PSCmdlet.ThrowTerminatingError(
+							[System.Management.Automation.ErrorRecord]::new(
+								("File with that name already exists at: $Path"),
+								'DokuWiki.Attachment.DownloadError',
+								[System.Management.Automation.ErrorCategory]::WriteError,
+								$Path
+							)
 						)
-					)
+					} else {
+						Remove-Item -Path $Path -Force -ErrorAction SilentlyContinue
+						$RawFileData = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/base64").node.InnerText
+						$RawBytes = [Convert]::FromBase64String($RawFileData)
+						[IO.File]::WriteAllBytes($Path, $RawBytes) | Out-Null
+						$ItemObject = (Get-Item -Path $Path)
+						$ItemObject
+					}
+				} elseif ($null -eq $APIResponse.ExceptionMessage) {
+					Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
 				} else {
-					Remove-Item -Path $Path -Force -ErrorAction SilentlyContinue
-					$RawFileData = [string]($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/base64").node.InnerText
-					$RawBytes = [Convert]::FromBase64String($RawFileData)
-					[IO.File]::WriteAllBytes($Path, $RawBytes) | Out-Null
-					$ItemObject = (Get-Item -Path $Path)
-					$ItemObject
+					Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 				}
-			} elseif ($null -eq $APIResponse.ExceptionMessage) {
-				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
-			} else {
-				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
-			}
+			} # should process
 		} # foreach attachment
 	} # process
 
