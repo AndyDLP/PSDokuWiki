@@ -49,7 +49,6 @@ if($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSyste
     "Skipping deployment: To deploy, ensure that...`n" + "`t* You are in a known build system (Current: $ENV:BHBuildSystem)`n" + "`t* You are committing to the master branch (Current: $ENV:BHBranchName) `n" + "`t* Your commit message includes !deploy (Current: $ENV:BHCommitMessage)" | Write-Host
 }
 
-<#
 # Publish to AppVeyor if we're in AppVeyor
 if ($env:BHProjectName -and $ENV:BHProjectName.Count -eq 1 -and $env:BHBuildSystem -eq 'AppVeyor' ) {
     Write-Host "`nDeploying developer build to AppVeyor"
@@ -63,4 +62,3 @@ if ($env:BHProjectName -and $ENV:BHProjectName.Count -eq 1 -and $env:BHBuildSyst
         }
     } @Verbose
 }
-#>
