@@ -17,5 +17,5 @@ skip_commits:
 build: false
 
 test_script:
-#  - ps: . .\build.ps1
-  - pwsh: . .\build.ps1
+  - ps: . .\build.ps1
+#  - pwsh: . .\build.ps1
