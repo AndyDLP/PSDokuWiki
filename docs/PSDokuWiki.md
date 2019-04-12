@@ -89,9 +89,6 @@ Returns the DokuWiki version of the remote Wiki server
 ### [Get-DokuTitle](Get-DokuTitle.md)
 Returns the title of the wiki
 
-### [Invoke-DokuApiCall](Invoke-DokuApiCall.md)
-Invokes a DokuWiki API method
-
 ### [Lock-DokuPage](Lock-DokuPage.md)
 Locks a DokuWiki page for 15 min
 

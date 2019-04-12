@@ -1,7 +1,7 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version:  https://github.com/AndyDLP/PSDokuWiki/blob/master/docs/New-DokuAttachment.md
+online version: https://github.com/AndyDLP/PSDokuWiki/blob/master/docs/New-DokuAttachment.md
 schema: 2.0.0
 ---
 
