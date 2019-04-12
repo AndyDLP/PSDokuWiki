@@ -15,7 +15,6 @@ Describe 'Connect-DokuServer' {
             Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
                 Content = '<?xml version="1.0"?><methodResponse><string>Hello World</string></methodResponse>'
             }) }
-            # TODO: Do I need a class to do -BeOfType [DokuWiki.Session.Detail]
             Connect-DokuServer -Server $Server -Credential $credential -Unencrypted -APIPath 'dokuwiki/lib/exe/xmlrpc.php' -Force
             InModuleScope PSDokuWiki {
                 $Script:DokuServer.PSTypeNames[0] | Should -Be 'DokuWiki.Session.Detail'
