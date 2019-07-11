@@ -21,9 +21,14 @@
 				   Position = 4,
 				   HelpMessage = 'Pass the newly created attachment object out')]
 		[switch]$PassThru
+	        [Parameter(Mandatory = $false,
+	            Position = 5,
+	            HelpMessage = 'Bypass confirmations of calls during this connect/disconnect session')]
+	        [ValidateNotNullOrEmpty()]
+	        [switch]$BypassConfirm
 	)
 
-	if ($PSCmdlet.ShouldProcess("Upload attachment at path: $Path to location: $Fullname")) {
+    	if ($BypassConfirm -or $PSCmdlet.ShouldProcess("Upload attachment at path: $Path to location: $Fullname")) {
 
 		# add a check size before uploading??
 		Write-Verbose "Reading all bytes from file: $Path"
