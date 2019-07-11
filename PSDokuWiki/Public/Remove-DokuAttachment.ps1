@@ -9,13 +9,18 @@
 				   HelpMessage = 'The full name of the attachment to delete')]
 		[ValidateNotNullOrEmpty()]
 		[string[]]$FullName
+	        [Parameter(Mandatory = $false,
+	            Position = 2,
+	            HelpMessage = 'Bypass confirmations of calls during this connect/disconnect session')]
+	        [ValidateNotNullOrEmpty()]
+	        [switch]$BypassConfirm
 	)
 
 	begin {}
 
 	process {
 		foreach ($attachment in $FullName) {
-            if ($PSCmdlet.ShouldProcess("Delete attachment: $attachment")) {
+			if ($BypassConfirm -or $PSCmdlet.ShouldProcess("Delete attachment: $attachment")) {
 				$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.deleteAttachment' -MethodParameters @($attachment)
 				if ($APIResponse.CompletedSuccessfully -eq $true) { 
 					# do nothing?
