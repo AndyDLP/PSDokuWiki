@@ -16,6 +16,11 @@
 				   HelpMessage = 'The username or groupname to remove')]
 		[ValidateNotNullOrEmpty()]
 		[string[]]$Principal
+	        [Parameter(Mandatory = $false,
+	            Position = 3,
+	            HelpMessage = 'Bypass confirmations of calls during this connect/disconnect session')]
+	        [ValidateNotNullOrEmpty()]
+	        [switch]$BypassConfirm
 	)
 
 	begin {}
@@ -23,8 +28,7 @@
 	process {
 		foreach ($Page in $fullname) {
 			foreach ($user in $Principal) {
-				if ($PSCmdlet.ShouldProcess("Remove user: $user from page: $page")) {
-					$APIResponse = Invoke-DokuApiCall -MethodName 'plugin.acl.delAcl' -MethodParameters @($FullName,$Principal)
+                		if ($BypassConfirm -or $PSCmdlet.ShouldProcess("Remove user: $user from page: $page")) {
 					if ($APIResponse.CompletedSuccessfully -eq $true) { 
 						$ReturnValue = [int](($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//value/boolean").Node.InnerText)
 						if ($ReturnValue -eq 0) {
