@@ -19,6 +19,11 @@
             HelpMessage = 'The permission level to apply to the ACL as an integer')]
         [ValidateNotNullOrEmpty()]
         [int]$Acl
+        [Parameter(Mandatory = $false,
+            Position = 4,
+            HelpMessage = 'Bypass confirmations of calls during this connect/disconnect session')]
+        [ValidateNotNullOrEmpty()]
+        [switch]$BypassConfirm
     )
 
     begin {}
@@ -27,7 +32,7 @@
         foreach ($page in $FullName) {
             Write-Verbose "Page name: $page"
             foreach ($Name in $Principal) {
-                if ($PSCmdlet.ShouldProcess("Give user: $Name a permission level of: $Acl to page: $Page")) {
+                if ($BypassConfirm -or $PSCmdlet.ShouldProcess("Give user: $Name a permission level of: $Acl to page: $Page")) {
                     Write-Verbose "Principal name: $Name"
                     $APIResponse = Invoke-DokuApiCall -MethodName 'plugin.acl.addAcl' -MethodParameters @($page,$Name,$Acl) -ErrorAction 'Stop'
                     if ($APIResponse.CompletedSuccessfully -eq $true) {
