@@ -28,12 +28,22 @@ function Connect-DokuServer {
             HelpMessage = 'Force a re-connection')]
         [ValidateNotNullOrEmpty()]
         [switch]$Force
+        [Parameter(Mandatory = $false,
+            Position = 6,
+            HelpMessage = 'Use Basic parsing instead of IE DOM parsing')]
+        [ValidateNotNullOrEmpty()]
+        [switch]$UseBasicParsing,
+        [Parameter(Mandatory = $false,
+            Position = 7,
+            HelpMessage = 'Bypass confirmations of calls during this connect/disconnect session')]
+        [ValidateNotNullOrEmpty()]
+        [switch]$BypassConfirm
     )
 
     begin {}
 
     process {
-        if ($PSCmdlet.ShouldProcess("Connect to server: $Computername")) {
+        if ($BypassConfirm -or $PSCmdlet.ShouldProcess("Connect to server: $Computername")) {
             $headers = @{ "Content-Type" = "text/xml"; }
             $Protocol = if ($Unencrypted) { "http" } else { "https" }
             $TargetUri = ($Protocol + "://" + $ComputerName + $APIPath)
@@ -45,8 +55,16 @@ function Connect-DokuServer {
             $password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
             $XMLPayload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)
             # $Websession var defined here
+            $Script:UseBasicParse = $UseBasicParsing
             try {
-                $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
+                If ($UseBasicParsing)
+                {
+                 $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -UseBasicParsing -SessionVariable WebSession -ErrorAction Stop -UseDefaultCredentials
+                }
+                Else
+                {
+                 $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
+                }
                 $XMLContent = [xml]($httpResponse.Content)
             }
             catch [System.Management.Automation.PSInvalidCastException] {
