@@ -24,6 +24,11 @@
         [Parameter(Position = 5,
             HelpMessage = 'Pass the newly created object back out')]
         [switch]$PassThru
+        [Parameter(Mandatory = $false,
+            Position = 6,
+            HelpMessage = 'Bypass confirmations of calls during this connect/disconnect session')]
+        [ValidateNotNullOrEmpty()]
+        [switch]$BypassConfirm
     )
 
     begin {
@@ -32,7 +37,7 @@
 
     process {
         foreach ($Page in $FullName) {
-            If ($PSCmdlet.ShouldProcess("Add data: $RawWikiText to page: $Page")) {
+            if ($BypassConfirm -or $PSCmdlet.ShouldProcess("Add data: $RawWikiText to page: $Page")) {
                 $Change = if ($MinorChange) {$true} else {$false}
                 $APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.appendPage' -MethodParameters @($Page, $RawWikiText, @{ sum = $SummaryText; minor = [int]$Change })
                 if ($APIResponse.CompletedSuccessfully -eq $true) {
