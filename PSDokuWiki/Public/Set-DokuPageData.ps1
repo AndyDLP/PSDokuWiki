@@ -24,13 +24,18 @@
 		[Parameter(Position = 5,
 				   HelpMessage = 'Pass the new page object back through')]
 		[switch]$PassThru
+        	[Parameter(Mandatory = $false,
+        	    Position = 6,
+        	    HelpMessage = 'Bypass confirmations of calls during this connect/disconnect session')]
+        	[ValidateNotNullOrEmpty()]
+        	[switch]$BypassConfirm
 	)
 
 	begin {}
 
 	process {
 		foreach ($PageName in $FullName) {
-            if ($PSCmdlet.ShouldProcess("Set data: $RawWikiText for page: $PageName")) {
+            if ($BypassConfirm -or $PSCmdlet.ShouldProcess("Set data: $RawWikiText for page: $PageName")) {
 				$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.putPage' -MethodParameters @($PageName,$RawWikiText, @{'sum' = $SummaryText; 'minor' = $MinorChange})
 				Write-Verbose $APIResponse
 				if ($APIResponse.CompletedSuccessfully -eq $true) {
