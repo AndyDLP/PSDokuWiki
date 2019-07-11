@@ -19,13 +19,18 @@
 				   Position = 3,
 				   HelpMessage = 'Force creation of output file, overwriting any existing files')]
 		[switch]$Force
+	        [Parameter(Mandatory = $false,
+	            Position = 4,
+	            HelpMessage = 'Bypass confirmations of calls during this connect/disconnect session')]
+	        [ValidateNotNullOrEmpty()]
+	        [switch]$BypassConfirm
 	)
 
 	begin {}
 
 	process {
 		foreach ($AttachmentName in $FullName) {
-			if ($PSCmdlet.ShouldProcess("Save attachment: $AttachmentName to path: $Path")) {
+			if ($BypassConfirm -or $PSCmdlet.ShouldProcess("Save attachment: $AttachmentName to path: $Path")) {
 				$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getAttachment' -MethodParameters @($AttachmentName)
 				if ($APIResponse.CompletedSuccessfully -eq $true) {
 					Write-Verbose $APIResponse.XMLPayloadResponse
