@@ -9,12 +9,17 @@ function Lock-DokuPage {
                    HelpMessage = 'The full name of the to-be-locked page, including parent namespace(s)')]
         [ValidateNotNullOrEmpty()]
         [string[]]$FullName
+        [Parameter(Mandatory = $false,
+            Position = 2,
+            HelpMessage = 'Bypass confirmations of calls during this connect/disconnect session')]
+        [ValidateNotNullOrEmpty()]
+        [switch]$BypassConfirm
     )
 
     begin {}
 
     process {
-        if ($PSCmdlet.ShouldProcess("Lock page: $FullName")) {
+        if ($BypassConfirm -or $PSCmdlet.ShouldProcess("Lock page: $FullName")) {
             # long random name in unlock array as its unlikely to be existing (do unlock in other function)
             # xmltype converter doesn't like it to be empty?
             $APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.setLocks' -MethodParameters @(@{ 'lock' = [array]$FullName; 'unlock' = @("341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995") })
