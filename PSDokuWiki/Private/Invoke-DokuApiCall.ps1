@@ -70,7 +70,14 @@ function Invoke-DokuApiCall {
 
         try {
             Write-Verbose "Attempting to connect to API endpoint: $($Script:DokuServer.TargetUri)"
-            $httpResponse = Invoke-WebRequest @params
+            If ($Script:UseBasicParse)
+            {
+             $httpResponse = Invoke-WebRequest -UseBasicParsing @params
+            }
+            Else
+            {
+             $httpResponse = Invoke-WebRequest @params
+            }
             $outputObjectParams.Add('RawHttpResponse',$httpResponse)
 
             #$XMLContent = ConvertTo-Xml -InputObject ($httpResponse.Content) -ErrorAction Stop
