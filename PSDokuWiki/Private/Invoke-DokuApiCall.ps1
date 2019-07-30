@@ -60,6 +60,7 @@ function Invoke-DokuApiCall {
             Body = $payload
             ErrorAction = 'Stop'
             WebSession = $Script:DokuServer.WebSession
+            UseBasicParsing = $Script:DokuServer.UseBasicParsing
         }
         $outputObjectParams = @{
             TargetUri = $Script:DokuServer.TargetUri
