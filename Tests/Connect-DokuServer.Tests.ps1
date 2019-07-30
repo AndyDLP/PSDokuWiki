@@ -26,7 +26,7 @@ Describe 'Connect-DokuServer' {
             }) }
             Connect-DokuServer -Server $Server -Credential $credential -Force
             $SessionObjectProperties = (Get-DokuServer).PSObject.Properties.Name 
-            @('Server','TargetUri','Headers','WebSession','TimeStamp','UnencryptedEndpoint') | Where-Object -FilterScript { $SessionObjectProperties -notcontains $_ } | Should -BeNullOrEmpty
+            @('Server','TargetUri','Headers','WebSession','TimeStamp','UnencryptedEndpoint','UseBasicParsing') | Where-Object -FilterScript { $SessionObjectProperties -notcontains $_ } | Should -BeNullOrEmpty
         }
         It 'Should detect if a non-XML response was received' {
             Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
