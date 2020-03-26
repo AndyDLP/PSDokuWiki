@@ -1,5 +1,5 @@
 ﻿function Get-DokuPageLink {
-	[CmdletBinding()]
+	[CmdletBinding(SupportsShouldProcess=$True, ConfirmImpact='Low')]
 	[OutputType([psobject[]])]
 	param
 	(
@@ -18,25 +18,27 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.listLinks' -MethodParameters @($PageName)
-			if ($APIResponse.CompletedSuccessfully -eq $true) {
-				$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
-				foreach ($node in $MemberNodes) {
-					$PageObject = [PSCustomObject]@{
-						FullName = $PageName
-						Type = (($node.member)[0]).value.string
-						TargetPageName = (($node.member)[1]).value.string
-						URL = (($node.member)[2]).value.string
+			if ($PSCmdlet.ShouldProcess("Get links on page: $PageName")) {
+				$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.listLinks' -MethodParameters @($PageName)
+				if ($APIResponse.CompletedSuccessfully -eq $true) {
+					$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
+					foreach ($node in $MemberNodes) {
+						$PageObject = [PSCustomObject]@{
+							FullName = $PageName
+							Type = (($node.member)[0]).value.string
+							TargetPageName = (($node.member)[1]).value.string
+							URL = (($node.member)[2]).value.string
+						}
+						$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
+						$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Link")
+						$PageObject
 					}
-					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
-					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Link")
-					$PageObject
+				} elseif ($null -eq $APIResponse.ExceptionMessage) {
+					Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+				} else {
+					Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 				}
-			} elseif ($null -eq $APIResponse.ExceptionMessage) {
-				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
-			} else {
-				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
-			}
+			} # should process
 		} # foreach page
 	} # process
 

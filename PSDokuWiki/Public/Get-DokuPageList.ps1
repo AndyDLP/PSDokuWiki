@@ -1,5 +1,5 @@
 ﻿function Get-DokuPageList {
-	[CmdletBinding()]
+	[CmdletBinding(SupportsShouldProcess=$True, ConfirmImpact='Low')]
 	[OutputType([psobject[]])]
 	param ()
 
@@ -8,27 +8,29 @@
 	} # begin
 
 	process {
-		$APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.getPagelist' -MethodParameters @()
-		if ($APIResponse.CompletedSuccessfully -eq $true) {
-			$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
-			foreach ($node in $MemberNodes) {
-				$PageObject = [PSCustomObject]@{
-					FullName = (($node.member)[0]).value.string
-					Revision = (($node.member)[1]).value.int
-					LastModified = (($node.member)[2]).value.int
-					Size = (($node.member)[3]).value.int
-					PageName = (((($node.member)[0]).value.string) -split ":")[-1]
-					ParentNamespace = (((($node.member)[0]).value.string) -split ":")[-2]
-					RootNamespace = (((($node.member)[0]).value.string) -split ":")[0]
+        if ($PSCmdlet.ShouldProcess("Get all pages from current server: $($Script:DokuServer.TargetUri)")) {
+			$APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.getPagelist' -MethodParameters @()
+			if ($APIResponse.CompletedSuccessfully -eq $true) {
+				$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
+				foreach ($node in $MemberNodes) {
+					$PageObject = [PSCustomObject]@{
+						FullName = (($node.member)[0]).value.string
+						Revision = (($node.member)[1]).value.int
+						LastModified = (($node.member)[2]).value.int
+						Size = (($node.member)[3]).value.int
+						PageName = (((($node.member)[0]).value.string) -split ":")[-1]
+						ParentNamespace = (((($node.member)[0]).value.string) -split ":")[-2]
+						RootNamespace = (((($node.member)[0]).value.string) -split ":")[0]
+					}
+					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
+					$PageObject
 				}
-                $PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
-				$PageObject
+			} elseif ($null -eq $APIResponse.ExceptionMessage) {
+				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+			} else {
+				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 			}
-		} elseif ($null -eq $APIResponse.ExceptionMessage) {
-			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
-		} else {
-			Write-Error "Exception: $($APIResponse.ExceptionMessage)"
-		}
+		} # should process
 	} # process
 
 	end {

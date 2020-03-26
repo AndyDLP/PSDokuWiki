@@ -1,5 +1,5 @@
 function Lock-DokuPage {
-    [CmdletBinding(PositionalBinding = $true, SupportsShouldProcess=$True, ConfirmImpact='Medium')]
+    [CmdletBinding(SupportsShouldProcess=$True, ConfirmImpact='Medium')]
     param
     (
         [Parameter(Mandatory = $true,

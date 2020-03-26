@@ -1,5 +1,5 @@
 ﻿function Get-DokuPageVersionData {
-	[CmdletBinding()]
+	[CmdletBinding(PositionalBinding = $true,SupportsShouldProcess=$True, ConfirmImpact='Low')]
 	[OutputType([psobject])]
 	param
 	(
@@ -26,31 +26,33 @@
 
 	process {
 		foreach ($PageName in $FullName) {
-			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getPageVersion' -MethodParameters @($PageName,$VersionTimestamp)
-			if ($APIResponse.CompletedSuccessfully -eq $true) {
-				if ($Raw) {
-					$RawText = [string]($APIResponse.XMLPayloadResponse  | Select-Xml -XPath "//value/string").Node.InnerText
-					$RawText
-				} else {
-					$PageObject = [PSCustomObject]@{
-						FullName = $PageName
-						VersionTimestamp = $VersionTimestamp
-						RawText = [string]($APIResponse.XMLPayloadResponse  | Select-Xml -XPath "//value/string").Node.InnerText
-						PageName = ($PageName -split ":")[-1]
-						ParentNamespace = ($PageName -split ":")[-2]
-						RootNamespace = ($PageName -split ":")[0]
+			if ($PSCmdlet.ShouldProcess("Get data of page: $PageName at timestamp: $VersionTimestamp")) {
+				$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getPageVersion' -MethodParameters @($PageName,$VersionTimestamp)
+				if ($APIResponse.CompletedSuccessfully -eq $true) {
+					if ($Raw) {
+						$RawText = [string]($APIResponse.XMLPayloadResponse  | Select-Xml -XPath "//value/string").Node.InnerText
+						$RawText
+					} else {
+						$PageObject = [PSCustomObject]@{
+							FullName = $PageName
+							VersionTimestamp = $VersionTimestamp
+							RawText = [string]($APIResponse.XMLPayloadResponse  | Select-Xml -XPath "//value/string").Node.InnerText
+							PageName = ($PageName -split ":")[-1]
+							ParentNamespace = ($PageName -split ":")[-2]
+							RootNamespace = ($PageName -split ":")[0]
+						}
+						$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
+						$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Version")
+						$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Version.Data")
+						$PageObject
 					}
-					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
-					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Version")
-					$PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page.Version.Data")
-					$PageObject
+				} elseif ($null -eq $APIResponse.ExceptionMessage) {
+					Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+				} else {
+					Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 				}
-			} elseif ($null -eq $APIResponse.ExceptionMessage) {
-				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
-			} else {
-				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
-			}
-		}
+			} # should process
+		} # foreach
 	} # process
 
 	end {}

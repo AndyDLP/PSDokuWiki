@@ -1,5 +1,5 @@
 ﻿function Get-DokuRecentMediaChange {
-	[CmdletBinding(PositionalBinding = $true)]
+	[CmdletBinding(SupportsShouldProcess=$True, ConfirmImpact='Low')]
 	[OutputType([psobject[]])]
 	param
 	(
@@ -17,26 +17,28 @@
 	} # begin
 
 	process {
-		$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getRecentMediaChanges' -MethodParameters @($VersionTimestamp)
-		if ($APIResponse.CompletedSuccessfully -eq $true) {
-			$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
-			foreach ($node in $MemberNodes) {
-				$ChangeObject = New-Object PSObject -Property @{
-					FullName = (($node.member)[0]).value.innertext
-					LastModified = Get-Date -Date ((($node.member)[1]).value.innertext)
-					Author = (($node.member)[2]).value.innertext
-					VersionTimestamp = (($node.member)[3]).value.innertext
-					Permissions = (($node.member)[4]).value.innertext
-					Size = (($node.member)[5]).value.innertext
+		if ($PSCmdlet.ShouldProcess("Get media & attachment changes since timestamp: $VersionTimestamp")) {
+			$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getRecentMediaChanges' -MethodParameters @($VersionTimestamp)
+			if ($APIResponse.CompletedSuccessfully -eq $true) {
+				$MemberNodes = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node
+				foreach ($node in $MemberNodes) {
+					$ChangeObject = New-Object PSObject -Property @{
+						FullName = (($node.member)[0]).value.innertext
+						LastModified = Get-Date -Date ((($node.member)[1]).value.innertext)
+						Author = (($node.member)[2]).value.innertext
+						VersionTimestamp = (($node.member)[3]).value.innertext
+						Permissions = (($node.member)[4]).value.innertext
+						Size = (($node.member)[5]).value.innertext
+					}
+					$ChangeObject.PSObject.TypeNames.Insert(0, "DokuWiki.Attachment")
+					$ChangeObject
 				}
-				$ChangeObject.PSObject.TypeNames.Insert(0, "DokuWiki.Attachment")
-				$ChangeObject
+			} elseif ($null -eq $APIResponse.ExceptionMessage) {
+				Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
+			} else {
+				Write-Error "Exception: $($APIResponse.ExceptionMessage)"
 			}
-		} elseif ($null -eq $APIResponse.ExceptionMessage) {
-			Write-Error "Fault code: $($APIResponse.FaultCode) - Fault string: $($APIResponse.FaultString)"
-		} else {
-			Write-Error "Exception: $($APIResponse.ExceptionMessage)"
-		}
+		} # should process
 	} # process
 
 	end {

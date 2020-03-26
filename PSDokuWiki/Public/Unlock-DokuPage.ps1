@@ -16,7 +16,7 @@ function Unlock-DokuPage {
     } # begin
 
     process {
-        # long random name in unlock array as its unlikely to be existing (do unlock in other function)
+        # long random name in unlock array as its unlikely to be existing (unlock in separate function to keep to logical PS standards)
         $APIResponse = Invoke-DokuApiCall -MethodName 'dokuwiki.setLocks' -MethodParameters @(@{ 'lock' = @("341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995341272da-9295-4362-939f-070baf351995"); 'unlock' = [array]$FullName })
         if ($APIResponse.CompletedSuccessfully -eq $true) {
             # do nothing except when locks fail
