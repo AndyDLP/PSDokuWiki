@@ -3,7 +3,7 @@
 #Publish to PowerShell Gallery with this key
 environment:
   NuGetApiKey:
-    secure: 0gKIN7P/STYmuqoaIHUTQB9RCwKMLZJXNO96jALWlvYNZ5DQ7k0zi9YYxWhMrwS4
+    secure: rpu46jEW97H6DLvhW0lJUVLqrhG7j1kH3LtfrbIZXJDrCR672mnJ1ILvu8H3l0R4
   access_token:
     secure: W2ZHtmb9b/e9JVEjScGNkXHvz0OI5qwt8hYZE+QMH32/bSFyH+DbvCLIZtztmlz8
 
