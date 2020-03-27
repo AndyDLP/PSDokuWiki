@@ -87,6 +87,7 @@ function Invoke-DokuApiCall {
             } elseif ($null -eq ($XMLContent | Select-Xml -XPath "//methodResponse").node) {
                 Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri) but did not receive valid response"
                 $outputObjectParams.Add('CompletedSuccessfully',$false)
+                throw "Connected to API endpoint: $($Script:DokuServer.TargetUri) but did not receive valid response"
             } else {
                 Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri) and successfully executed API method $MethodName"
                 $outputObjectParams.Add('CompletedSuccessfully',$true)

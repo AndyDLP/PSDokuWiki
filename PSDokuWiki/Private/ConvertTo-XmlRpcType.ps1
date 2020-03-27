@@ -102,7 +102,7 @@ function ConvertTo-XmlRpcType {
 
         if ($type -eq "switchparameter")
         {
-            return "<value><boolean>$inputObject.IsPresent</boolean></value>"
+            return "<value><boolean>$([int]$inputObject.IsPresent)</boolean></value>"
         }
 
         # Return In64 as Double
@@ -185,7 +185,7 @@ function ConvertTo-XmlRpcType {
         }
 
         # XML
-        if ($inputObject -match "<([^<>]+)>([^<>]+)</\\1>")
+        if ($inputObject -match "<([^<>]+)>([^<>]+)</\\1>" -or $inputObject)
         {
             return $inputObject
         }

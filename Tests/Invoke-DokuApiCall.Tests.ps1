@@ -50,6 +50,21 @@ Describe 'Invoke-DokuApiCall' {
                 }
                 (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').faultString | Should -Be 'Test Fault'
             }
+            $Script:DokuServer.TargetUri = 'not a real target'
+            It 'Should correctly catch an unspecified error' {
+                Mock  Invoke-WebRequest { 
+                    return ([PSCustomObject]@{
+                        Content = '<?xml version="1.0" encoding="utf-8"?><Body><Hello>lol</Hello></Body>'
+                    })
+                }
+                (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').ExceptionMessage | Should -Be "Connected to API endpoint: not a real target but did not receive valid response"
+            }
+            It 'Should correctly catch a ValidationMetadataException error' {
+                Mock  Invoke-WebRequest { 
+                    throw [System.Management.Automation.ValidationMetadataException]
+                }
+                (Invoke-DokuApiCall -MethodName 'wiki.getAllPages').ExceptionMessage | Should -Be "System.Management.Automation.ValidationMetadataException"
+            }
         }
     }
 }

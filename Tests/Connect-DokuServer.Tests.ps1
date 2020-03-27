@@ -11,6 +11,22 @@ Describe 'Connect-DokuServer' {
         It 'Should fail when server is $null' {
             {Connect-DokuServer -ComputerName $null -Unencrypted -Credential $credential} | Should -Throw
         }
+        $Script:DokuServer = [PSCustomObject]@{
+            Headers = @{ "Content-Type" = "text/xml"; }
+            TargetUri = 'not a real target'
+            UnencryptedEndPoint = $true
+            WebSession = (New-Object Microsoft.PowerShell.Commands.WebRequestSession)
+        }
+        It 'Should fail when already connected and force isnt specified' {
+            {Connect-DokuServer -ComputerName $null -Unencrypted -Credential $credential} | Should -Throw
+        }
+        $Script:DokuServer = $null
+        It 'Should fail when invalid XML is returned' {
+            Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
+                Content = '<?xml version="1.0"?><string>Hello World</string>'
+            }) }
+            Connect-DokuServer -Server $Server -Credential $credential -Unencrypted -APIPath 'dokuwiki/lib/exe/xmlrpc.php' -Force | Should -Throw
+        }
         It 'Should return an object with the correct primary type name' {
             Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
                 Content = '<?xml version="1.0"?><methodResponse><string>Hello World</string></methodResponse>'
@@ -25,7 +41,7 @@ Describe 'Connect-DokuServer' {
                 Content = '<?xml version="1.0"?><methodResponse><string>Hello World</string></methodResponse>'
             }) }
             Connect-DokuServer -Server $Server -Credential $credential -Force
-            $SessionObjectProperties = (Get-DokuServer).PSObject.Properties.Name 
+            $SessionObjectProperties = $Script:DokuServer.PSObject.Properties.Name 
             @('Server','TargetUri','Headers','WebSession','TimeStamp','UnencryptedEndpoint') | Where-Object -FilterScript { $SessionObjectProperties -notcontains $_ } | Should -BeNullOrEmpty
         }
         It 'Should detect if a non-XML response was received' {
