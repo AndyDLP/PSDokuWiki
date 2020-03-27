@@ -100,7 +100,7 @@ function ConvertTo-XmlRpcType {
             return "<value><i4>$inputObject</i4></value>"
         }
 
-        if ($type -eq "switchparameter")
+        if ($Type -eq "SwitchParameter")
         {
             return "<value><boolean>$([int]$inputObject.IsPresent)</boolean></value>"
         }

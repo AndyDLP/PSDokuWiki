@@ -19,10 +19,12 @@ Describe 'ConvertTo-XmlRpcType' {
                 ConvertTo-XmlRpcType -InputObject $true | Should -be '<value><boolean>1</boolean></value>'
             }
             It 'Should convert SwitchParameters' {
-                ConvertTo-XmlRpcType -InputObject [switch]$true | Should -be '<value><boolean>1</boolean></value>'
+                [switch]$Switch = $true
+                ConvertTo-XmlRpcType -InputObject $Switch | Should -be '<value><boolean>1</boolean></value>'
             }
             It 'Should convert Doubles' {
-                ConvertTo-XmlRpcType -InputObject [double]2 | Should -be '<value><double>2</double></value>'
+                [double]$Double = 123456789
+                ConvertTo-XmlRpcType -InputObject $Double | Should -be '<value><double>123456789</double></value>'
             }
             It 'Should convert Int16' {
                 [int16]$Int16 = 12345

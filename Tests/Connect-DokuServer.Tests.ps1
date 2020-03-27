@@ -25,7 +25,7 @@ Describe 'Connect-DokuServer' {
             Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
                 Content = '<?xml version="1.0"?><string>Hello World</string>'
             }) }
-            Connect-DokuServer -Server $Server -Credential $credential -Unencrypted -APIPath 'dokuwiki/lib/exe/xmlrpc.php' -Force | Should -Throw
+            {Connect-DokuServer -Server $Server -Credential $credential -Unencrypted -APIPath 'dokuwiki/lib/exe/xmlrpc.php' -Force} | Should -Throw
         }
         It 'Should return an object with the correct primary type name' {
             Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
@@ -41,8 +41,10 @@ Describe 'Connect-DokuServer' {
                 Content = '<?xml version="1.0"?><methodResponse><string>Hello World</string></methodResponse>'
             }) }
             Connect-DokuServer -Server $Server -Credential $credential -Force
-            $SessionObjectProperties = $Script:DokuServer.PSObject.Properties.Name 
-            @('Server','TargetUri','Headers','WebSession','TimeStamp','UnencryptedEndpoint','UseBasicParsing') | Where-Object -FilterScript { $SessionObjectProperties -notcontains $_ } | Should -BeNullOrEmpty
+            InModuleScope PSDokuWiki {
+                $SessionObjectProperties = $Script:DokuServer.PSObject.Properties.Name 
+                @('Server','TargetUri','Headers','WebSession','TimeStamp','UnencryptedEndpoint','UseBasicParsing') | Where-Object -FilterScript { $SessionObjectProperties -notcontains $_ } | Should -BeNullOrEmpty
+            }
         }
         It 'Should detect if a non-XML response was received' {
             Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
