@@ -13,7 +13,8 @@ Returns the rendered HTML for a specific version of a Wiki page
 ## SYNTAX
 
 ```
-Get-DokuPageVersionHtml [-FullName] <String[]> [-VersionTimestamp] <Int32> [-Raw] [<CommonParameters>]
+Get-DokuPageVersionHtml [-FullName] <String[]> [-VersionTimestamp] <Int32> [-Raw] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -70,6 +71,36 @@ Required: True
 Position: 2
 Default value: 0
 Accept pipeline input: True (ByPropertyName, ByValue)
+Accept wildcard characters: False
+```
+
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+Shows what would happen if the cmdlet runs. The cmdlet is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
