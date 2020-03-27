@@ -27,7 +27,12 @@ function Connect-DokuServer {
             Position = 5,
             HelpMessage = 'Force a re-connection')]
         [ValidateNotNullOrEmpty()]
-        [switch]$Force
+        [switch]$Force,
+        [Parameter(Mandatory = $false,
+            Position = 6,
+            HelpMessage = 'Use Basic parsing instead of IE DOM parsing')]
+        [ValidateNotNullOrEmpty()]
+        [switch]$UseBasicParsing
     )
 
     begin {}
@@ -46,7 +51,14 @@ function Connect-DokuServer {
             $XMLPayload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)
             # $Websession var defined here
             try {
-                $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
+                If ($DokuSession.UseBasicParsing)
+                {
+                 $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -UseBasicParsing -SessionVariable WebSession -ErrorAction Stop -UseDefaultCredentials
+                }
+                Else
+                {
+                 $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
+                }
                 $XMLContent = [xml]($httpResponse.Content)
             }
             catch [System.Management.Automation.PSInvalidCastException] {
@@ -109,6 +121,7 @@ function Connect-DokuServer {
                     WebSession = $WebSession
                     TimeStamp = (Get-Date)
                     UnencryptedEndpoint = [boolean]$Unencrypted
+                    UseBasicParsing = $UseBasicParsing
                 }
                 $DokuSession.PSTypeNames.Insert(0,'DokuWiki.Session.Detail')
                 # Module scoped variables are defined like the below apparently
