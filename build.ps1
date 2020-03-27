@@ -9,7 +9,7 @@ function Resolve-Module {
         [string[]]$Name
     )
 
-    begin {}
+    begin {}#
 
     process {
         foreach ($ModuleName in $Name) {
