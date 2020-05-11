@@ -1,0 +1,29 @@
+$projectRoot = Resolve-Path "$PSScriptRoot\.."
+$moduleRoot = Split-Path (Resolve-Path "$projectRoot\*\*.psd1")
+$moduleName = Split-Path $moduleRoot -Leaf
+
+
+Describe "PSScriptAnalyzer rule-sets" {
+
+    $Rules   = Get-ScriptAnalyzerRule
+    $scripts = Get-ChildItem $moduleRoot -Include *.ps1,*.psm1,*.psd1 -Recurse | where fullname -notmatch 'classes'
+
+    foreach ( $Script in $scripts ) {
+        Context "Script '$($script.FullName)'" {
+
+            foreach ( $rule in $rules ) {
+                It "Rule [$rule]" {
+
+                    (Invoke-ScriptAnalyzer -Path $script.FullName -IncludeRule $rule.RuleName -Severity ParseError,ParseError,Warning).Count | Should Be 0
+                }
+            }
+        }
+    }
+}
+
+Describe "General project validation: $moduleName" {
+
+    It "Module '$moduleName' can import cleanly" {
+        {Import-Module (Join-Path $moduleRoot "$moduleName.psm1") -force } | Should Not Throw
+    }
+}

@@ -13,8 +13,7 @@ Properties {
     $lines = '----------------------------------------------------------------------'
 
     $Verbose = @{}
-    if($ENV:BHCommitMessage -match "!verbose")
-    {
+    if($ENV:BHCommitMessage -match "!verbose") {
         $Verbose = @{Verbose = $True}
     }
 }
