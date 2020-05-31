@@ -51,13 +51,10 @@ function Connect-DokuServer {
             $XMLPayload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)
             # $Websession var defined here
             try {
-                If ($DokuSession.UseBasicParsing)
-                {
-                 $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -UseBasicParsing -SessionVariable WebSession -ErrorAction Stop -UseDefaultCredentials
-                }
-                Else
-                {
-                 $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
+                if ($DokuSession.UseBasicParsing) {
+                    $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -UseBasicParsing -SessionVariable WebSession -ErrorAction Stop -UseDefaultCredentials
+                } else {
+                    $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
                 }
                 $XMLContent = [xml]($httpResponse.Content)
             }
