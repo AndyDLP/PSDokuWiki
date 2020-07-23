@@ -44,7 +44,8 @@ function Resolve-Module {
 Install-PackageProvider -Name NuGet -Force | Out-Null
 Get-PackageProvider -Name NuGet -ForceBootstrap | Out-Null
 
-Resolve-Module -Name Psake,PSDeploy,Pester,BuildHelpers,PsScriptAnalyzer,PlatyPS
+Resolve-Module -Name Psake,PSDeploy,BuildHelpers,PsScriptAnalyzer,PlatyPS
+Install-Module -Name Pester -MaximumVersion '4.10.1' -SkipPublisherCheck -Force
 
 Set-BuildEnvironment
 
