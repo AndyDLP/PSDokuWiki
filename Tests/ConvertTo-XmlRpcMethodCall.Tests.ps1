@@ -17,6 +17,9 @@ Describe 'ConvertTo-XmlRpcMethodCall' {
             It 'Should fail for null methods' {
                 { ConvertTo-XmlRpcMethodCall -Name $null -Params @("test") } | Should -Throw
             }
+            It 'Should handle custom types' {
+                { ConvertTo-XmlRpcMethodCall -Name 'wiki.getAllPages' -CustomTypes @([array],[int]) } | Should -Not -Throw
+            }
         }
     }
 }
