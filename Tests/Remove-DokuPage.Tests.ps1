@@ -10,7 +10,7 @@ Describe 'Remove-DokuPage' {
                     }
                 )
             }
-            Remove-DokuPage -FullName 'rootns:ns:pagename' -SummaryText 'Summary' -Confirm:$False -PassThru -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
+            Remove-DokuPage -FullName 'rootns:ns:pagename' -SummaryText 'Summary' -Confirm:$False -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
             $DokuErrorVariable.exception.message | Should -Be 'Exception: Test Exception'
         }
         It 'Should display the fault code & string' {
@@ -23,7 +23,7 @@ Describe 'Remove-DokuPage' {
                     }
                 )
             }
-            Remove-DokuPage -FullName 'rootns:ns:pagename'  'Summary' -Confirm:$False -PassThru -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
+            Remove-DokuPage -FullName 'rootns:ns:pagename'  'Summary' -Confirm:$False -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
             $DokuErrorVariable.exception.message | Should -Be 'Fault code: 12345 - Fault string: Fault String'
         }
     }
@@ -39,7 +39,7 @@ Describe 'Remove-DokuPage' {
                 )
             }
             It 'Should generate an error' {
-                Remove-DokuPage -FullName 'rootns:ns:pagename' -SummaryText 'Summary' -Confirm:$False -PassThru -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
+                Remove-DokuPage -FullName 'rootns:ns:pagename' -SummaryText 'Summary' -Confirm:$False -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
                 $DokuErrorVariable.exception.message | Should -Be 'Failed to set page data'
             }
         }
