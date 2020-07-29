@@ -101,6 +101,9 @@ Remove a principal from an ACL
 ### [Remove-DokuAttachment](Remove-DokuAttachment.md)
 Deletes an attachment
 
+### [Remove-DokuPage](Remove-DokuPage.md)
+Removes a page
+
 ### [Remove-DokuUser](Remove-DokuUser.md)
 Allows you to delete a user
 
