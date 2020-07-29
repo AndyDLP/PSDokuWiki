@@ -41,10 +41,13 @@ function Resolve-Module {
 } # function
 
 # Grab nuget bits, install modules, set build variables, start build.
-Install-PackageProvider -Name NuGet -Force | Out-Null
-Get-PackageProvider -Name NuGet -ForceBootstrap | Out-Null
+Install-PackageProvider -Name 'NuGet' -Force | Out-Null
+Get-PackageProvider -Name 'NuGet' -ForceBootstrap | Out-Null
 
-Resolve-Module -Name Psake,PSDeploy,Pester,BuildHelpers,PsScriptAnalyzer,PlatyPS
+Resolve-Module -Name 'Psake','PSDeploy','BuildHelpers','PsScriptAnalyzer','PlatyPS'
+Install-Module -Name 'Pester' -MaximumVersion '4.10.1' -SkipPublisherCheck -Force
+Get-Module -Name 'Pester' -ErrorAction 'SilentlyContinue' | Remove-Module -Force
+Import-Module -Name 'Pester' -MaximumVersion '4.10.1'
 
 Set-BuildEnvironment
 

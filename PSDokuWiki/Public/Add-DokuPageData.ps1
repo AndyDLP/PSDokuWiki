@@ -26,9 +26,7 @@
         [switch]$PassThru
     )
 
-    begin {
-
-    } # begin
+    begin { } # begin
 
     process {
         foreach ($Page in $FullName) {
@@ -46,7 +44,7 @@
                             ParentNamespace = ($Page -split ":")[-2]
                             RootNamespace   = ($Page -split ":")[0]
                         }
-                        $PageObject.PSObject.TypeNames.Insert(0, "DokuWiki.Page")
+                        $PageObject.PSObject.TypeNames.Insert(0,"DokuWiki.Page")
                         $PageObject
                     }
                 } elseif ($null -eq $APIResponse.ExceptionMessage) {
@@ -58,7 +56,5 @@
         } # foreach
     } # process
 
-    end {
-
-    } # end
+    end { } # end
 }

@@ -1,3 +1,5 @@
+# TODO: Run this after PlatyPS help is generated
+<#
 $projectRoot = Resolve-Path "$PSScriptRoot\.."
 $moduleRoot = Split-Path (Resolve-Path "$projectRoot\*\*.psm1")
 $moduleName = Split-Path $moduleRoot -Leaf
@@ -30,3 +32,4 @@ Describe "Help tests for $moduleName" -Tags Build {
         }
     }
 }
+#>
