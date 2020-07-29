@@ -13,7 +13,8 @@ Removes a page
 ## SYNTAX
 
 ```
-Remove-DokuPageData [-FullName] <String[]> [-SummaryText] <String> [-WhatIf] [-Confirm] [<CommonParameters>]
+Set-DokuPageData [-FullName] <String[]> [-RawWikiText] <String> [-MinorChange] [[-SummaryText] <String>]
+ [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -25,7 +26,6 @@ Removes a page
 ```powershell
 Remove-DokuPageData -FullName 'namespace:pagename'
 ```
-
 
 ## PARAMETERS
 
@@ -44,6 +44,50 @@ Accept pipeline input: True (ByPropertyName, ByValue)
 Accept wildcard characters: False
 ```
 
+### -MinorChange
+State if the change was minor or not
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PassThru
+Pass the new page object back through
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RawWikiText
+The raw wiki text to apply to the target page
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -SummaryText
 A short summary of the change, visible in the revisions list
@@ -54,7 +98,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -92,11 +136,11 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
+## OUTPUTS
 
 ## NOTES
 AndyDLP - 2018-05-26

@@ -40,7 +40,7 @@ Describe 'Remove-DokuPage' {
             }
             It 'Should generate an error' {
                 Remove-DokuPage -FullName 'rootns:ns:pagename' -SummaryText 'Summary' -Confirm:$False -ErrorAction SilentlyContinue -ErrorVariable DokuErrorVariable
-                $DokuErrorVariable.exception.message | Should -Be 'Failed to set page data'
+                $DokuErrorVariable.exception.message | Should -Be 'Failed to delete page'
             }
         }
     }
