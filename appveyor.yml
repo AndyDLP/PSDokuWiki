@@ -7,7 +7,7 @@ environment:
   access_token:
     secure: W2ZHtmb9b/e9JVEjScGNkXHvz0OI5qwt8hYZE+QMH32/bSFyH+DbvCLIZtztmlz8
 
-image: Visual Studio 2017
+image: Visual Studio 2019
 
 # Skip on updates to the readme.
 # We can force this by adding [skip ci] or [ci skip] anywhere in commit message 
