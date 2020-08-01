@@ -20,6 +20,12 @@ Append data (raw wiki text) to a page
 ### [Connect-DokuServer](Connect-DokuServer.md)
 Connect to the API of a DokuWiki server
 
+### [ConvertTo-XmlRpcMethodCall](ConvertTo-XmlRpcMethodCall.md)
+Create a XML RPC Method Call string
+
+### [ConvertTo-XmlRpcType](ConvertTo-XmlRpcType.md)
+Convert Data into XML declared datatype string
+
 ### [Disconnect-DokuServer](Disconnect-DokuServer.md)
 Disconnect from any currently connected DokuWiki API endpoints
 
@@ -89,6 +95,9 @@ Returns the DokuWiki version of the remote Wiki server
 ### [Get-DokuTitle](Get-DokuTitle.md)
 Returns the title of the wiki
 
+### [Invoke-DokuApiCall](Invoke-DokuApiCall.md)
+Invokes a DokuWiki API method
+
 ### [Lock-DokuPage](Lock-DokuPage.md)
 Locks a DokuWiki page for 15 min
 
@@ -101,7 +110,7 @@ Remove a principal from an ACL
 ### [Remove-DokuAttachment](Remove-DokuAttachment.md)
 Deletes an attachment
 
-### [Set-DokuPageData](Set-DokuPageData.md)
+### [Remove-DokuPage](Remove-DokuPage.md)
 Removes a page
 
 ### [Remove-DokuUser](Remove-DokuUser.md)

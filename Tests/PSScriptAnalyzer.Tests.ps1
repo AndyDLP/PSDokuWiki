@@ -23,9 +23,3 @@ Describe "PSScriptAnalyzer rule-sets" {
     }
 }
 
-Describe "General project validation: $moduleName" {
-
-    It "Module '$moduleName' can import cleanly" {
-        {Import-Module (Join-Path $moduleRoot "$moduleName.psm1") -force } | Should Not Throw
-    }
-}

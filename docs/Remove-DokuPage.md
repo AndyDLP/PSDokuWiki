@@ -1,11 +1,11 @@
 ---
 external help file: PSDokuWiki-help.xml
 Module Name: PSDokuWiki
-online version: https://github.com/AndyDLP/PSDokuWiki/blob/master/docs/Set-DokuPageData.md
+online version: https://github.com/AndyDLP/PSDokuWiki/blob/master/docs/Remove-DokuPage.md
 schema: 2.0.0
 ---
 
-# Set-DokuPageData
+# Remove-DokuPage
 
 ## SYNOPSIS
 Removes a page
@@ -13,8 +13,7 @@ Removes a page
 ## SYNTAX
 
 ```
-Set-DokuPageData [-FullName] <String[]> [-RawWikiText] <String> [-MinorChange] [[-SummaryText] <String>]
- [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-DokuPage [-FullName] <String[]> [[-SummaryText] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -24,7 +23,7 @@ Removes a page
 
 ### EXAMPLE 1
 ```powershell
-Remove-DokuPageData -FullName 'namespace:pagename'
+Remove-DokuPage -FullName 'namespace:pagename'
 ```
 
 ## PARAMETERS
@@ -44,51 +43,6 @@ Accept pipeline input: True (ByPropertyName, ByValue)
 Accept wildcard characters: False
 ```
 
-### -MinorChange
-State if the change was minor or not
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PassThru
-Pass the new page object back through
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 5
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -RawWikiText
-The raw wiki text to apply to the target page
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -SummaryText
 A short summary of the change, visible in the revisions list
 
@@ -98,7 +52,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
