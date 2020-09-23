@@ -9,6 +9,11 @@ environment:
 
 image: Visual Studio 2019
 
+# Build only master
+branches:
+  only:
+  - master
+
 # Skip on updates to the readme.
 # We can force this by adding [skip ci] or [ci skip] anywhere in commit message 
 skip_commits:
