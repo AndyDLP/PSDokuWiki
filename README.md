@@ -6,7 +6,7 @@ PSDokuWiki is a (WIP) PowerShell wrapper for DokuWiki's XML RPC API
 (Recommended) [From the powershell gallery](https://www.powershellgallery.com/packages/PSDokuWiki "PSGallery page")
 
 ```powershell
-Install-Module -Name PSDokuWiki -Repository -PSGallery -Force
+Install-Module -Name PSDokuWiki -Repository PSGallery -Force
 ````
 
 (Not recommended) You can also clone this repository and copy the .\PSDokuWiki folder to one of the module folders in your $env:PSModulePath
