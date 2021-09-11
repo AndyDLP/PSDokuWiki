@@ -6,7 +6,7 @@ PSDokuWiki is a (WIP) PowerShell wrapper for DokuWiki's XML RPC API
 (Recommended) [From the powershell gallery](https://www.powershellgallery.com/packages/PSDokuWiki "PSGallery page")
 
 ```powershell
-Install-Module -Name PSDokuWiki -Repository PSGallery -Force
+Install-Module -Name 'PSDokuWiki' -Repository 'PSGallery' -Force
 ````
 
 (Not recommended) You can also clone this repository and copy the .\PSDokuWiki folder to one of the module folders in your $env:PSModulePath
@@ -25,7 +25,7 @@ You can also connect to unencrypted endpoints (http) by using the -Unencrypted s
 Connect-DokuServer -ComputerName 'wiki.example.com' -Credential (Get-Credential) -Unencrypted -APIPath '/dokuwiki/lib/exe/xmlrpc.php'
 ````
 
-You can then use any of the other commands as normal 
+You can then use any of the other commands as normal
 ```powershell
 # Get raw / plain source text of the specified page
 Get-DokuPageData -FullName 'namespace1:namespace2:page' -Raw
