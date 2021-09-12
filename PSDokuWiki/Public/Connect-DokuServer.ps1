@@ -1,5 +1,5 @@
 function Connect-DokuServer {
-    [CmdletBinding(PositionalBinding = $true, SupportsShouldProcess=$True, ConfirmImpact='Low')]
+    [CmdletBinding(PositionalBinding = $true, SupportsShouldProcess = $True, ConfirmImpact = 'Low')]
     param
     (
         [Parameter(Mandatory = $true,
@@ -39,26 +39,35 @@ function Connect-DokuServer {
 
     process {
         if ($PSCmdlet.ShouldProcess("Connect to server: $Computername")) {
-            $headers = @{ "Content-Type" = "text/xml"; }
-            $Protocol = if ($Unencrypted) { "http" } else { "https" }
-            $TargetUri = ($Protocol + "://" + $ComputerName + $APIPath)
+            $headers = @{ 'Content-Type' = 'text/xml'; }
+            $Protocol = if ($Unencrypted) { 'http' } else { 'https' }
+            $TargetUri = ($Protocol + '://' + $ComputerName + $APIPath)
             # Check if already connected
             if (($null -ne $Script:DokuServer) -and (-not $Force)) {
                 throw "Open connection already exists to: $($Script:DokuServer.TargetUri) - Use the -Force parameter to connect anyway"
             }
             $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credential.Password)
             $password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-            $XMLPayload = ConvertTo-XmlRpcMethodCall -Name "dokuwiki.login" -Params @($Credential.username, $password)
+            $XMLPayload = ConvertTo-XmlRpcMethodCall -Name 'dokuwiki.login' -Params @($Credential.username, $password)
             # $Websession var defined here
             try {
-                if ($PSBoundParameters.ContainsKey('UseBasicParsing')) {
-                    $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -UseBasicParsing -SessionVariable WebSession -ErrorAction Stop -UseDefaultCredentials
-                } else {
-                    $httpResponse = Invoke-WebRequest -Uri $TargetUri -Method Post -Headers $headers -Body $XMLPayload -SessionVariable WebSession -ErrorAction Stop
+                $InvokeParams = @{
+                    Uri             = $TargetUri
+                    Method          = 'POST'
+                    Headers         = $headers
+                    Body            = $XMLPayload
+                    SessionVariable = WebSession
+                    ErrorAction     = 'Stop'
                 }
+                if ($PSBoundParameters.ContainsKey('UseBasicParsing')) {
+                    InvokeParams.Add('UseDefaultCredentials', $true)
+                }
+                if ($PSBoundParameters.ContainsKey('Unencrypted')) {
+                    InvokeParams.Add('AllowUnencryptedAuthentication', $true)
+                }
+                $httpResponse = Invoke-WebRequest @InvokeParams
                 $XMLContent = [xml]($httpResponse.Content)
-            }
-            catch [System.Management.Automation.PSInvalidCastException] {
+            } catch [System.Management.Automation.PSInvalidCastException] {
                 Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri) but did not receive valid response"
                 $PSCmdlet.ThrowTerminatingError(
                     [System.Management.Automation.ErrorRecord]::new(
@@ -68,8 +77,7 @@ function Connect-DokuServer {
                         $TargetUri
                     )
                 )
-            }
-            catch [System.Net.WebException] {
+            } catch [System.Net.WebException] {
                 $PSCmdlet.ThrowTerminatingError(
                     [System.Management.Automation.ErrorRecord]::new(
                         ("Failed to send POST request to $TargetUri"),
@@ -78,14 +86,13 @@ function Connect-DokuServer {
                         $TargetUri
                     )
                 )
-            }
-            catch {
-                Write-Error "Unspecified error caught in Connect-DokuServer"
+            } catch {
+                Write-Error 'Unspecified error caught in Connect-DokuServer'
                 throw $_
                 exit
             }
 
-            if ($null -ne ($XMLContent | Select-Xml -XPath "//fault").node) {
+            if ($null -ne ($XMLContent | Select-Xml -XPath '//fault').node) {
                 # connected but API failed
                 Write-Error "Connected to API endpoint: $ComputerName, but failed login. FaultCode: $(($XMLContent | Select-Xml -XPath '//struct').node.member[0].value.int) - FaultString: $(($XMLContent | Select-Xml -XPath '//struct').node.member[1].value.string)"
                 $PSCmdlet.ThrowTerminatingError(
@@ -96,7 +103,7 @@ function Connect-DokuServer {
                         $TargetUri
                     )
                 )
-            } elseif ($null -eq ($XMLContent | Select-Xml -XPath "//methodResponse").node) {
+            } elseif ($null -eq ($XMLContent | Select-Xml -XPath '//methodResponse').node) {
                 # not connected / invalid response
                 Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri) but did not receive valid response"
                 $PSCmdlet.ThrowTerminatingError(
@@ -107,20 +114,30 @@ function Connect-DokuServer {
                         $TargetUri
                     )
                 )
+            } elseif (!([bool]([int]($XMLContent | Select-Xml -XPath '//boolean').node.InnerText))) {
+                Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri), but failed login"
+                $PSCmdlet.ThrowTerminatingError(
+                    [System.Management.Automation.ErrorRecord]::new(
+                        ("XML payload sent to: $TargetUri but failed login"),
+                        'DokuWiki.Session.PermissionDenied',
+                        [System.Management.Automation.ErrorCategory]::PermissionDenied,
+                        $TargetUri
+                    )
+                )
             } else {
                 # success
                 Write-Verbose "Successfully connected to API server: $ComputerName"
                 $DokuSession = [PSCustomObject]@{
-                    Server = $ComputerName
-                    TargetUri = $TargetUri
-                    SessionMethod = $SessionMethod
-                    Headers = $headers
-                    WebSession = $WebSession
-                    TimeStamp = (Get-Date)
+                    Server              = $ComputerName
+                    TargetUri           = $TargetUri
+                    XMLContent          = $XMLContent
+                    Headers             = $headers
+                    WebSession          = $WebSession
+                    TimeStamp           = (Get-Date)
                     UnencryptedEndpoint = [boolean]$Unencrypted
-                    UseBasicParsing = $UseBasicParsing
+                    UseBasicParsing     = $UseBasicParsing
                 }
-                $DokuSession.PSTypeNames.Insert(0,'DokuWiki.Session.Detail')
+                $DokuSession.PSTypeNames.Insert(0, 'DokuWiki.Session.Detail')
                 # Module scoped variables are defined like the below apparently
                 $Script:DokuServer = $DokuSession
             }
