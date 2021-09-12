@@ -4,60 +4,60 @@ Describe 'Connect-DokuServer' {
         # This is bad :(
         $Server = 'Server.fake.domain.name.111'
         Set-StrictMode -Version latest
-        
+
         It 'Should fail when specifying a non-existent server' {
-            {Connect-DokuServer -ComputerName $Server -Unencrypted -Credential $credential} | Should -Throw
+            { Connect-DokuServer -ComputerName $Server -Unencrypted -Credential $credential } | Should -Throw
         }
         It 'Should fail when server is $null' {
-            {Connect-DokuServer -ComputerName $null -Unencrypted -Credential $credential} | Should -Throw
+            { Connect-DokuServer -ComputerName $null -Unencrypted -Credential $credential } | Should -Throw
         }
         $Script:DokuServer = [PSCustomObject]@{
-            Headers = @{ "Content-Type" = "text/xml"; }
-            TargetUri = 'not a real target'
+            Headers             = @{ 'Content-Type' = 'text/xml'; }
+            TargetUri           = 'not a real target'
             UnencryptedEndPoint = $true
-            WebSession = (New-Object Microsoft.PowerShell.Commands.WebRequestSession)
+            WebSession          = (New-Object Microsoft.PowerShell.Commands.WebRequestSession)
         }
         It 'Should fail when already connected and force isnt specified' {
-            {Connect-DokuServer -ComputerName $null -Unencrypted -Credential $credential} | Should -Throw
+            { Connect-DokuServer -ComputerName $null -Unencrypted -Credential $credential } | Should -Throw
         }
         $Script:DokuServer = $null
         It 'Should fail when invalid XML is returned' {
             Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
-                Content = '<?xml version="1.0"?><string>Hello World</string>'
-            }) }
-            {Connect-DokuServer -Server $Server -Credential $credential -Unencrypted -APIPath 'dokuwiki/lib/exe/xmlrpc.php' -Force} | Should -Throw
+                        Content = '<?xml version="1.0"?><string>Hello World</string>'
+                    }) }
+            { Connect-DokuServer -Server $Server -Credential $credential -Unencrypted -APIPath 'dokuwiki/lib/exe/xmlrpc.php' -Force } | Should -Throw
         }
         It 'Should return an object with the correct primary type name' {
             Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
-                Content = '<?xml version="1.0"?><methodResponse><string>Hello World</string></methodResponse>'
-            }) }
+                        Content = '<?xml version="1.0"?><methodResponse><string>Hello World</string></methodResponse>'
+                    }) }
             Connect-DokuServer -Server $Server -Credential $credential -Unencrypted -APIPath 'dokuwiki/lib/exe/xmlrpc.php' -Force
             InModuleScope PSDokuWiki {
                 $Script:DokuServer.PSTypeNames[0] | Should -Be 'DokuWiki.Session.Detail'
             }
         }
         It 'Should return an object with all the correct properties' {
-            Mock -ModuleName PSDokuWiki  Invoke-WebRequest { return ([PSCustomObject]@{
-                Content = '<?xml version="1.0"?><methodResponse><string>Hello World</string></methodResponse>'
-            }) }
+            Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
+                        Content = '<?xml version="1.0"?><methodResponse><string>Hello World</string></methodResponse>'
+                    }) }
             Connect-DokuServer -Server $Server -Credential $credential -Force
             InModuleScope PSDokuWiki {
-                $SessionObjectProperties = $Script:DokuServer.PSObject.Properties.Name 
-                @('Server','TargetUri','Headers','WebSession','TimeStamp','UnencryptedEndpoint','UseBasicParsing') | Where-Object -FilterScript { $SessionObjectProperties -notcontains $_ } | Should -BeNullOrEmpty
+                $SessionObjectProperties = $Script:DokuServer.PSObject.Properties.Name
+                @( 'Server', 'TargetUri', 'XMLContent', 'Headers', 'WebSession', 'TimeStamp', 'UnencryptedEndpoint', 'UseBasicParsing') | Where-Object -FilterScript { $SessionObjectProperties -notcontains $_ } | Should -BeNullOrEmpty
             }
         }
         It 'Should detect if a non-XML response was received' {
             Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
-                Content = '<!doctype html>
+                        Content = '<!doctype html>
                 <html>
                 <head>
                     <title>Example Domain</title>
-                
+
                     <meta charset="utf-8" />
                     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
                 </head>
-                
+
                 <body>
                 <div>
                     <h1>Example Domain</h1>
@@ -67,34 +67,41 @@ Describe 'Connect-DokuServer' {
                 </div>
                 </body>
                 </html>'
-            }) }
+                    }) }
             try {
                 Connect-DokuServer -Server $Server -Credential $credential -Unencrypted -APIPath 'dokuwiki/lib/exe/xmlrpc.php' -Force -ErrorVariable DokuErrorVariable -ErrorAction Stop
-            } 
-            catch {
+            } catch {
                 $_ | Should -Be 'XML payload sent to: http://Server.fake.domain.name.111dokuwiki/lib/exe/xmlrpc.php but received an invalid response'
             }
         }
         It 'Should detect a fault in the login' {
             Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
-                Content = '<?xml version="1.0"?><methodResponse><fault><value><struct><member><name>faultCode</name><value><int>1234</int></value></member><member><name>faultString</name><value><string>Fault Message</string></value></member></struct></value></fault></methodResponse>'
-            }) }
+                        Content = '<?xml version="1.0"?><methodResponse><fault><value><struct><member><name>faultCode</name><value><int>1234</int></value></member><member><name>faultString</name><value><string>Fault Message</string></value></member></struct></value></fault></methodResponse>'
+                    }) }
             try {
                 Connect-DokuServer -Server $Server -Credential $credential -Unencrypted -APIPath 'dokuwiki/lib/exe/xmlrpc.php' -Force -ErrorAction Stop
-            }
-            catch {
+            } catch {
                 $_ | Should -Be 'Connected to API endpoint: Server.fake.domain.name.111, but failed login. FaultCode: 1234 - FaultString: Fault Message'
             }
         }
         It 'Should detect an invalid XML response' {
             Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
-                Content = '<?xml version="1.0"?><value><struct><member><name>faultCode</name><value><int>1234</int></value></member><member><name>faultString</name><value><string>Fault Message</string></value></member></struct></value>'
-            }) }
+                        Content = '<?xml version="1.0"?><value><struct><member><name>faultCode</name><value><int>1234</int></value></member><member><name>faultString</name><value><string>Fault Message</string></value></member></struct></value>'
+                    }) }
             try {
                 Connect-DokuServer -Server $Server -Credential $credential -Unencrypted -APIPath 'dokuwiki/lib/exe/xmlrpc.php' -Force -ErrorAction Stop
-            }
-            catch {
+            } catch {
                 $_ | Should -Be 'XML payload sent to: http://Server.fake.domain.name.111dokuwiki/lib/exe/xmlrpc.php but received an invalid response'
+            }
+        }
+        It 'Should detect a permission denied response' {
+            Mock -ModuleName PSDokuWiki Invoke-WebRequest { return ([PSCustomObject]@{
+                        Content = '<?xml version="1.0"?><methodResponse><params><param><value><boolean>0</boolean></value></param></params></methodResponse>'
+                    }) }
+            try {
+                Connect-DokuServer -Server $Server -Credential $credential -Unencrypted -APIPath '/dokuwiki/lib/exe/xmlrpc.php' -Force -ErrorAction Stop
+            } catch {
+                $_ | Should -Be 'Connected to API endpoint: http://Server.fake.domain.name.111/dokuwiki/lib/exe/xmlrpc.php but failed login'
             }
         }
     }
