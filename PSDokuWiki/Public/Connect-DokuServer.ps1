@@ -46,9 +46,7 @@ function Connect-DokuServer {
             if (($null -ne $Script:DokuServer) -and (-not $Force)) {
                 throw "Open connection already exists to: $($Script:DokuServer.TargetUri) - Use the -Force parameter to connect anyway"
             }
-            $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Credential.Password)
-            $password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-            $XMLPayload = ConvertTo-XmlRpcMethodCall -Name 'dokuwiki.login' -Params @($Credential.username, $password)
+            $XMLPayload = ConvertTo-XmlRpcMethodCall -Name 'dokuwiki.login' -Params @($Credential.username, $Credential.GetNetworkCredential().Password)
             # $Websession var defined here
             try {
                 $InvokeParams = @{
@@ -67,6 +65,7 @@ function Connect-DokuServer {
                 }
                 $httpResponse = Invoke-WebRequest @InvokeParams
                 $XMLContent = [xml]($httpResponse.Content)
+                Write-Verbose "XMLContent: $($XMLContent.InnerXml)"
             } catch [System.Management.Automation.PSInvalidCastException] {
                 Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri) but did not receive valid response"
                 $PSCmdlet.ThrowTerminatingError(
