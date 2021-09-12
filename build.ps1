@@ -46,7 +46,7 @@ if ($PSVersionTable.PSVersion.Major -le 5) {
 }
 Get-PackageProvider -Name 'NuGet' -ForceBootstrap | Out-Null
 
-Resolve-Module -Name 'PlatyPS','Psake','PSDeploy','BuildHelpers','PsScriptAnalyzer'
+Resolve-Module -Name 'PlatyPS', 'Psake', 'BuildHelpers', 'PsScriptAnalyzer' #,'PSDeploy'
 Install-Module -Name 'Pester' -MaximumVersion '4.10.1' -SkipPublisherCheck -Force
 Get-Module -Name 'Pester' -ErrorAction 'SilentlyContinue' | Remove-Module -Force
 Import-Module -Name 'Pester' -MaximumVersion '4.10.1'
