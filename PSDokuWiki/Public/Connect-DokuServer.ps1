@@ -60,10 +60,10 @@ function Connect-DokuServer {
                     ErrorAction     = 'Stop'
                 }
                 if ($PSBoundParameters.ContainsKey('UseBasicParsing')) {
-                    InvokeParams.Add('UseDefaultCredentials', $true)
+                    $InvokeParams.Add('UseDefaultCredentials', $true)
                 }
                 if ($PSBoundParameters.ContainsKey('Unencrypted')) {
-                    InvokeParams.Add('AllowUnencryptedAuthentication', $true)
+                    $InvokeParams.Add('AllowUnencryptedAuthentication', $true)
                 }
                 $httpResponse = Invoke-WebRequest @InvokeParams
                 $XMLContent = [xml]($httpResponse.Content)
