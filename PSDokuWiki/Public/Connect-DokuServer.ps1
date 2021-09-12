@@ -113,7 +113,7 @@ function Connect-DokuServer {
                         $TargetUri
                     )
                 )
-            } elseif (!([bool]([int]($XMLContent | Select-Xml -XPath '//boolean').node.InnerText))) {
+            } elseif ($null -ne ($XMLContent | Select-Xml -XPath '//boolean' -ErrorAction 'SilentlyContinue') -and (!([bool]([int]($XMLContent | Select-Xml -XPath '//boolean' -ErrorAction 'SilentlyContinue').node.InnerText)))) {
                 Write-Verbose "Connected to API endpoint: $($Script:DokuServer.TargetUri), but failed login"
                 $PSCmdlet.ThrowTerminatingError(
                     [System.Management.Automation.ErrorRecord]::new(

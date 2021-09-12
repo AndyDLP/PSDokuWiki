@@ -101,7 +101,7 @@ Describe 'Connect-DokuServer' {
             try {
                 Connect-DokuServer -Server $Server -Credential $credential -Unencrypted -APIPath '/dokuwiki/lib/exe/xmlrpc.php' -Force -ErrorAction Stop
             } catch {
-                $_ | Should -Be 'Connected to API endpoint: http://Server.fake.domain.name.111/dokuwiki/lib/exe/xmlrpc.php but failed login'
+                $_ | Should -Be 'XML payload sent to: http://Server.fake.domain.name.111/dokuwiki/lib/exe/xmlrpc.php but failed login'
             }
         }
     }
