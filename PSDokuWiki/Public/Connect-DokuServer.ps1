@@ -56,7 +56,7 @@ function Connect-DokuServer {
                     Method          = 'POST'
                     Headers         = $headers
                     Body            = $XMLPayload
-                    SessionVariable = WebSession
+                    SessionVariable = 'WebSession'
                     ErrorAction     = 'Stop'
                 }
                 if ($PSBoundParameters.ContainsKey('UseBasicParsing')) {
