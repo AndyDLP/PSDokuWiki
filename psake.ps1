@@ -284,12 +284,10 @@ Task Deploy -depends PostBuildTest {
     $lines
 
     # Publish to gallery with a few restrictions
-    $isWindows = (Get-CimInstance -ClassName 'CIM_OperatingSystem').Caption -match 'Windows'
-    Write-Verbose "isWindows: $isWindows"
     if (($env:BHProjectName) -and ($env:BHProjectName.Count -eq 1) -and ($env:BHBuildSystem -ne 'Unknown') -and ($env:BHBranchName -eq 'master') -and ($env:BHCommitMessage -match '!deploy') -and ($isWindows -eq $true)) {
         Write-Host 'Deploying to PSGallery...'
         Publish-Module -Path $ENV:BHPSModulePath -Repository 'PSGallery' -NuGetApiKey $ENV:NugetApiKey -ErrorAction Stop @Verbose
     } else {
-        "Skipping deployment: To deploy, ensure that...`n" + "`t* You are in a known build system (Current: $ENV:BHBuildSystem)`n" + "`t* You are committing to the master branch (Current: $ENV:BHBranchName) `n" + "`t* Your commit message includes !deploy (Current: $ENV:BHCommitMessage)" | Write-Host
+        "Skipping deployment: To deploy, ensure that...`n" + "`t* You are in a known build system (Current: $ENV:BHBuildSystem)`n" + "`t* You are committing to the master branch (Current: $ENV:BHBranchName) `n" + "`t* Your commit message includes !deploy (Current: $ENV:BHCommitMessage)" + "`t* The build OS is Windows (Current: $isWindows)" | Write-Host
     }
 }

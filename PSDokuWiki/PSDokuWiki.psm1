@@ -2,7 +2,7 @@
 Write-Verbose 'Importing Functions'
 
 # Import everything in sub folders folder
-foreach ( $folder in @( 'private', 'public', 'classes' ) ) {
+foreach ( $folder in @( 'Private', 'Public' ) ) {
     $root = Join-Path -Path $PSScriptRoot -ChildPath $folder
     if ( Test-Path -Path $root ) {
         Write-Verbose "processing folder $root"
