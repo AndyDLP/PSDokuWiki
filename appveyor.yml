@@ -4,10 +4,10 @@
 environment:
   NuGetApiKey:
     secure: hXqqJwbzmk/cdEIQyeRVqk6lMm+YeFx3hZHsmfbKbIPY4rRb+FU2sc17RCNY67og
-  access_token:
-    secure: BUfwcx2446ZG6zVtyRQ2sh7d5uuURX+yLUuyiKcY1CjsPHSgBGPm4d9KSqIXHq12
 
-image: Visual Studio 2019
+image:
+  - Ubuntu2004
+  - Visual Studio 2019
 
 # Build only master
 branches:
@@ -15,12 +15,11 @@ branches:
   - master
 
 # Skip on updates to the readme.
-# We can force this by adding [skip ci] or [ci skip] anywhere in commit message 
+# We can force this by adding [skip ci] or [ci skip] anywhere in commit message
 skip_commits:
   message: /updated readme.*|update readme.*s/
 
 build: false
 
 test_script:
- - ps: . .\build.ps1
- - pwsh: . .\build.ps1
+ - pwsh: . ./build.ps1

@@ -284,7 +284,9 @@ Task Deploy -depends PostBuildTest {
     $lines
 
     # Publish to gallery with a few restrictions
-    if ($env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and $env:BHBuildSystem -ne 'Unknown' -and $env:BHBranchName -eq 'master' -and $env:BHCommitMessage -match '!deploy') {
+    $isWindows = (Get-CimInstance -ClassName 'CIM_OperatingSystem').Caption -match 'Windows'
+    Write-Verbose "isWindows: $isWindows"
+    if (($env:BHProjectName) -and ($env:BHProjectName.Count -eq 1) -and ($env:BHBuildSystem -ne 'Unknown') -and ($env:BHBranchName -eq 'master') -and ($env:BHCommitMessage -match '!deploy') -and ($isWindows -eq $true)) {
         Write-Host 'Deploying to PSGallery...'
         Publish-Module -Path $ENV:BHPSModulePath -Repository 'PSGallery' -NuGetApiKey $ENV:NugetApiKey -ErrorAction Stop @Verbose
     } else {
