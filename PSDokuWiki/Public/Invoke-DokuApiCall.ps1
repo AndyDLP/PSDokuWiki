@@ -72,12 +72,12 @@ function Invoke-DokuApiCall {
         try {
             Write-Verbose "Attempting to connect to API endpoint: $($Script:DokuServer.TargetUri)"
             $httpResponse = Invoke-WebRequest @params
+            Write-Verbose "HTTP response: $($httpResponse.Content)"
+            Write-Debug ($httpResponse | Out-String)
             $outputObjectParams.Add('RawHttpResponse', $httpResponse)
 
             #$XMLContent = ConvertTo-Xml -InputObject ($httpResponse.Content) -ErrorAction Stop
             $XMLContent = [xml]($httpResponse.Content)
-            Write-Verbose $XMLContent.InnerXml
-
 
             $outputObjectParams.Add('XMLPayloadResponse', $XMLContent)
             if ($null -ne ($XMLContent | Select-Xml -XPath '//fault').node) {
