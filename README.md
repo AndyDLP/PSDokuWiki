@@ -1,4 +1,4 @@
-# PSDokuWiki [![Build status](https://ci.appveyor.com/api/projects/status/n4d47tojqr1gcs54/branch/master?svg=true)](https://ci.appveyor.com/project/AndyDLP/psdokuwiki/branch/master)
+# PSDokuWiki [![Build status](https://ci.appveyor.com/api/projects/status/n4d47tojqr1gcs54/branch/master?svg=true)](https://ci.appveyor.com/project/AndyDLP/psdokuwiki/branch/master)![AppVeyor tests](https://img.shields.io/appveyor/tests/AndyDLP/PSDokuWiki?style=plastic)![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/PSDokuWiki?style=plastic)
 PSDokuWiki is a (WIP) PowerShell wrapper for DokuWiki's XML RPC API
 
 ## How to install
