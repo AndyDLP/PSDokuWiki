@@ -77,7 +77,7 @@ function Invoke-DokuApiCall {
             $outputObjectParams.Add('RawHttpResponse', $httpResponse)
 
             #$XMLContent = ConvertTo-Xml -InputObject ($httpResponse.Content) -ErrorAction Stop
-            $XMLContent = [xml]($httpResponse.Content)
+            $XMLContent = [xml]($httpResponse.Content.Trim())
 
             $outputObjectParams.Add('XMLPayloadResponse', $XMLContent)
             if ($null -ne ($XMLContent | Select-Xml -XPath '//fault').node) {
