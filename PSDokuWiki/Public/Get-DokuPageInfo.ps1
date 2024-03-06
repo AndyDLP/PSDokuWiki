@@ -20,9 +20,11 @@
 				$APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getPageInfo' -MethodParameters @($PageName)
 				if ($APIResponse.CompletedSuccessfully -eq $true) {
 					$ArrayValues = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node.Member.Value.Innertext
+					$ConvertedDate = $ArrayValues[1].substring(0,4) + '-' + $ArrayValues[1].substring(4,2) + '-' + -join $ArrayValues[1][6..50]
 					$PageObject = [PSCustomObject]@{
 						FullName = $PageName
-						LastModified = Get-Date -Date ($ArrayValues[1])
+						# LastModified = Get-Date -Date ($ArrayValues[1])
+						LastModified = Get-Date -Date ($ConvertedDate)
 						Author = $ArrayValues[2]
 						VersionTimestamp = $ArrayValues[3]
 						PageName = ($PageName -split ":")[-1]

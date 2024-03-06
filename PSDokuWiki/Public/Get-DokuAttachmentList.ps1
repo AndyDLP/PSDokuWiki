@@ -23,6 +23,8 @@
 				if ($APIResponse.CompletedSuccessfully -eq $true) {
 					$MemberNodes = ($APIResponse.XMLPayloadResponse| Select-Xml -XPath "//struct").Node
 					foreach ($node in $MemberNodes) {
+						$LastModified = (($node.member)[7]).value.innertext
+						$ConvertedDate = $LastModified.substring(0,4) + '-' + $LastModified.substring(4,2) + '-' + -join $LastModified[6..50]
 						$MediaObject = [PSCustomObject]@{
 							FullName = ((($node.member)[0]).value.innertext)
 							Name = (($node.member)[1]).value.innertext
@@ -31,7 +33,8 @@
 							IsWritable = [boolean](($node.member)[4]).value.innertext
 							IsImage = [boolean](($node.member)[5]).value.innertext
 							Acl = [int](($node.member)[6]).value.innertext
-							LastModified = [datetime](($node.member)[7]).value.innertext
+							# LastModified = [datetime](($node.member)[7]).value.innertext
+							LastModified = [datetime]$ConvertedDate
 							ParentNamespace = (((($node.member)[0]).value.innertext) -split ":")[-2]
 							RootNamespace = (((($node.member)[0]).value.innertext) -split ":")[0]
 						}

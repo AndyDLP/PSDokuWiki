@@ -20,10 +20,12 @@
                 $APIResponse = Invoke-DokuApiCall -MethodName 'wiki.getAttachmentInfo' -MethodParameters @($attachmentName)
                 if ($APIResponse.CompletedSuccessfully -eq $true) {
                     $ArrayValues = ($APIResponse.XMLPayloadResponse | Select-Xml -XPath "//struct").Node.Member.Value.Innertext
+                    $ConvertedDate = $ArrayValues[0].substring(0,4) + '-' + $ArrayValues[0].substring(4,2) + '-' + -join $ArrayValues[0][6..50]
                     $attachmentObject = [PSCustomObject]@{
                         FullName        = $attachmentName
                         Size            = $ArrayValues[1]
-                        LastModified    = Get-Date -Date ($ArrayValues[0])
+                        #  LastModified    = Get-Date -Date ($ArrayValues[0])
+                        LastModified    = Get-Date -Date ($ConvertedDate)
                         FileName        = ($attachmentName -split ":")[-1]
                         ParentNamespace = ($attachmentName -split ":")[-2]
                         RootNamespace   = if (($attachmentName -split ":")[0] -eq $attachmentName) {"::"} else {($attachmentName -split ":")[0]}
